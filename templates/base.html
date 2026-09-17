@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            ViQtor Health
+        {% endblock %}
+    </title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f8f6;
+            color: #293128;
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           GLOBAL NAVBAR
+        ===================================================== */
+
+        .viqtor-navbar {
+
+            height: 78px;
+
+            background: #ffffff;
+
+            border-bottom: 1px solid #e1e5df;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 5%;
+
+            box-shadow:
+                0 2px 10px
+                rgba(30, 40, 30, 0.035);
+
+        }
+
+
+        /* =====================================================
+           GLOBAL LOGO
+        ===================================================== */
+
+        .viqtor-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            text-decoration: none;
+
+            min-width: 0;
+
+        }
+
+
+        .viqtor-logo {
+
+            height: 58px;
+
+            width: auto;
+
+            max-width: 240px;
+
+            object-fit: contain;
+
+            display: block;
+
+        }
+
+
+        /* =====================================================
+           NAVIGATION RIGHT SIDE
+        ===================================================== */
+
+        .viqtor-nav-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+        }
+
+
+        .viqtor-user {
+
+            text-align: right;
+
+        }
+
+
+        .viqtor-username {
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #35402f;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .viqtor-role {
+
+            margin-top: 2px;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            color: #858c82;
+
+            letter-spacing: 0.8px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .viqtor-logout {
+
+            height: 38px;
+
+            padding: 0 17px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid #c8d0c0;
+
+            border-radius: 6px;
+
+            background: #ffffff;
+
+            color: #52613d;
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        .viqtor-logout:hover {
+
+            background: #52613d;
+
+            color: #ffffff;
+
+            border-color: #52613d;
+
+        }
+
+
+        /* =====================================================
+           GLOBAL PAGE CONTAINER
+        ===================================================== */
+
+        .viqtor-container {
+
+            width: 90%;
+
+            max-width: 1280px;
+
+            margin: 34px auto 60px;
+
+        }
+
+
+        /* =====================================================
+           GLOBAL FOOTER
+        ===================================================== */
+
+        .viqtor-footer {
+
+            text-align: center;
+
+            padding: 20px;
+
+            color: #969d96;
+
+            font-size: 10px;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .viqtor-navbar {
+
+                height: auto;
+
+                min-height: 72px;
+
+                padding: 12px 5%;
+
+                gap: 12px;
+
+                flex-wrap: wrap;
+
+            }
+
+
+            .viqtor-logo {
+
+                height: 48px;
+
+                max-width: 200px;
+
+            }
+
+
+            .viqtor-nav-right {
+
+                margin-left: auto;
+
+                gap: 10px;
+
+            }
+
+
+            .viqtor-user {
+
+                display: none;
+
+            }
+
+
+            .viqtor-container {
+
+                width: 94%;
+
+                margin-top: 22px;
+
+            }
+
+        }
+
+    </style>
+
+
+    {% block extra_head %}
+    {% endblock %}
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         GLOBAL VIQTOR HEALTH NAVBAR
+    ===================================================== -->
+
+    <nav class="viqtor-navbar">
+
+
+        <!-- LOGO -->
+
+        <a
+            href="/"
+            class="viqtor-brand"
+        >
+
+            <img
+                src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+                alt="ViQtor Health"
+                class="viqtor-logo"
+            >
+
+        </a>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div class="viqtor-nav-right">
+
+
+            {% if session.get("logged_in") %}
+
+                <div class="viqtor-user">
+
+                    <div class="viqtor-username">
+
+                        {{ session.get("role", "") }}
+
+                    </div>
+
+                    <div class="viqtor-role">
+
+                        {{ session.get("role", "") }} Portal
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="/logout"
+                    class="viqtor-logout"
+                >
+                    LOGOUT
+                </a>
+
+            {% endif %}
+
+
+        </div>
+
+
+    </nav>
+
+
+    <!-- =====================================================
+         PAGE CONTENT
+    ===================================================== -->
+
+    {% block content %}
+    {% endblock %}
+
+
+    <!-- =====================================================
+         GLOBAL FOOTER
+    ===================================================== -->
+
+    <footer class="viqtor-footer">
+
+        © 2026 ViQtor Health
+        ·
+        Smart Digital Health & Medical Record Platform
+
+    </footer>
+
+
+    {% block scripts %}
+    {% endblock %}
+
+
+</body>
+
+</html>

@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViQtor Health | Secure Sign In</title>
+
+<style>
+:root{
+    --olive:#29451f;
+    --olive-dark:#1e3518;
+    --gold:#b1964d;
+    --gold-light:#c9b16b;
+    --cream:#f7f5ef;
+    --white:#ffffff;
+    --ink:#121712;
+    --muted:#68706a;
+    --line:#d8dcd6;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+}
+
+button,input{
+    font:inherit;
+}
+
+a{
+    text-decoration:none;
+}
+
+/* =========================================================
+   MAIN LOGIN LAYOUT
+   ========================================================= */
+
+.login-page{
+    width:100%;
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:58% 42%;
+    overflow:hidden;
+}
+
+/* =========================================================
+   LEFT VISUAL SIDE
+   IMPORTANT:
+   This background contains ONLY the soldier/mountains.
+   All text and the main logo below are HTML.
+   ========================================================= */
+
+.left-panel{
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.03) 0%,
+            rgba(8,17,8,.02) 42%,
+            rgba(8,16,8,.82) 100%
+        ),
+        url("{{ url_for('static', filename='images/viqtor-hero-soldier.jpg') }}");
+
+    background-size:cover;
+    background-position:center center;
+}
+
+/* subtle darkening on lower area */
+.left-panel::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        180deg,
+        transparent 48%,
+        rgba(8,15,7,.70) 100%
+    );
+    pointer-events:none;
+}
+
+/* =========================================================
+   ORIGINAL VIQTOR LOGO
+   ========================================================= */
+
+.main-brand{
+    position:absolute;
+    top:34px;
+    left:48px;
+    z-index:10;
+
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.main-brand img{
+    width:70px;
+    height:70px;
+    object-fit:contain;
+}
+
+.brand-name{
+    font-size:31px;
+    line-height:1;
+    font-weight:800;
+    letter-spacing:-1.4px;
+    color:#111;
+}
+
+.brand-name span{
+    color:var(--gold);
+}
+
+.brand-sub{
+    margin-top:6px;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.3px;
+    color:#384633;
+}
+
+/* =========================================================
+   LEFT HEADLINE
+   ========================================================= */
+
+.mission{
+    position:absolute;
+    z-index:10;
+    left:49px;
+    top:49%;
+    transform:translateY(-25%);
+    color:#fff;
+}
+
+.mission h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:clamp(43px,4.3vw,61px);
+    line-height:.99;
+    letter-spacing:.3px;
+    font-weight:500;
+    text-transform:uppercase;
+}
+
+.mission h1 span{
+    color:var(--gold-light);
+}
+
+.mission-line{
+    width:56px;
+    height:2px;
+    background:var(--gold-light);
+    margin:25px 0 18px;
+}
+
+.mission p{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:20px;
+    line-height:1.43;
+}
+
+/* =========================================================
+   LEFT FEATURE ROW
+   ========================================================= */
+
+.left-features{
+    position:absolute;
+    z-index:10;
+    left:45px;
+    right:150px;
+    bottom:54px;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+}
+
+.feature{
+    min-width:0;
+    text-align:center;
+    color:#f1f1ec;
+    padding:0 12px;
+    border-right:1px solid rgba(255,255,255,.30);
+}
+
+.feature:last-child{
+    border-right:0;
+}
+
+.feature-icon{
+    height:35px;
+    color:var(--gold-light);
+    font-size:27px;
+    line-height:32px;
+    font-weight:700;
+}
+
+.feature-text{
+    font-size:10px;
+    line-height:1.35;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+}
+
+/* bottom label */
+.left-footer{
+    position:absolute;
+    z-index:10;
+    left:49px;
+    bottom:18px;
+    color:rgba(255,255,255,.66);
+    font-size:9px;
+    letter-spacing:1.15px;
+}
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.right-panel{
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+
+    /* IMPORTANT:
+       Do NOT use the reference screenshot as the right-panel
+       background. It already contains text, logos and UI,
+       which causes the ghost/duplicate elements seen on screen. */
+    background:
+        radial-gradient(
+            circle at 68% 78%,
+            rgba(82,103,66,.22),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #263d20 0%,
+            #1d3319 52%,
+            #142611 100%
+        );
+}
+
+/* diagonal military accent */
+.right-panel::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-85px;
+    width:160px;
+    height:100%;
+    background:rgba(255,255,255,.10);
+    transform:skewX(-16deg);
+    pointer-events:none;
+}
+
+/* Subtle background silhouette only — no embedded text/logo/UI */
+.right-panel::after{
+    content:"";
+    position:absolute;
+    right:-30px;
+    bottom:-20px;
+    width:430px;
+    height:190px;
+    opacity:.16;
+    background:
+        linear-gradient(135deg, transparent 47%, #b7bcae 48%, transparent 49%),
+        linear-gradient(35deg, transparent 48%, #9da792 49%, transparent 50%),
+        linear-gradient(155deg, transparent 53%, #c0c5b7 54%, transparent 55%);
+    transform:scaleY(.8);
+    pointer-events:none;
+}
+
+/* =========================================================
+   RIGHT TOP MISSION TEXT
+   ========================================================= */
+
+.top-message{
+    position:absolute;
+    top:49px;
+    left:31%;
+    z-index:5;
+
+    color:#e8ebe4;
+    font-size:11px;
+    line-height:1.45;
+    letter-spacing:.55px;
+    text-transform:uppercase;
+}
+
+.top-message::after{
+    content:"";
+    position:absolute;
+    left:205px;
+    top:25px;
+    width:78px;
+    height:1px;
+    background:var(--gold-light);
+}
+
+/* =========================================================
+   RIGHT SIDE TRUST BLOCKS
+   ========================================================= */
+
+.trust-column{
+    position:absolute;
+    z-index:3;
+    right:28px;
+    top:38%;
+    width:110px;
+    color:#e8ebe4;
+}
+
+.trust-item{
+    padding:0 0 19px;
+    margin-bottom:20px;
+    border-bottom:1px solid rgba(255,255,255,.20);
+}
+
+.trust-icon{
+    color:#d0c7a3;
+    font-size:26px;
+    margin-bottom:6px;
+}
+
+.trust-item p{
+    font-size:10px;
+    line-height:1.35;
+    text-transform:uppercase;
+}
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+.login-card{
+    position:absolute;
+    z-index:20;
+
+    top:50%;
+    left:50%;
+
+    width:min(500px,calc(100% - 125px));
+
+    transform:translate(-50%,-50%);
+
+    background:rgba(255,255,255,.98);
+
+    border:1px solid rgba(225,227,222,.95);
+    border-radius:16px;
+
+    padding:31px 37px 34px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.24);
+}
+
+/* logo INSIDE CARD — same original logo */
+.card-logo{
+    display:block;
+    width:65px;
+    height:65px;
+    object-fit:contain;
+    margin:0 auto 2px;
+}
+
+.card-brand{
+    text-align:center;
+}
+
+.card-brand h2{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:28px;
+    line-height:1.1;
+    font-weight:700;
+}
+
+.card-brand p{
+    margin-top:5px;
+    color:#465345;
+    font-size:9px;
+    letter-spacing:1.3px;
+    font-weight:700;
+}
+
+.welcome{
+    text-align:center;
+    margin:24px 0 26px;
+}
+
+.welcome h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:29px;
+    line-height:1.1;
+    color:#111711;
+}
+
+.welcome p{
+    margin-top:7px;
+    color:#68716c;
+    font-size:14px;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.error-box{
+    display:none;
+
+    margin-bottom:14px;
+    padding:10px 12px;
+
+    border-radius:7px;
+    border:1px solid #e5c3be;
+    background:#fff1ef;
+
+    color:#9b4037;
+    font-size:12px;
+}
+
+.error-box.show{
+    display:block;
+}
+
+.field{
+    width:100%;
+    height:53px;
+
+    display:flex;
+    align-items:center;
+
+    margin-bottom:15px;
+
+    background:#fff;
+    border:1px solid #d4d8d3;
+    border-radius:8px;
+
+    transition:.2s;
+}
+
+.field:focus-within{
+    border-color:#667b5d;
+    box-shadow:0 0 0 3px rgba(42,67,33,.08);
+}
+
+.field-icon{
+    width:53px;
+    text-align:center;
+    color:#59625d;
+    font-size:20px;
+}
+
+.field input{
+    flex:1;
+    min-width:0;
+    height:100%;
+
+    border:0;
+    outline:0;
+    background:transparent;
+
+    color:#1c241d;
+    font-size:15px;
+}
+
+.field input::placeholder{
+    color:#6d746f;
+}
+
+.password-toggle{
+    width:47px;
+    height:100%;
+
+    border:0;
+    background:transparent;
+
+    color:#657069;
+    cursor:pointer;
+    font-size:17px;
+}
+
+.options{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin:10px 1px 23px;
+
+    font-size:13px;
+}
+
+.remember{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#555d57;
+}
+
+.remember input{
+    width:18px;
+    height:18px;
+    accent-color:var(--olive);
+}
+
+.forgot{
+    color:var(--olive);
+    font-weight:700;
+}
+
+.login-button{
+    width:100%;
+    height:54px;
+
+    border:0;
+    border-radius:7px;
+
+    background:var(--olive);
+    color:#fff;
+
+    font-size:17px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    box-shadow:0 8px 19px rgba(39,65,31,.20);
+
+    transition:.2s;
+}
+
+.login-button:hover{
+    background:var(--olive-dark);
+}
+
+.login-button:disabled{
+    opacity:.75;
+    cursor:wait;
+}
+
+.arrow{
+    font-size:22px;
+    margin-left:8px;
+    vertical-align:-1px;
+}
+
+.divider{
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    margin:22px 0;
+
+    color:#727973;
+    font-size:13px;
+}
+
+.divider::before,
+.divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#d9ddd7;
+}
+
+.military-button{
+    width:100%;
+    height:53px;
+
+    border:1px solid #7b8778;
+    border-radius:7px;
+
+    background:#fff;
+    color:#1f291f;
+
+    font-size:15px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.military-button:hover{
+    background:#f3f5f0;
+}
+
+.military-icon{
+    color:var(--olive);
+    margin-right:9px;
+}
+
+.register{
+    text-align:center;
+    margin-top:30px;
+
+    color:#68706b;
+    font-size:14px;
+}
+
+.register a{
+    color:var(--olive);
+    font-weight:700;
+}
+
+.security{
+    text-align:center;
+    margin-top:19px;
+
+    color:#8a918b;
+    font-size:10px;
+}
+
+.security strong{
+    color:var(--olive);
+}
+
+/* bottom right quote */
+.right-quote{
+    position:absolute;
+    z-index:3;
+    right:31px;
+    bottom:34px;
+
+    color:#efeee8;
+
+    text-align:right;
+
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:16px;
+    line-height:1.45;
+    font-style:italic;
+}
+
+.right-quote::after{
+    content:"";
+    display:block;
+
+    width:43px;
+    height:2px;
+
+    background:var(--gold-light);
+
+    margin:15px 0 0 auto;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1200px){
+
+    .login-page{
+        grid-template-columns:56% 44%;
+    }
+
+    .login-card{
+        width:min(475px,calc(100% - 105px));
+    }
+
+    .trust-column{
+        display:none;
+    }
+
+    .left-message h1{
+        font-size:42px;
+    }
+
+    .left-features{
+        right:105px;
+    }
+}
+
+@media(max-width:900px){
+
+    .login-page{
+        display:block;
+    }
+
+    .left-panel{
+        min-height:390px;
+        height:390px;
+    }
+
+    .right-panel{
+        min-height:690px;
+    }
+
+    .left-panel::after{
+        background:linear-gradient(
+            180deg,
+            transparent 35%,
+            rgba(8,15,7,.80) 100%
+        );
+    }
+
+    .main-brand{
+        top:22px;
+        left:25px;
+    }
+
+    .main-brand img{
+        width:52px;
+        height:52px;
+    }
+
+    .brand-name{
+        font-size:24px;
+    }
+
+    .brand-sub{
+        font-size:8px;
+    }
+
+    .mission{
+        left:25px;
+        top:auto;
+        bottom:43px;
+        transform:none;
+    }
+
+    .mission h1{
+        font-size:35px;
+    }
+
+    .mission-line,
+    .mission p{
+        display:none;
+    }
+
+    .left-features,
+    .left-footer{
+        display:none;
+    }
+
+    .top-message,
+    .right-quote{
+        display:none;
+    }
+
+    .login-card{
+        position:absolute;
+        top:50%;
+        left:50%;
+        width:min(500px,calc(100% - 36px));
+        transform:translate(-50%,-50%);
+        margin:0;
+    }
+}
+
+@media(max-width:520px){
+
+    .left-panel{
+        height:320px;
+        min-height:320px;
+    }
+
+    .right-panel{
+        min-height:670px;
+    }
+
+    .mission h1{
+        font-size:31px;
+    }
+
+    .login-card{
+        padding:27px 20px 30px;
+    }
+
+    .card-logo{
+        width:56px;
+        height:56px;
+    }
+
+    .card-brand h2{
+        font-size:25px;
+    }
+
+    .welcome h1{
+        font-size:26px;
+    }
+
+    .options{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <!-- =====================================================
+         LEFT PANEL
+         ===================================================== -->
+
+    <section class="left-panel">
+
+        <!-- YOUR EXISTING MAIN LOGO -->
+        <div class="main-brand">
+
+            <img
+                src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+                alt="ViQtor Health"
+            >
+
+            <div>
+                <div class="brand-name">
+                    ViQtor <span>Health</span>
+                </div>
+
+                <div class="brand-sub">
+                    SECURE HEALTHIER TOMORROW
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="mission">
+
+            <h1>
+                HEALTHY<br>
+                SOLDIERS<br>
+                <span>STRONGER<br>NATION</span>
+            </h1>
+
+            <div class="mission-line"></div>
+
+            <p>
+                Technology Driven.<br>
+                Mission Focused.<br>
+                People First.
+            </p>
+
+        </div>
+
+
+        <div class="left-features">
+
+            <div class="feature">
+                <div class="feature-icon">♢</div>
+                <div class="feature-text">
+                    Secure<br>Records
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">♧</div>
+                <div class="feature-text">
+                    Integrated<br>Care
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">▮▮</div>
+                <div class="feature-text">
+                    Real-Time<br>Monitoring
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">♥</div>
+                <div class="feature-text">
+                    Operational<br>Readiness
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="left-footer">
+            VIQTOR HEALTH &nbsp; | &nbsp; SMART DIGITAL HEALTH PLATFORM
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RIGHT PANEL
+         ===================================================== -->
+
+    <section class="right-panel">
+
+        <div class="top-message">
+            FOR OUR SOLDIERS<br>
+            FOR A STRONGER NATION
+        </div>
+
+
+        <div class="trust-column">
+
+            <div class="trust-item">
+                <div class="trust-icon">♢</div>
+                <p>
+                    Trusted<br>
+                    by the Forces
+                </p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">⚕</div>
+                <p>
+                    Built for<br>
+                    Operational<br>
+                    Environments
+                </p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">♧</div>
+                <p>
+                    Better Health<br>
+                    Brighter<br>
+                    Tomorrow
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGIN CARD
+             ================================================= -->
+
+        <div class="login-card">
+
+            <div class="card-brand">
+
+                <!-- YOUR EXISTING MAIN LOGO -->
+                <img
+                    class="card-logo"
+                    src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+                    alt="ViQtor Health"
+                >
+
+                <h2>
+                    ViQtor Health
+                </h2>
+
+                <p>
+                    SECURE HEALTHIER TOMORROW
+                </p>
+
+            </div>
+
+
+            <div class="welcome">
+
+                <h1>
+                    Welcome Back
+                </h1>
+
+                <p>
+                    Login to access the ViQtor Health platform
+                </p>
+
+            </div>
+
+
+            <div id="errorBox" class="error-box"></div>
+
+
+            <div class="field">
+
+                <div class="field-icon">
+                    ♙
+                </div>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Username / Email"
+                    autocomplete="username"
+                    onkeydown="handleKey(event)"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <div class="field-icon">
+                    ♙
+                </div>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    onkeydown="handleKey(event)"
+                >
+
+                <button
+                    type="button"
+                    class="password-toggle"
+                    onclick="togglePassword()"
+                    aria-label="Show or hide password"
+                >
+                    <span id="eyeIcon">◌</span>
+                </button>
+
+            </div>
+
+
+            <div class="options">
+
+                <label class="remember">
+
+                    <input
+                        type="checkbox"
+                        id="remember"
+                    >
+
+                    <span>
+                        Remember me
+                    </span>
+
+                </label>
+
+
+                <a
+                    href="#"
+                    class="forgot"
+                    onclick="alert('Please contact the system administrator to reset your password.');return false;"
+                >
+                    Forgot Password?
+                </a>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="loginButton"
+                class="login-button"
+                onclick="viqtorLogin()"
+            >
+                Login
+                <span class="arrow">→</span>
+            </button>
+
+
+            <div class="divider">
+                OR
+            </div>
+
+
+            <button
+                type="button"
+                class="military-button"
+                onclick="alert('Military ID authentication can be integrated with the organisation\\'s approved identity provider.')"
+            >
+                <span class="military-icon">
+                    ⌗
+                </span>
+
+                Login with Military ID
+            </button>
+
+
+            <div class="register">
+
+                New to ViQtor Health?
+
+                <a href="/register">
+                    Register Here
+                </a>
+
+            </div>
+
+
+            <div class="security">
+
+                <strong>
+                    🔒 SECURE ACCESS
+                </strong>
+
+                &nbsp; • &nbsp;
+
+                Authorized personnel only
+
+            </div>
+
+        </div>
+
+
+        <div class="right-quote">
+            “A Healthier Force<br>
+            A Stronger Tomorrow”
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     FIREBASE AUTHENTICATION
+     ========================================================= -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getAuth,
+    signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+    apiKey:
+        "AIzaSyCQuLlwxvIyYzHUcvj7KFxLTxhAB1gVdeY",
+
+    authDomain:
+        "qr-health-monitoring-system.firebaseapp.com",
+
+    projectId:
+        "qr-health-monitoring-system",
+
+    storageBucket:
+        "qr-health-monitoring-system.firebasestorage.app",
+
+    messagingSenderId:
+        "576620581125",
+
+    appId:
+        "1:576620581125:web:442a178f78fd22e6f0a76c",
+
+    measurementId:
+        "G-FSZ458D4ZM"
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+
+window.viqtorLogin = async function(){
+
+    const email =
+        document.getElementById("email")
+        .value
+        .trim();
+
+    const password =
+        document.getElementById("password")
+        .value;
+
+    const errorBox =
+        document.getElementById("errorBox");
+
+    const button =
+        document.getElementById("loginButton");
+
+
+    errorBox.classList.remove("show");
+
+    errorBox.textContent = "";
+
+
+    if(!email || !password){
+
+        errorBox.textContent =
+            "Please enter your email and password.";
+
+        errorBox.classList.add("show");
+
+        return;
+    }
+
+
+    button.disabled = true;
+
+    button.innerHTML =
+        'Authenticating <span class="arrow">↻</span>';
+
+
+    try{
+
+        const credential =
+            await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+
+
+        const idToken =
+            await credential.user.getIdToken(true);
+
+
+        const response =
+            await fetch("/login",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+                credentials:"same-origin",
+                cache:"no-store",
+
+                body:JSON.stringify({
+                    idToken:idToken
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if(data.success){
+
+            window.location.href =
+                data.redirect || "/admin";
+
+            return;
+        }
+
+
+        throw new Error(
+            data.error || "Access denied."
+        );
+
+
+    }catch(error){
+
+        let message =
+            "Unable to sign in. Please check your credentials.";
+
+
+        if(
+            error.code ===
+                "auth/invalid-credential" ||
+
+            error.code ===
+                "auth/wrong-password" ||
+
+            error.code ===
+                "auth/user-not-found"
+        ){
+
+            message =
+                "Invalid email or password.";
+
+        }
+        else if(
+            error.code ===
+                "auth/too-many-requests"
+        ){
+
+            message =
+                "Too many login attempts. Please try again later.";
+
+        }
+        else if(error.message){
+
+            message =
+                error.message;
+
+        }
+
+
+        errorBox.textContent =
+            message;
+
+        errorBox.classList.add("show");
+
+
+        button.disabled = false;
+
+        button.innerHTML =
+            'Login <span class="arrow">→</span>';
+
+    }
+
+};
+
+
+window.togglePassword = function(){
+
+    const input =
+        document.getElementById("password");
+
+    const icon =
+        document.getElementById("eyeIcon");
+
+
+    if(input.type === "password"){
+
+        input.type = "text";
+
+        icon.textContent = "◉";
+
+    }else{
+
+        input.type = "password";
+
+        icon.textContent = "◌";
+
+    }
+
+};
+
+
+window.handleKey = function(event){
+
+    if(event.key === "Enter"){
+
+        window.viqtorLogin();
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>

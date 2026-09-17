@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViQtor Health | Smart Digital Health & Medical Record Platform</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    color:#182017;
+    background:#fff;
+    line-height:1.5;
+}
+a{text-decoration:none;color:inherit}
+.navbar{
+    height:82px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 4.6%;
+    background:#fff;
+    border-bottom:1px solid #e8ebe5;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.logo{
+    width:62px;
+    height:62px;
+    object-fit:contain;
+}
+.brand-text{
+    display:flex;
+    flex-direction:column;
+    line-height:1;
+}
+.brand-name{
+    font-size:25px;
+    font-weight:800;
+    letter-spacing:-1px;
+}
+.brand-name span{color:#a98935}
+.brand-tag{
+    margin-top:6px;
+    font-size:10px;
+    letter-spacing:1.2px;
+    color:#657064;
+    font-weight:700;
+}
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:34px;
+    margin-left:auto;
+    margin-right:42px;
+}
+.nav-links a{
+    font-size:15px;
+    color:#253024;
+    padding:28px 0 23px;
+    border-bottom:2px solid transparent;
+}
+.nav-links a:hover,
+.nav-links a.active{
+    border-bottom-color:#33482a;
+}
+.login-btn{
+    background:#294222;
+    color:#fff;
+    padding:14px 26px;
+    border-radius:7px;
+    font-size:15px;
+    font-weight:700;
+    box-shadow:0 5px 14px rgba(34,57,28,.16);
+}
+.login-btn:hover{background:#1f351b}
+
+.hero{
+    min-height:588px;
+    display:grid;
+    grid-template-columns:49% 51%;
+    position:relative;
+    overflow:hidden;
+    background:#f8f8f4;
+}
+.hero-left{
+    padding:78px 7% 54px 9%;
+    position:relative;
+    z-index:3;
+    background:
+        radial-gradient(circle at 50% 45%,#fff 0%,#fafaf7 57%,#f4f5ef 100%);
+}
+.hero-left:after{
+    content:"";
+    position:absolute;
+    right:-125px;
+    top:0;
+    width:240px;
+    height:100%;
+    background:#f8f8f4;
+    clip-path:polygon(52% 0,100% 0,100% 100%,0 100%);
+    z-index:-1;
+}
+.eyebrow{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    color:#536053;
+    font-size:14px;
+    letter-spacing:.4px;
+    font-weight:600;
+    margin-bottom:24px;
+}
+.eyebrow:before{
+    content:"";
+    width:46px;
+    height:2px;
+    background:#33482a;
+}
+.hero h1{
+    font-size:54px;
+    line-height:1.04;
+    letter-spacing:-2.2px;
+    font-weight:900;
+    color:#111711;
+    max-width:690px;
+}
+.hero h1 span{
+    color:#a88934;
+}
+.hero-copy{
+    max-width:650px;
+    margin-top:25px;
+    font-size:18px;
+    line-height:1.55;
+    color:#626b72;
+}
+.hero-actions{
+    display:flex;
+    gap:18px;
+    margin-top:30px;
+}
+.primary-btn,.secondary-btn{
+    min-width:190px;
+    padding:17px 25px;
+    border-radius:7px;
+    font-weight:700;
+    font-size:16px;
+    text-align:center;
+}
+.primary-btn{
+    background:#294522;
+    color:#fff;
+}
+.primary-btn:before{
+    content:"→";
+    font-size:22px;
+    margin-right:10px;
+    vertical-align:-2px;
+}
+.secondary-btn{
+    border:1.5px solid #33482a;
+    color:#30432a;
+    background:#fff;
+}
+.secondary-btn:hover{background:#f3f5ef}
+.hero-points{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    margin-top:45px;
+    max-width:650px;
+}
+.hero-point{
+    text-align:center;
+    border-right:1px solid #d9ddd6;
+    padding:0 10px;
+}
+.hero-point:last-child{border-right:0}
+.point-icon{
+    font-size:27px;
+    color:#33482a;
+    height:34px;
+    font-weight:800;
+}
+.hero-point strong{
+    display:block;
+    margin-top:7px;
+    font-size:14px;
+    font-weight:600;
+}
+.hero-right{
+    position:relative;
+    min-height:588px;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 75% 25%,rgba(255,255,255,.95),transparent 28%),
+        radial-gradient(circle at 25% 80%,rgba(198,216,190,.55),transparent 35%),
+        linear-gradient(135deg,#e8f0e5 0%,#f7faf5 48%,#dce8d8 100%);
+}
+
+.hero-right::before{
+    content:"";
+    position:absolute;
+    width:470px;
+    height:470px;
+    right:-175px;
+    top:-170px;
+    border-radius:50%;
+    border:1px solid rgba(41,69,34,.12);
+    box-shadow:
+        0 0 0 60px rgba(41,69,34,.035),
+        0 0 0 125px rgba(41,69,34,.025);
+}
+
+.hero-right::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:45%;
+    background:
+        linear-gradient(145deg,transparent 49%,rgba(41,69,34,.055) 50%,transparent 51%);
+}
+.hero-right:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,rgba(255,255,255,.15),transparent 28%,rgba(18,30,17,.04));
+    pointer-events:none;
+}
+.civilian-dashboard{
+    position:absolute;
+    z-index:4;
+    left:8%;
+    top:12%;
+    width:70%;
+    min-height:410px;
+    padding:23px;
+    border-radius:18px;
+    background:rgba(255,255,255,.94);
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:0 25px 55px rgba(39,62,34,.15);
+    backdrop-filter:blur(8px);
+}
+
+.civilian-dashboard-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:14px;
+    border-bottom:1px solid #e1e7df;
+}
+
+.civilian-dashboard-head strong{
+    display:block;
+    font-size:14px;
+}
+
+.civilian-dashboard-head span{
+    display:block;
+    margin-top:2px;
+    color:#7a827b;
+    font-size:10px;
+}
+
+.civilian-dashboard-head b{
+    color:#52704c;
+    font-size:9px;
+}
+
+.civilian-profile{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:17px 0;
+}
+
+.civilian-avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e8efe4;
+    color:#34512f;
+    font-size:19px;
+}
+
+.civilian-profile strong{
+    display:block;
+    font-size:13px;
+}
+
+.civilian-profile span{
+    display:block;
+    margin-top:2px;
+    color:#7a827b;
+    font-size:9px;
+}
+
+.civilian-profile em{
+    margin-left:auto;
+    padding:5px 8px;
+    border-radius:15px;
+    background:#e7f0e3;
+    color:#45633f;
+    font-size:8px;
+    font-style:normal;
+    font-weight:800;
+}
+
+.civilian-vitals{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.civilian-vitals div{
+    padding:11px;
+    border:1px solid #e4e9e2;
+    background:#f7f9f6;
+    border-radius:9px;
+}
+
+.civilian-vitals small{
+    display:block;
+    color:#7b837c;
+    font-size:8px;
+    letter-spacing:.3px;
+}
+
+.civilian-vitals strong{
+    display:block;
+    margin-top:5px;
+    color:#273427;
+    font-size:17px;
+}
+
+.civilian-vitals i{
+    color:#899189;
+    font-size:8px;
+    font-style:normal;
+    font-weight:500;
+}
+
+.civilian-trend{
+    margin-top:13px;
+    padding-top:11px;
+    border-top:1px solid #e5e9e3;
+}
+
+.civilian-trend span{
+    color:#778077;
+    font-size:9px;
+}
+
+.civilian-trend svg{
+    display:block;
+    width:100%;
+    height:55px;
+    margin-top:3px;
+}
+
+.health-feature-card{
+    position:absolute;
+    z-index:7;
+    left:3%;
+    bottom:8%;
+    width:175px;
+    padding:15px;
+    background:#fff;
+    border:1px solid #e0e6dc;
+    border-radius:12px;
+    box-shadow:0 16px 35px rgba(42,62,38,.12);
+}
+
+.health-feature-card strong{
+    display:block;
+    font-size:11px;
+    color:#253525;
+}
+
+.health-feature-card span{
+    display:block;
+    margin-top:4px;
+    color:#7a827b;
+    font-size:9px;
+    line-height:1.45;
+}
+
+.health-note{
+    position:absolute;
+    top:80px;
+    right:36px;
+    z-index:4;
+    color:#1f2b1e;
+    font-weight:700;
+    font-size:14px;
+    line-height:1.35;
+}
+.health-note span{
+    display:block;
+    color:#667066;
+    font-weight:500;
+    font-size:13px;
+}
+.health-line{
+    width:80px;
+    height:1px;
+    background:#455443;
+    margin-top:7px;
+}
+.qr-card{
+    position:absolute;
+    right:40px;
+    bottom:40px;
+    width:225px;
+    min-height:245px;
+    padding:23px;
+    z-index:5;
+    color:#fff;
+    background:rgba(34,48,32,.72);
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:15px;
+    backdrop-filter:blur(7px);
+    text-align:center;
+}
+.qr-card-title{
+    font-size:13px;
+    letter-spacing:.5px;
+    line-height:1.35;
+}
+.fake-qr{
+    width:105px;
+    height:105px;
+    margin:17px auto 12px;
+    background:
+        linear-gradient(90deg,#fff 10px,transparent 10px) 0 0/22px 22px,
+        linear-gradient(#fff 10px,transparent 10px) 0 0/22px 22px,
+        linear-gradient(45deg,transparent 40%,#fff 40%,#fff 60%,transparent 60%);
+    border:6px solid rgba(255,255,255,.9);
+    opacity:.95;
+}
+.qr-caption{
+    font-size:12px;
+    color:#e8eee4;
+}
+.capability-strip{
+    min-height:175px;
+    background:#25381f;
+    color:#fff;
+    display:grid;
+    grid-template-columns:repeat(4,1fr) 1.35fr;
+    align-items:center;
+    padding:25px 5.5%;
+    position:relative;
+    overflow:hidden;
+}
+.capability-strip:after{
+    content:"";
+    position:absolute;
+    right:8%;
+    bottom:-100px;
+    width:350px;
+    height:250px;
+    background:linear-gradient(135deg,transparent 35%,rgba(255,255,255,.05) 36%,transparent 37%);
+    transform:rotate(-20deg);
+}
+.capability{
+    min-height:88px;
+    padding:10px 30px;
+    border-right:1px solid rgba(255,255,255,.24);
+    text-align:center;
+    position:relative;
+    z-index:2;
+}
+.capability-icon{
+    font-size:32px;
+    margin-bottom:7px;
+}
+.capability strong{
+    display:block;
+    font-size:15px;
+    line-height:1.25;
+}
+.quote{
+    padding-left:45px;
+    position:relative;
+    z-index:2;
+}
+.quote p{
+    font-family:Georgia,serif;
+    font-size:21px;
+    font-style:italic;
+    line-height:1.45;
+}
+.quote-line{
+    width:45px;
+    height:2px;
+    background:#d2bc77;
+    margin-top:15px;
+    margin-left:auto;
+}
+.innovation{
+    min-height:185px;
+    padding:40px 5.5%;
+    display:grid;
+    grid-template-columns:1.25fr 2fr 1fr 1fr 1fr;
+    align-items:center;
+    gap:20px;
+    background:#fff;
+}
+.emblem{
+    border-right:1px solid #e0e2dc;
+    min-height:105px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#b29a55;
+    font-size:50px;
+    font-weight:900;
+}
+.innovation-copy{
+    padding-left:8px;
+}
+.innovation-copy h2{
+    font-family:Georgia,serif;
+    font-size:23px;
+    line-height:1.18;
+    color:#182018;
+}
+.innovation-copy p{
+    margin-top:9px;
+    color:#6a706a;
+    font-size:15px;
+}
+.stat{
+    min-height:100px;
+    text-align:center;
+    border-left:1px solid #e1e4de;
+    padding:10px;
+}
+.stat-icon{
+    color:#30492b;
+    font-size:25px;
+}
+.stat strong{
+    display:block;
+    font-size:22px;
+    margin-top:6px;
+}
+.stat span{
+    color:#70766f;
+    font-size:14px;
+}
+.features{
+    padding:85px 8%;
+    background:#f7f8f4;
+}
+.section-heading{text-align:center}
+.section-heading .eyebrow{
+    justify-content:center;
+    margin-bottom:14px;
+}
+.section-heading h2{
+    font-size:39px;
+    line-height:1.1;
+    letter-spacing:-1.2px;
+}
+.feature-grid{
+    max-width:1150px;
+    margin:48px auto 0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+.feature-card{
+    background:#fff;
+    border:1px solid #e1e5dd;
+    border-radius:10px;
+    padding:28px;
+    transition:.2s;
+}
+.feature-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 30px rgba(32,48,28,.08);
+}
+.feature-icon{
+    width:52px;
+    height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:#e8eee3;
+    color:#30452a;
+    font-weight:800;
+    margin-bottom:20px;
+}
+.feature-card h3{
+    font-size:17px;
+    margin-bottom:9px;
+}
+.feature-card p{
+    color:#6a716b;
+    font-size:14px;
+    line-height:1.65;
+}
+.workflow{
+    padding:85px 8%;
+    background:#fff;
+}
+.workflow-grid{
+    max-width:1050px;
+    margin:52px auto 0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    position:relative;
+}
+.workflow-grid:before{
+    content:"";
+    position:absolute;
+    top:27px;
+    left:10%;
+    right:10%;
+    height:1px;
+    background:#ccd2c8;
+}
+.workflow-step{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:0 20px;
+}
+.step{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:#294522;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 18px;
+    border:4px solid #fff;
+    outline:1px solid #71806b;
+    font-weight:800;
+}
+.workflow-step h3{
+    font-size:16px;
+    margin-bottom:7px;
+}
+.workflow-step p{
+    color:#737a73;
+    font-size:13px;
+    line-height:1.55;
+}
+.final-cta{
+    padding:70px 8%;
+    background:#263b20;
+    color:#fff;
+    text-align:center;
+}
+.final-cta h2{
+    font-family:Georgia,serif;
+    font-size:34px;
+}
+.final-cta p{
+    margin:12px auto 25px;
+    max-width:650px;
+    color:#d6ddd2;
+}
+.final-cta .primary-btn{
+    display:inline-block;
+    background:#fff;
+    color:#294522;
+}
+footer{
+    background:#162114;
+    color:#aeb8a9;
+    padding:25px 6%;
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+}
+@media(max-width:1100px){
+    .nav-links{gap:18px;margin-right:20px}
+    .hero h1{font-size:45px}
+    .feature-grid{grid-template-columns:repeat(2,1fr)}
+    .innovation{grid-template-columns:1fr 2fr 1fr 1fr}
+    .stat:last-child{display:none}
+}
+@media(max-width:800px){
+    .navbar{height:auto;min-height:78px;padding:10px 5%;flex-wrap:wrap}
+    .nav-links{order:3;width:100%;justify-content:center;margin:5px 0 0;gap:18px;overflow:auto}
+    .nav-links a{padding:9px 0}
+    .login-btn{padding:11px 17px}
+    .hero{grid-template-columns:1fr}
+    .hero-left{padding:55px 7% 45px}
+    .hero-left:after{display:none}
+    .hero-right{min-height:500px}
+    .capability-strip{grid-template-columns:repeat(2,1fr);gap:10px}
+    .capability:nth-child(2){border-right:0}
+    .quote{grid-column:1/-1;padding:20px;text-align:center}
+    .innovation{grid-template-columns:1fr 1fr}
+    .emblem{display:none}
+    .innovation-copy{grid-column:1/-1;text-align:center}
+    .stat{border-top:1px solid #e1e4de;border-left:0}
+    .workflow-grid{grid-template-columns:repeat(2,1fr);gap:45px 15px}
+    .workflow-grid:before{display:none}
+}
+@media(max-width:800px){
+    .civilian-dashboard{
+        left:6%;
+        width:76%;
+        top:9%;
+    }
+    .health-feature-card{
+        left:5%;
+        bottom:6%;
+        width:150px;
+    }
+}
+
+@media(max-width:560px){
+    .brand-name{font-size:20px}
+    .brand-tag{font-size:8px}
+    .logo{width:50px;height:50px}
+    .nav-links a:nth-child(4),.nav-links a:nth-child(5){display:none}
+    .hero h1{font-size:37px}
+    .hero-copy{font-size:16px}
+    .hero-actions{flex-direction:column}
+    .hero-points{grid-template-columns:repeat(2,1fr);gap:18px}
+    .hero-point:nth-child(2){border-right:0}
+    .hero-point:nth-child(3),.hero-point:nth-child(4){margin-top:5px}
+    .hero-right{min-height:470px}
+    .qr-card{right:20px;bottom:20px;width:190px}
+    .health-note{right:20px;top:25px}
+    .feature-grid{grid-template-columns:1fr}
+    .workflow-grid{grid-template-columns:1fr}
+    .innovation{grid-template-columns:1fr 1fr}
+    .final-cta h2{font-size:28px}
+    footer{flex-direction:column;gap:7px;text-align:center}
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="/" class="brand">
+        <img class="logo"
+             src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+             alt="ViQtor Health">
+        <div class="brand-text">
+            <div class="brand-name">ViQtor <span>Health</span></div>
+            <div class="brand-tag">SECURE HEALTHIER TOMORROW</div>
+        </div>
+    </a>
+
+    <div class="nav-links">
+        <a href="/" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#workflow">How It Works</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <a href="/login" class="login-btn">Login&nbsp; →</a>
+</nav>
+
+<section class="hero" id="about">
+    <div class="hero-left">
+        <div class="eyebrow">SMART DIGITAL HEALTH PLATFORM</div>
+
+        <h1>
+            YOUR HEALTH.<br>
+            <span>ONE SECURE PLATFORM.</span>
+        </h1>
+
+        <p class="hero-copy">
+            ViQtor Health is a secure, connected digital health platform
+            designed to bring your medical records, health information
+            and vital insights together in one place.
+        </p>
+
+        <div class="hero-actions">
+            <a href="/register" class="primary-btn">Get Started</a>
+            <a href="#features" class="secondary-btn">Learn More</a>
+        </div>
+
+        <div class="hero-points">
+            <div class="hero-point">
+                <div class="point-icon">♢</div>
+                <strong>Secure</strong>
+            </div>
+            <div class="hero-point">
+                <div class="point-icon">♧</div>
+                <strong>Integrated</strong>
+            </div>
+            <div class="hero-point">
+                <div class="point-icon">▮▮▮</div>
+                <strong>Data Driven</strong>
+            </div>
+            <div class="hero-point">
+                <div class="point-icon">♥</div>
+                <strong>Personal</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-right">
+
+        <div class="civilian-dashboard">
+
+            <div class="civilian-dashboard-head">
+                <div>
+                    <strong>My Health Overview</strong>
+                    <span>Digital Health Profile</span>
+                </div>
+                <b>● SECURE</b>
+            </div>
+
+            <div class="civilian-profile">
+                <div class="civilian-avatar">♥</div>
+                <div>
+                    <strong>Personal Health Record</strong>
+                    <span>Medical history & vital information</span>
+                </div>
+                <em>ACTIVE</em>
+            </div>
+
+            <div class="civilian-vitals">
+                <div><small>HEART RATE</small><strong>72 <i>BPM</i></strong></div>
+                <div><small>BLOOD PRESSURE</small><strong>118/76</strong></div>
+                <div><small>SpO₂</small><strong>98 <i>%</i></strong></div>
+                <div><small>TEMPERATURE</small><strong>98.4 <i>°F</i></strong></div>
+                <div><small>BMI</small><strong>22.8</strong></div>
+                <div><small>SLEEP</small><strong>7.8 <i>HRS</i></strong></div>
+            </div>
+
+            <div class="civilian-trend">
+                <span>Health Trend</span>
+                <svg viewBox="0 0 500 70" preserveAspectRatio="none">
+                    <path d="M0 52 C30 45,48 57,76 40 S125 47,151 35 S196 43,224 28 S270 37,298 24 S346 34,374 19 S425 28,455 13 S480 18,500 8"
+                          fill="none" stroke="#56744e" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+        </div>
+
+        <div class="health-feature-card">
+            <strong>Secure Health Records</strong>
+            <span>Access your information whenever you need it.</span>
+        </div>
+
+        <div class="health-note">
+            YOUR HEALTH
+            <span>ALWAYS WITH YOU</span>
+            <div class="health-line"></div>
+        </div>
+
+        <div class="qr-card">
+            <div class="qr-card-title">
+                YOUR HEALTH RECORD<br>ALWAYS WITH YOU
+            </div>
+            <div class="fake-qr"></div>
+            <div class="qr-caption">Secure Digital Health Access</div>
+        </div>
+    </div>
+</section>
+
+<section class="capability-strip">
+    <div class="capability">
+        <div class="capability-icon">▱</div>
+        <strong>Digital<br>Medical Records</strong>
+    </div>
+    <div class="capability">
+        <div class="capability-icon">⌗</div>
+        <strong>QR Based<br>Access</strong>
+    </div>
+    <div class="capability">
+        <div class="capability-icon">♧</div>
+        <strong>Real-time<br>Health Monitoring</strong>
+    </div>
+    <div class="capability">
+        <div class="capability-icon">◇</div>
+        <strong>Connected<br>Health Insights</strong>
+    </div>
+    <div class="quote">
+        <p>“Better Information.<br>Better Healthcare.”</p>
+        <div class="quote-line"></div>
+    </div>
+</section>
+
+<section class="innovation">
+    <div class="emblem">✦</div>
+
+    <div class="innovation-copy">
+        <h2>Connected Healthcare.<br>Designed Around You.</h2>
+        <p>Bringing medical records, health monitoring and secure access together through technology.</p>
+    </div>
+
+    <div class="stat">
+        <div class="stat-icon">♧</div>
+        <strong>10,000+</strong>
+        <span>Health Profiles</span>
+    </div>
+
+    <div class="stat">
+        <div class="stat-icon">◇</div>
+        <strong>100%</strong>
+        <span>Data Security</span>
+    </div>
+
+    <div class="stat">
+        <div class="stat-icon">▮</div>
+        <strong>24/7</strong>
+        <span>Access Anywhere</span>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="section-heading">
+        <div class="eyebrow">CORE PLATFORM CAPABILITIES</div>
+        <h2>One Platform.<br>Complete Health Visibility.</h2>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">QR</div>
+            <h3>Secure QR Identity</h3>
+            <p>Every individual receives a secure digital QR identity connected to their health profile.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">☁</div>
+            <h3>Cloud Health Records</h3>
+            <p>Store and retrieve medical information through a centralized cloud-based health record system.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">▮▮</div>
+            <h3>Health Analytics</h3>
+            <p>Monitor vital parameters and visualize historical health trends for informed medical assessment.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">!</div>
+            <h3>Health Alerts</h3>
+            <p>Highlight abnormal parameters and identify records that may require medical attention.</p>
+        </div>
+    </div>
+</section>
+
+<section class="workflow" id="workflow">
+    <div class="section-heading">
+        <div class="eyebrow">SYSTEM WORKFLOW</div>
+        <h2>From Registration to Health Access</h2>
+    </div>
+
+    <div class="workflow-grid">
+        <div class="workflow-step">
+            <div class="step">01</div>
+            <h3>Register</h3>
+            <p>Create your secure digital health profile.</p>
+        </div>
+
+        <div class="workflow-step">
+            <div class="step">02</div>
+            <h3>Get Your QR</h3>
+            <p>Receive a secure QR identity connected to your health profile.</p>
+        </div>
+
+        <div class="workflow-step">
+            <div class="step">03</div>
+            <h3>Add Health Records</h3>
+            <p>Add medical examinations, vitals and relevant health information.</p>
+        </div>
+
+        <div class="workflow-step">
+            <div class="step">04</div>
+            <h3>Scan & Access</h3>
+            <p>Scan the QR to securely access your digital health profile.</p>
+        </div>
+    </div>
+</section>
+
+<section class="final-cta" id="contact">
+    <h2>Your Health. One Secure Platform.</h2>
+    <p>
+        Secure digital health records, intelligent monitoring and
+        instant QR-based access — all in one platform.
+    </p>
+    <a href="/login" class="primary-btn">Access ViQtor Health →</a>
+</section>
+
+<footer>
+    <span>© 2026 ViQtor Health</span>
+    <span>Smart Digital Health & Medical Record Platform</span>
+    <span>Secure • Smart • Connected</span>
+</footer>
+
+</body>
+</html>

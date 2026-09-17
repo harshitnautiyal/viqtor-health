@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViQtor Health | Secure Patient Access</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,Arial,sans-serif}
+        body{min-height:100vh;background:#f5f7f5;color:#17233c;display:flex;align-items:center;justify-content:center;padding:25px}
+        .card{width:100%;max-width:620px;background:#fff;border:1px solid #e1e7e0;border-radius:20px;padding:42px;box-shadow:0 18px 50px rgba(20,35,25,.08);text-align:center}
+        .logo{height:55px;width:auto;margin-bottom:28px}
+        .icon{width:72px;height:72px;border-radius:18px;background:#edf2e8;color:#506631;display:grid;place-items:center;margin:0 auto 20px;font-size:32px}
+        .eyebrow{font-size:10px;font-weight:850;letter-spacing:1.6px;color:#66755d;margin-bottom:10px}
+        h1{font-size:28px;margin-bottom:9px;color:#17233c}
+        .intro{font-size:13px;line-height:1.6;color:#69768a;margin-bottom:27px}
+        .patient{border:1px solid #e3e8e2;background:#f9fbf9;border-radius:13px;padding:20px;text-align:left;margin-bottom:20px}
+        .patient-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#849083;margin-bottom:7px}
+        .patient-name{font-size:21px;font-weight:800;color:#17233c;margin-bottom:6px}
+        .patient-id{font-size:11px;color:#69768a}
+        .access-note{display:flex;gap:11px;text-align:left;padding:14px;background:#f0f5ee;border:1px solid #dce7d8;border-radius:10px;margin-bottom:22px;color:#596a5e;font-size:11px;line-height:1.5}
+        .button{display:block;width:100%;padding:14px;border-radius:9px;background:#506631;color:white;text-decoration:none;font-size:12px;font-weight:850;letter-spacing:.3px}
+        .button:hover{background:#3f5227}
+        .back{display:inline-block;margin-top:15px;color:#69768a;text-decoration:none;font-size:11px}
+        .error{color:#a33a30;background:#fff3f1;border:1px solid #f0d0cb;border-radius:10px;padding:15px;font-size:12px;line-height:1.5;margin-bottom:20px}
+        .footer{margin-top:25px;font-size:9px;color:#9aa39d;letter-spacing:.5px}
+        @media(max-width:600px){.card{padding:28px 20px}h1{font-size:24px}}
+    </style>
+</head>
+<body>
+    <main class="card">
+        <img class="logo" src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}" alt="ViQtor Health">
+
+        {% if error %}
+            <div class="icon">!</div>
+            <div class="eyebrow">ACCESS NOT AVAILABLE</div>
+            <h1>QR Verification Failed</h1>
+            <p class="intro">{{ error }}</p>
+            <a class="button" href="/doctor/scanner">Return to QR Scanner</a>
+        {% else %}
+            <div class="icon">✓</div>
+            <div class="eyebrow">SECURE QR ACCESS</div>
+            <h1>Patient Record Identified</h1>
+            <p class="intro">
+                The ViQtor Health QR has identified the patient below.
+                Confirm access to open the unified health record.
+            </p>
+
+            <div class="patient">
+                <div class="patient-label">Patient</div>
+                <div class="patient-name">{{ personnel.full_name }}</div>
+                <div class="patient-id">Patient ID: {{ personnel.personnel_id }}</div>
+            </div>
+
+            <div class="access-note">
+                <strong>🔒</strong>
+                <span>Access is available to your authenticated {{ role|title }} account. The QR code itself does not display the patient's medical information.</span>
+            </div>
+
+            <a class="button" href="{{ url_for('continue_qr_access', qr_token=personnel.qr_token) }}">
+                OPEN HEALTH RECORD
+            </a>
+        {% endif %}
+
+        <a class="back" href="/admin">← Back to Dashboard</a>
+        <div class="footer">VIQTOR HEALTH • SMART DIGITAL HEALTH &amp; MEDICAL RECORD PLATFORM</div>
+    </main>
+</body>
+</html>

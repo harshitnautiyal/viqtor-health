@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medical Examination Record | ViQtor Health</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+:root{--g:#566b35;--gd:#46582c;--soft:#eef3e9;--line:#dfe5dc;--text:#172033;--muted:#667085;--bg:#f5f7f5}
+*{box-sizing:border-box}
+body{margin:0!important;font-family:Arial,Helvetica,sans-serif!important;background:var(--bg)!important;color:var(--text)!important}
+.topbar{height:58px;background:#fff;border-bottom:1px solid #e3e8e2;display:flex;align-items:center;padding:0 20px;gap:24px;position:sticky;top:0;z-index:30}
+.top-brand img{height:48px;width:auto;display:block}.top-search{height:38px;width:420px;margin-left:55px;border:1px solid #d7ded6;border-radius:7px;background:#fbfcfb;color:#8290a3;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:12px}.search-icon{font-size:21px;color:#65748a}.top-user{margin-left:auto;display:flex;align-items:center;gap:10px}.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px}.user-copy{display:flex;flex-direction:column;line-height:1.2}.user-copy strong{font-size:12px}.user-copy small{font-size:10px;color:#65748a;margin-top:3px}.chevron{font-size:18px;margin-left:8px}
+.app-shell{display:grid;grid-template-columns:198px minmax(0,1fr);min-height:calc(100vh - 58px)}
+.sidebar{background:#fff;border-right:1px solid #e3e8e2;display:flex;flex-direction:column;justify-content:space-between;padding:14px 0;min-height:calc(100vh - 58px)}.sidebar-nav{display:flex;flex-direction:column;gap:4px;padding:0 12px}.sidebar-nav a{height:42px;border-radius:7px;display:flex;align-items:center;gap:14px;padding:0 14px;text-decoration:none;color:#1f2937;font-size:13px}.sidebar-nav a.active,.sidebar-nav a:first-child:hover{background:#e9eee4;color:#1d2b19;font-weight:700;border-left:3px solid var(--g);padding-left:11px}.sidebar-nav a.active{border-left:3px solid var(--g);background:#e9eee4}.sidebar-nav a:hover{background:#f0f3ef}.sidebar-nav b{margin-left:auto;background:#e33b36;color:#fff;border-radius:50%;font-size:9px;width:17px;height:17px;display:flex;align-items:center;justify-content:center}.sidebar-motto{padding:0 25px 16px;color:#33402d}.mountain-mini{height:180px;margin-bottom:10px;background:linear-gradient(145deg,transparent 45%,#e8ece8 46%,#dfe5df 60%,transparent 61%),linear-gradient(35deg,transparent 43%,#eef1ee 44%,#dfe5df 62%,transparent 63%);opacity:.8}.sidebar-motto strong{font-family:Georgia,serif;font-size:16px;line-height:1.25;letter-spacing:.5px;font-weight:500}.sidebar-motto i{display:block;width:27px;height:2px;background:var(--g);margin:16px 0}.sidebar-motto small{display:block;font-size:9px;letter-spacing:2px}.sidebar-motto em{display:block;font-style:normal;font-size:9px;color:#8a9388;line-height:1.7;margin-top:14px}
+.health-record-section{padding:15px;min-width:0}.health-record-wrapper{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:15px;align-items:start}.health-record-heading{grid-column:1;background:linear-gradient(100deg,#fff 0%,#fff 55%,#edf2ee 100%);border:1px solid var(--line);border-radius:8px;padding:14px 18px;min-height:105px;overflow:hidden}.registration-badge{display:none}.back-profile{display:inline-block;text-decoration:none;color:#344054;font-size:11px;margin-bottom:7px}.heading-row{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}.health-record-heading h1{font-size:28px;line-height:1.1;margin:0 0 5px;color:#111827;font-weight:750}.health-record-heading p{font-size:12px;color:#667085;margin:0}.hero-quote{font-family:Georgia,serif;font-style:italic;font-size:17px;line-height:1.25;text-align:right;color:#34412f;white-space:nowrap}.hero-quote i{display:block;width:28px;height:2px;background:var(--g);margin:10px 0 0 auto}
+.selected-personnel{grid-column:1;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 15px;display:flex;align-items:center;gap:12px}.selected-person-icon{width:37px;height:37px;border-radius:7px;background:#edf2e9;display:flex;align-items:center;justify-content:center;color:var(--g)}.selected-personnel span{font-size:9px;color:#7b8492;letter-spacing:1px;font-weight:700}.selected-personnel h2{font-size:15px;margin:2px 0}.selected-personnel p{font-size:10px;color:#667085;margin:0}
+.health-record-card{grid-column:1;background:transparent!important;border:0!important;padding:0!important}.health-record-card form{display:flex;flex-direction:column;gap:11px}.health-form-section{background:#fff!important;border:1px solid var(--line)!important;border-radius:8px!important;padding:13px 17px 14px!important;box-shadow:0 1px 2px rgba(16,24,40,.02)!important}.health-section-title{display:flex;align-items:center;gap:10px;margin-bottom:11px}.health-section-icon{width:28px;height:28px;border-radius:6px;background:#e9efe4;display:flex;align-items:center;justify-content:center;color:var(--g);font-size:15px}.health-section-title h2{font-size:16px!important;margin:0!important;color:#172033!important}.health-section-title p{font-size:10px!important;color:#8a94a3!important;margin:2px 0 0!important}.health-form-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 20px}.health-form-group{min-width:0}.health-form-group label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:10px;font-weight:600;color:#344054;margin-bottom:5px}.health-form-group label span{font-size:8px;color:#8a94a3;font-weight:500}.health-form-group input,.health-form-group select{width:100%!important;height:34px!important;border:1px solid #d7dee7!important;border-radius:5px!important;background:#fff!important;padding:0 10px!important;color:#344054!important;font-size:11px!important;outline:none!important}.health-form-group input:focus,.health-form-group select:focus{border-color:#819267!important;box-shadow:0 0 0 3px rgba(86,107,53,.09)!important}.health-form-group input[readonly]{background:#f1f4f3!important}.health-form-actions{background:#fff!important;border:1px solid var(--line)!important;border-radius:8px!important;padding:10px 12px!important;display:flex!important;justify-content:flex-end!important;gap:10px}.cancel-btn,.register-submit{height:36px!important;border-radius:5px!important;padding:0 22px!important;font-size:11px!important;font-weight:700!important;text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}.cancel-btn{border:1px solid #aeb8b0!important;background:#fff!important;color:#344054!important}.register-submit{border:1px solid var(--g)!important;background:var(--g)!important;color:#fff!important;cursor:pointer!important}.register-submit:hover{background:var(--gd)!important}
+.right-panel{grid-column:2;grid-row:1/4;display:flex;flex-direction:column;gap:13px}.side-card,.side-brand-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px}.side-title{display:flex;align-items:center;gap:9px;margin-bottom:12px}.side-title h3{font-size:15px;margin:0}.side-icon{color:var(--g);font-size:16px}.history-title a{margin-left:auto;font-size:10px;color:var(--gd);text-decoration:none}.person-summary{display:grid;grid-template-columns:116px 1fr;gap:12px}.person-photo{height:164px;border-radius:5px;background:linear-gradient(145deg,#e9eee8,#b8c4b5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:35px}.person-details>strong{font-size:22px;display:block;white-space:nowrap}.person-details h4{font-size:15px;margin:3px 0 7px}.status{display:inline-block;background:#dcf4e0;color:#23833a;border-radius:20px;padding:4px 10px;font-size:9px;font-weight:700}.person-details p{font-size:10px;color:#667085;margin:6px 0}.side-quote{margin-top:13px;padding:17px 8px;background:#f3f5ee;border-radius:6px;text-align:center;font-family:Georgia,serif;font-size:15px;font-style:italic;line-height:1.45;color:#52613d}.history-item{display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid #edf0ec}.history-item>span{width:28px;height:28px;border-radius:50%;background:#edf3e9;display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px}.history-item>div{min-width:0;flex:1}.history-item b{display:block;font-size:10px}.history-item small{display:block;color:#7a8491;font-size:9px;margin-top:2px}.history-item em{font-style:normal;background:#dcf4e0;color:#23833a;border-radius:15px;padding:5px 8px;font-size:9px;font-weight:700}.profile-link{display:block;border-top:1px solid #edf0ec;padding-top:10px;margin-top:4px;text-decoration:none;color:#52613d;font-size:10px}.side-brand-card{text-align:center;background:#f3f5ee;min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center}.side-brand-card img{height:48px;width:auto;margin-bottom:4px}.side-brand-card strong{font-size:15px}.side-brand-card span{font-size:8px;letter-spacing:1.3px;margin-top:5px;color:#59634f}.side-brand-card i{width:25px;height:2px;background:var(--g);margin-top:12px;display:block}
+footer{margin-left:198px;background:#fff;border-top:1px solid #e3e8e2;padding:11px 28px;display:flex;justify-content:space-between;color:#7b8490;font-size:9px}footer p{margin:0}footer strong{font-size:11px;color:#172033}
+@media(max-width:1100px){.top-search{margin-left:10px;width:300px}.health-record-wrapper{grid-template-columns:1fr}.right-panel{grid-column:1;grid-row:auto;display:grid;grid-template-columns:1fr 1fr}.health-record-heading,.selected-personnel,.health-record-card{grid-column:1}}
+@media(max-width:760px){.topbar{padding:0 10px}.top-search{display:none}.sidebar{display:none}.app-shell{display:block}.health-record-section{padding:9px}.health-record-wrapper{display:block}.health-record-heading,.selected-personnel,.health-record-card,.right-panel{margin-bottom:10px}.heading-row{align-items:flex-start}.hero-quote{display:none}.health-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.right-panel{display:flex}.health-record-heading h1{font-size:23px}footer{margin-left:0;gap:10px;flex-wrap:wrap}}
+</style>
+
+</head>
+
+<body>
+
+
+    <!-- TOP NAVIGATION -->
+    <header class="topbar">
+        <a href="/" class="top-brand">
+            <img src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}" alt="ViQtor Health">
+        </a>
+        <div class="top-search">
+            <span class="search-icon">⌕</span>
+            <span>Search personnel by name, ID, rank or unit...</span>
+        </div>
+        <div class="top-user">
+            <div class="user-avatar">●</div>
+            <div class="user-copy">
+                <strong>{{ username|default('Medical Officer') }}</strong>
+                <small>{{ role|default('Doctor')|title }}</small>
+            </div>
+            <span class="chevron">⌄</span>
+        </div>
+    </header>
+
+    <!-- =========================
+         HEALTH RECORD SECTION
+    ========================== -->
+
+    <div class="app-shell">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="/admin">⌂ <span>Dashboard</span></a>
+                <a href="/doctor/scanner">⌗ <span>QR Scanner</span></a>
+                <a href="/admin">♟ <span>Personnel</span></a>
+                <a class="active" href="#">▤ <span>Medical Records</span></a>
+                <a href="#">▥ <span>Reports</span></a>
+                <a href="#">▥ <span>Analytics</span></a>
+                <a href="#">♟ <span>Notifications</span><b>3</b></a>
+                <a href="#">⚙ <span>Settings</span></a>
+            </nav>
+            <div class="sidebar-motto">
+                <div class="mountain-mini"></div>
+                <strong>FIT<br>FOR TODAY<br>STRONGER<br>FOR TOMORROW</strong>
+                <i></i>
+                <small>VIQTOR HEALTH</small>
+                <em>v1.0.0<br>Secure • Confidential • Reliable</em>
+            </div>
+        </aside>
+
+        <section class="health-record-section">
+
+        <div class="health-record-wrapper">
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="health-record-heading">
+
+                <a class="back-profile" href="/admin">← &nbsp;Back to Dashboard</a>
+                <div class="heading-row">
+                    <div>
+                        <h1>Medical Examination Record</h1>
+                        <p>Record and manage comprehensive health examination details</p>
+                    </div>
+                    <div class="hero-quote">“A Healthier Force<br>A Stronger Tomorrow”<i></i></div>
+                </div>
+
+            </div>
+
+
+
+            <!-- PERSONNEL INFORMATION -->
+
+            <div class="selected-personnel">
+
+                <div class="selected-person-icon">
+                    👤
+                </div>
+
+                <div>
+
+                    <span>
+                        PERSONNEL
+                    </span>
+
+                    <h2>
+                        {{ personnel.name }}
+                    </h2>
+
+                    <p>
+                        {{ personnel.personnel_id }}
+                        •
+                        {{ personnel.rank }}
+                        •
+                        {{ personnel.unit }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HEALTH FORM -->
+
+            <div class="health-record-card">
+
+                <form
+                    method="POST"
+                    action="/health/{{ personnel.personnel_id }}">
+
+
+                    <!-- =========================
+                         VITAL PARAMETERS
+                    ========================== -->
+
+                    <div class="health-form-section">
+
+                        <div class="health-section-title">
+
+                            <div class="health-section-icon">
+                                ❤️
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Vital Parameters
+                                </h2>
+
+                                <p>
+                                    Enter the latest measured vital signs.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="health-form-grid">
+
+
+                            <!-- HEART RATE -->
+
+                            <div class="health-form-group">
+
+                                <label for="heart_rate">
+                                    Heart Rate
+                                    <span>BPM</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="heart_rate"
+                                    name="heart_rate"
+                                    placeholder="e.g. 72"
+                                    min="20"
+                                    max="250"
+                                    required>
+
+                            </div>
+
+
+                            <!-- SYSTOLIC BP -->
+
+                            <div class="health-form-group">
+
+                                <label for="systolic_bp">
+                                    Systolic BP
+                                    <span>mmHg</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="systolic_bp"
+                                    name="systolic_bp"
+                                    placeholder="e.g. 120"
+                                    min="50"
+                                    max="250"
+                                    required>
+
+                            </div>
+
+
+                            <!-- DIASTOLIC BP -->
+
+                            <div class="health-form-group">
+
+                                <label for="diastolic_bp">
+                                    Diastolic BP
+                                    <span>mmHg</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="diastolic_bp"
+                                    name="diastolic_bp"
+                                    placeholder="e.g. 80"
+                                    min="30"
+                                    max="150"
+                                    required>
+
+                            </div>
+
+
+                            <!-- SPO2 -->
+
+                            <div class="health-form-group">
+
+                                <label for="spo2">
+                                    SpO₂
+                                    <span>%</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="spo2"
+                                    name="spo2"
+                                    placeholder="e.g. 98"
+                                    min="50"
+                                    max="100"
+                                    required>
+
+                            </div>
+
+
+                            <!-- TEMPERATURE -->
+
+                            <div class="health-form-group">
+
+                                <label for="temperature">
+                                    Temperature
+                                    <span>°C</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="temperature"
+                                    name="temperature"
+                                    placeholder="e.g. 36.7"
+                                    min="25"
+                                    max="45"
+                                    required>
+
+                            </div>
+
+
+                            <!-- RESPIRATORY RATE -->
+
+                            <div class="health-form-group">
+
+                                <label for="respiratory_rate">
+                                    Respiratory Rate
+                                    <span>breaths/min</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="respiratory_rate"
+                                    name="respiratory_rate"
+                                    placeholder="e.g. 16"
+                                    min="5"
+                                    max="60"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         BODY PARAMETERS
+                    ========================== -->
+
+                    <div class="health-form-section">
+
+                        <div class="health-section-title">
+
+                            <div class="health-section-icon">
+                                ⚖️
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Body Parameters
+                                </h2>
+
+                                <p>
+                                    Physical measurements and composition.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="health-form-grid">
+
+
+                            <!-- WEIGHT -->
+
+                            <div class="health-form-group">
+
+                                <label for="weight">
+                                    Weight
+                                    <span>kg</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="weight"
+                                    name="weight"
+                                    placeholder="e.g. 70">
+
+                            </div>
+
+
+                            <!-- HEIGHT -->
+
+                            <div class="health-form-group">
+
+                                <label for="height">
+                                    Height
+                                    <span>cm</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="height"
+                                    name="height"
+                                    placeholder="e.g. 175">
+
+                            </div>
+
+
+                            <!-- BMI -->
+
+                            <div class="health-form-group">
+
+                                <label for="bmi">
+                                    BMI
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="bmi"
+                                    name="bmi"
+                                    placeholder="Automatically calculated"
+                                    readonly>
+
+                            </div>
+
+
+                            <!-- BODY FAT -->
+
+                            <div class="health-form-group">
+
+                                <label for="body_fat">
+                                    Body Fat
+                                    <span>%</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="body_fat"
+                                    name="body_fat"
+                                    placeholder="e.g. 18.5">
+
+                            </div>
+
+
+                            <!-- MUSCLE MASS -->
+
+                            <div class="health-form-group">
+
+                                <label for="muscle_mass">
+                                    Muscle Mass
+                                    <span>kg</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="muscle_mass"
+                                    name="muscle_mass"
+                                    placeholder="e.g. 32">
+
+                            </div>
+
+
+                            <!-- HYDRATION -->
+
+                            <div class="health-form-group">
+
+                                <label for="hydration">
+                                    Hydration
+                                    <span>%</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="hydration"
+                                    name="hydration"
+                                    placeholder="e.g. 60">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         ACTIVITY & LIFESTYLE
+                    ========================== -->
+
+                    <div class="health-form-section">
+
+                        <div class="health-section-title">
+
+                            <div class="health-section-icon">
+                                🏃
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Activity & Lifestyle
+                                </h2>
+
+                                <p>
+                                    Daily activity and recovery indicators.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="health-form-grid">
+
+
+                            <!-- STEPS -->
+
+                            <div class="health-form-group">
+
+                                <label for="steps">
+                                    Steps
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="steps"
+                                    name="steps"
+                                    placeholder="e.g. 8000">
+
+                            </div>
+
+
+                            <!-- CALORIES -->
+
+                            <div class="health-form-group">
+
+                                <label for="calories_burned">
+                                    Calories Burned
+                                    <span>kcal</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="calories_burned"
+                                    name="calories_burned"
+                                    placeholder="e.g. 500">
+
+                            </div>
+
+
+                            <!-- SLEEP -->
+
+                            <div class="health-form-group">
+
+                                <label for="sleep_duration">
+                                    Sleep Duration
+                                    <span>hours</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="sleep_duration"
+                                    name="sleep_duration"
+                                    placeholder="e.g. 7.5">
+
+                            </div>
+
+
+                            <!-- SLEEP QUALITY -->
+
+                            <div class="health-form-group">
+
+                                <label for="sleep_quality">
+                                    Sleep Quality
+                                </label>
+
+                                <select
+                                    id="sleep_quality"
+                                    name="sleep_quality">
+
+                                    <option value="">
+                                        Select quality
+                                    </option>
+
+                                    <option value="Poor">
+                                        Poor
+                                    </option>
+
+                                    <option value="Fair">
+                                        Fair
+                                    </option>
+
+                                    <option value="Good">
+                                        Good
+                                    </option>
+
+                                    <option value="Excellent">
+                                        Excellent
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- ACTIVITY -->
+
+                            <div class="health-form-group">
+
+                                <label for="activity_duration">
+                                    Activity Duration
+                                    <span>minutes</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="activity_duration"
+                                    name="activity_duration"
+                                    placeholder="e.g. 60">
+
+                            </div>
+
+
+                            <!-- STRESS -->
+
+                            <div class="health-form-group">
+
+                                <label for="stress_level">
+                                    Stress Level
+                                    <span>1–10</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="stress_level"
+                                    name="stress_level"
+                                    placeholder="e.g. 3"
+                                    min="1"
+                                    max="10">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         MEDICAL PARAMETERS
+                    ========================== -->
+
+                    <div class="health-form-section">
+
+                        <div class="health-section-title">
+
+                            <div class="health-section-icon">
+                                🩺
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Medical Parameters
+                                </h2>
+
+                                <p>
+                                    Additional health assessment information.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="health-form-grid">
+
+
+                            <!-- BLOOD GLUCOSE -->
+
+                            <div class="health-form-group">
+
+                                <label for="blood_glucose">
+                                    Blood Glucose
+                                    <span>mg/dL</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="blood_glucose"
+                                    name="blood_glucose"
+                                    placeholder="e.g. 95">
+
+                            </div>
+
+
+                            <!-- RESTING HR -->
+
+                            <div class="health-form-group">
+
+                                <label for="resting_heart_rate">
+                                    Resting Heart Rate
+                                    <span>BPM</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="resting_heart_rate"
+                                    name="resting_heart_rate"
+                                    placeholder="e.g. 65">
+
+                            </div>
+
+
+                            <!-- ECG -->
+
+                            <div class="health-form-group">
+
+                                <label for="ecg_status">
+                                    ECG Status
+                                </label>
+
+                                <select
+                                    id="ecg_status"
+                                    name="ecg_status">
+
+                                    <option value="">
+                                        Select status
+                                    </option>
+
+                                    <option value="Normal">
+                                        Normal
+                                    </option>
+
+                                    <option value="Abnormal">
+                                        Abnormal
+                                    </option>
+
+                                    <option value="Not Available">
+                                        Not Available
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- FATIGUE -->
+
+                            <div class="health-form-group">
+
+                                <label for="fatigue_level">
+                                    Fatigue Level
+                                    <span>1–10</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="fatigue_level"
+                                    name="fatigue_level"
+                                    placeholder="e.g. 2"
+                                    min="1"
+                                    max="10">
+
+                            </div>
+
+
+                            <!-- PAIN -->
+
+                            <div class="health-form-group">
+
+                                <label for="pain_level">
+                                    Pain Level
+                                    <span>0–10</span>
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="pain_level"
+                                    name="pain_level"
+                                    placeholder="e.g. 0"
+                                    min="0"
+                                    max="10">
+
+                            </div>
+
+
+                            <!-- MEDICATION -->
+
+                            <div class="health-form-group">
+
+                                <label for="medication_status">
+                                    Medication Status
+                                </label>
+
+                                <select
+                                    id="medication_status"
+                                    name="medication_status">
+
+                                    <option value="">
+                                        Select status
+                                    </option>
+
+                                    <option value="None">
+                                        None
+                                    </option>
+
+                                    <option value="As Prescribed">
+                                        As Prescribed
+                                    </option>
+
+                                    <option value="Missed">
+                                        Missed
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         HEALTH STATUS
+                    ========================== -->
+
+                    <div class="health-form-section">
+
+                        <div class="health-section-title">
+
+                            <div class="health-section-icon">
+                                🚨
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Overall Health Status
+                                </h2>
+
+                                <p>
+                                    Record the overall assessment.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="health-form-grid">
+
+
+                            <div class="health-form-group">
+
+                                <label for="overall_health_status">
+                                    Health Status
+                                </label>
+
+                                <select
+                                    id="overall_health_status"
+                                    name="overall_health_status"
+                                    required>
+
+                                    <option value="">
+                                        Select health status
+                                    </option>
+
+                                    <option value="Normal">
+                                        Normal
+                                    </option>
+
+                                    <option value="Attention Required">
+                                        Attention Required
+                                    </option>
+
+                                    <option value="Critical">
+                                        Critical
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         SUBMIT
+                    ========================== -->
+
+                    <div class="health-form-actions">
+
+                        <a href="/"
+                           class="cancel-btn">
+
+                            Cancel
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="register-submit">
+
+                            ✓ Save Health Record
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+            <!-- RIGHT PERSONNEL PANEL -->
+            <aside class="right-panel">
+                <div class="side-card">
+                    <div class="side-title"><span class="side-icon">♟</span><h3>Personnel Information</h3></div>
+                    <div class="person-summary">
+                        <div class="person-photo">✦</div>
+                        <div class="person-details">
+                            <strong>{{ personnel.personnel_id }}</strong>
+                            <h4>{{ personnel.name }}</h4>
+                            <span class="status">Active</span>
+                            <p>{{ personnel.rank }}</p>
+                            <p>{{ personnel.unit }}</p>
+                            <p>Blood Group: {{ personnel.blood_group }}</p>
+                            <p>DOB: {{ personnel.dob }}</p>
+                        </div>
+                    </div>
+                    <div class="side-quote">“Healthy Soldiers Build<br>Stronger Nations”</div>
+                </div>
+
+                <div class="side-card history-card">
+                    <div class="side-title history-title"><span class="side-icon">▣</span><h3>Examination History</h3><a href="/profile/{{ personnel.qr_token if personnel.qr_token else personnel.personnel_id }}">View All</a></div>
+                    <div class="history-item"><span>▣</span><div><b>Current Examination</b><small>Health record being entered</small></div><em>Active</em></div>
+                    <div class="history-item"><span>▣</span><div><b>Medical Profile</b><small>View complete health history</small></div></div>
+                    <a class="profile-link" href="/admin">← Return to Personnel Directory</a>
+                </div>
+
+                <div class="side-brand-card">
+                    <img src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}" alt="ViQtor Health">
+                    <strong>ViQtor Health</strong>
+                    <span>SECURE HEALTHIER TOMORROW</span>
+                    <i></i>
+                </div>
+            </aside>
+
+        </div>
+
+    </section>
+
+
+
+    <footer>
+        <p><strong>ViQtor Health</strong> &nbsp; | &nbsp; Secure Healthier Tomorrow</p>
+        <p>© 2026 ViQtor Health. All rights reserved.</p>
+    </footer>
+
+
+    <!-- =========================
+         BMI CALCULATION
+    ========================== -->
+
+    <script>
+
+        const weightInput =
+            document.getElementById("weight");
+
+        const heightInput =
+            document.getElementById("height");
+
+        const bmiInput =
+            document.getElementById("bmi");
+
+
+        function calculateBMI() {
+
+            const weight =
+                parseFloat(weightInput.value);
+
+            const height =
+                parseFloat(heightInput.value);
+
+
+            if (
+                weight > 0 &&
+                height > 0
+            ) {
+
+                const heightInMeters =
+                    height / 100;
+
+                const bmi =
+                    weight /
+                    (heightInMeters * heightInMeters);
+
+
+                bmiInput.value =
+                    bmi.toFixed(1);
+
+            }
+
+        }
+
+
+        weightInput.addEventListener(
+            "input",
+            calculateBMI
+        );
+
+
+        heightInput.addEventListener(
+            "input",
+            calculateBMI
+        );
+
+    </script>
+
+
+</body>
+
+</html>

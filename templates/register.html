@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Register Patient | ViQtor Health
+    </title>
+
+
+    <style>
+
+        /* =====================================================
+           VIQTOR HEALTH — PATIENT REGISTRATION
+           ===================================================== */
+
+        :root {
+
+            --teal: #087f73;
+            --teal-dark: #05665d;
+            --teal-light: #e7f6f3;
+
+            --blue: #245b88;
+            --blue-light: #eaf3f9;
+
+            --navy: #17324d;
+
+            --gold: #c8942f;
+            --gold-light: #fbf3e3;
+
+            --text: #526563;
+            --muted: #899795;
+
+            --border: #d7e4e1;
+
+            --background: #eef6f5;
+
+            --white: #ffffff;
+
+            --shadow:
+                0 20px 50px rgba(23, 50, 77, 0.10);
+
+        }
+
+
+        /* =====================================================
+           RESET
+           ===================================================== */
+
+        * {
+
+            box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+
+        }
+
+
+        html,
+        body {
+
+            width: 100%;
+
+            min-height: 100%;
+
+        }
+
+
+        body {
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(8, 127, 115, 0.08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(36, 91, 136, 0.08),
+                    transparent 30%
+                ),
+                var(--background);
+
+            color: var(--text);
+
+        }
+
+
+        a {
+
+            text-decoration: none;
+
+            color: inherit;
+
+        }
+
+
+        /* =====================================================
+           TOP NAVIGATION
+           ===================================================== */
+
+        .topbar {
+
+            height: 74px;
+
+            background: rgba(
+                255,
+                255,
+                255,
+                0.97
+            );
+
+            border-bottom:
+                1px solid
+                var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 5%;
+
+            position: relative;
+
+            z-index: 20;
+
+        }
+
+
+        .logo {
+
+            height: 57px;
+
+            width: auto;
+
+            max-width: 220px;
+
+            object-fit: contain;
+
+            display: block;
+
+        }
+
+
+        .back-dashboard {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            color: var(--teal);
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.5px;
+
+            transition: 0.2s;
+
+        }
+
+
+        .back-dashboard:hover {
+
+            color: var(--teal-dark);
+
+            transform:
+                translateX(-2px);
+
+        }
+
+
+        /* =====================================================
+           MAIN REGISTRATION AREA
+           ===================================================== */
+
+        .page {
+
+            width: 92%;
+
+            max-width: 1440px;
+
+            min-height:
+                calc(
+                    100vh - 74px
+                );
+
+            margin: 0 auto;
+
+            padding:
+                38px 0 45px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .registration-container {
+
+            width: 100%;
+
+            max-width: 1320px;
+
+            min-height: 650px;
+
+            display: grid;
+
+            grid-template-columns:
+                42% 58%;
+
+            background: #ffffff;
+
+            border-radius: 24px;
+
+            overflow: hidden;
+
+            box-shadow:
+                var(--shadow);
+
+            border:
+                1px solid
+                rgba(
+                    215,
+                    228,
+                    225,
+                    0.9
+                );
+
+        }
+
+
+        /* =====================================================
+           LEFT VISUAL PANEL
+           ===================================================== */
+
+        .visual-panel {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height: 650px;
+
+            padding:
+                42px 45px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #edf9f7 0%,
+                    #d9f1ed 46%,
+                    #d1e9ed 100%
+                );
+
+        }
+
+
+        /* Decorative shapes */
+
+        .visual-panel::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 420px;
+
+            height: 420px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    8,
+                    127,
+                    115,
+                    0.09
+                );
+
+            right: -190px;
+
+            top: -100px;
+
+        }
+
+
+        .visual-panel::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 520px;
+
+            height: 520px;
+
+            border-radius: 50%;
+
+            border:
+                38px solid
+                rgba(
+                    8,
+                    127,
+                    115,
+                    0.09
+                );
+
+            right: -290px;
+
+            bottom: -220px;
+
+        }
+
+
+        /* Curved visual divider */
+
+        .curve-one {
+
+            position: absolute;
+
+            right: -105px;
+
+            top: -50px;
+
+            width: 220px;
+
+            height: 760px;
+
+            border-radius: 50%;
+
+            border:
+                28px solid
+                rgba(
+                    8,
+                    127,
+                    115,
+                    0.22
+                );
+
+            transform:
+                rotate(-7deg);
+
+            z-index: 1;
+
+        }
+
+
+        .curve-two {
+
+            position: absolute;
+
+            right: -135px;
+
+            top: -50px;
+
+            width: 220px;
+
+            height: 760px;
+
+            border-radius: 50%;
+
+            border:
+                10px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.75
+                );
+
+            transform:
+                rotate(-7deg);
+
+            z-index: 2;
+
+        }
+
+
+        /* =====================================================
+           LEFT CONTENT
+           ===================================================== */
+
+        .visual-content {
+
+            position: relative;
+
+            z-index: 5;
+
+            max-width: 500px;
+
+        }
+
+
+        .visual-logo {
+
+            width: 205px;
+
+            height: auto;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .tagline {
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2.5px;
+
+            color: #728280;
+
+            text-transform: uppercase;
+
+            margin-bottom: 42px;
+
+        }
+
+
+        .visual-heading {
+
+            font-size: 42px;
+
+            line-height: 1.08;
+
+            font-weight: 850;
+
+            letter-spacing: -1.4px;
+
+            color: var(--navy);
+
+            max-width: 460px;
+
+        }
+
+
+        .visual-heading span {
+
+            color: var(--teal);
+
+        }
+
+
+        .visual-description {
+
+            max-width: 430px;
+
+            margin-top: 17px;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            color: #566a68;
+
+        }
+
+
+        /* =====================================================
+           BENEFITS
+           ===================================================== */
+
+        .benefits {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 17px;
+
+            margin-top: 35px;
+
+            max-width: 400px;
+
+        }
+
+
+        .benefit {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+        }
+
+
+        .benefit-icon {
+
+            width: 43px;
+
+            height: 43px;
+
+            min-width: 43px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 18px;
+
+            font-weight: 900;
+
+        }
+
+
+        .benefit:nth-child(1)
+        .benefit-icon {
+
+            background:
+                #d8f3eb;
+
+            color:
+                var(--teal);
+
+        }
+
+
+        .benefit:nth-child(2)
+        .benefit-icon {
+
+            background:
+                #deebf7;
+
+            color:
+                var(--blue);
+
+        }
+
+
+        .benefit:nth-child(3)
+        .benefit-icon {
+
+            background:
+                #f9ecd4;
+
+            color:
+                var(--gold);
+
+        }
+
+
+        .benefit-title {
+
+            color:
+                var(--navy);
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+        }
+
+
+        .benefit-text {
+
+            color:
+                #7a8987;
+
+            font-size: 11px;
+
+            margin-top: 2px;
+
+        }
+
+
+        /* =====================================================
+           DECORATIVE MEDICAL AREA
+           ===================================================== */
+
+        .medical-visual {
+
+            position: absolute;
+
+            z-index: 3;
+
+            bottom: 0;
+
+            right: 25px;
+
+            width: 330px;
+
+            height: 260px;
+
+            pointer-events: none;
+
+        }
+
+
+        .medical-circle {
+
+            position: absolute;
+
+            width: 250px;
+
+            height: 250px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.55
+                );
+
+            right: 15px;
+
+            bottom: -60px;
+
+            box-shadow:
+                0 20px 50px
+                rgba(
+                    23,
+                    50,
+                    77,
+                    0.07
+                );
+
+        }
+
+
+        .plant {
+
+            position: absolute;
+
+            bottom: 22px;
+
+            right: 92px;
+
+            width: 115px;
+
+            height: 145px;
+
+        }
+
+
+        .plant-pot {
+
+            position: absolute;
+
+            bottom: 0;
+
+            left: 15px;
+
+            width: 86px;
+
+            height: 65px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #e8e5db,
+                    #ffffff,
+                    #d9d6cb
+                );
+
+            border-radius:
+                5px 5px 22px 22px;
+
+            box-shadow:
+                0 8px 20px
+                rgba(
+                    23,
+                    50,
+                    77,
+                    0.12
+                );
+
+        }
+
+
+        .leaf {
+
+            position: absolute;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #4c9a6e,
+                    #196e5c
+                );
+
+            border-radius:
+                100% 0 100% 0;
+
+            transform-origin:
+                bottom right;
+
+        }
+
+
+        .leaf.one {
+
+            width: 62px;
+
+            height: 30px;
+
+            bottom: 57px;
+
+            left: 5px;
+
+            transform:
+                rotate(-28deg);
+
+        }
+
+
+        .leaf.two {
+
+            width: 65px;
+
+            height: 32px;
+
+            bottom: 79px;
+
+            left: 35px;
+
+            transform:
+                rotate(20deg);
+
+        }
+
+
+        .leaf.three {
+
+            width: 57px;
+
+            height: 29px;
+
+            bottom: 101px;
+
+            left: 12px;
+
+            transform:
+                rotate(-47deg);
+
+        }
+
+
+        .leaf.four {
+
+            width: 55px;
+
+            height: 28px;
+
+            bottom: 112px;
+
+            left: 49px;
+
+            transform:
+                rotate(42deg);
+
+        }
+
+
+        /* Stethoscope */
+
+        .stethoscope {
+
+            position: absolute;
+
+            bottom: 12px;
+
+            right: -5px;
+
+            width: 170px;
+
+            height: 105px;
+
+            border:
+                6px solid
+                rgba(
+                    36,
+                    91,
+                    136,
+                    0.48
+                );
+
+            border-top: none;
+
+            border-radius:
+                0 0 90px 90px;
+
+            transform:
+                rotate(-7deg);
+
+        }
+
+
+        .stethoscope::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: -7px;
+
+            top: -16px;
+
+            width: 10px;
+
+            height: 27px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(
+                    36,
+                    91,
+                    136,
+                    0.48
+                );
+
+        }
+
+
+        .stethoscope::after {
+
+            content: "";
+
+            position: absolute;
+
+            right: -10px;
+
+            bottom: -13px;
+
+            width: 29px;
+
+            height: 29px;
+
+            border-radius: 50%;
+
+            border:
+                5px solid
+                rgba(
+                    36,
+                    91,
+                    136,
+                    0.48
+                );
+
+            background:
+                #eef6f5;
+
+        }
+
+
+        /* =====================================================
+           LEFT BOTTOM MESSAGE
+           ===================================================== */
+
+        .care-message {
+
+            position: relative;
+
+            z-index: 7;
+
+            margin-top: auto;
+
+            padding-top: 25px;
+
+            max-width: 300px;
+
+            color: rgba(
+                8,
+                127,
+                115,
+                0.7
+            );
+
+            font-size: 28px;
+
+            line-height: 1.05;
+
+            font-family:
+                "Brush Script MT",
+                "Segoe Script",
+                cursive;
+
+            transform:
+                rotate(-4deg);
+
+        }
+
+
+        /* =====================================================
+           RIGHT FORM PANEL
+           ===================================================== */
+
+        .form-panel {
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.98
+                );
+
+            padding:
+                54px 55px 45px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+        }
+
+
+        .form-kicker {
+
+            color: var(--teal);
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 2.5px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .form-title {
+
+            font-size: 39px;
+
+            line-height: 1.15;
+
+            color: var(--navy);
+
+            font-weight: 850;
+
+            letter-spacing: -1px;
+
+        }
+
+
+        .form-subtitle {
+
+            color: #71817e;
+
+            font-size: 13px;
+
+            margin-top: 9px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================================
+           FORM
+           ===================================================== */
+
+        form {
+
+            margin-top: 30px;
+
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                19px 18px;
+
+        }
+
+
+        .field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .field.full {
+
+            grid-column:
+                1 / -1;
+
+        }
+
+
+        .field-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #465956;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.7px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .field-label .required {
+
+            color:
+                #d05d5d;
+
+            font-size: 12px;
+
+        }
+
+
+        .input-wrapper {
+
+            position: relative;
+
+        }
+
+
+        .input-icon {
+
+            position: absolute;
+
+            left: 14px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            color:
+                var(--teal);
+
+            font-size: 15px;
+
+            pointer-events: none;
+
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            height: 47px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
+
+            background:
+                #fbfdfd;
+
+            color:
+                #243736;
+
+            padding:
+                0 13px;
+
+            outline: none;
+
+            font-family: inherit;
+
+            font-size: 12px;
+
+            transition:
+                border 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+
+        }
+
+
+        .has-icon input,
+        .has-icon select {
+
+            padding-left: 40px;
+
+        }
+
+
+        input::placeholder {
+
+            color:
+                #a0adaa;
+
+        }
+
+
+        select {
+
+            cursor: pointer;
+
+        }
+
+
+        input:focus,
+        select:focus {
+
+            background:
+                #ffffff;
+
+            border-color:
+                var(--teal);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(
+                    8,
+                    127,
+                    115,
+                    0.08
+                );
+
+        }
+
+
+        /* =====================================================
+           INFORMATION NOTICE
+           ===================================================== */
+
+        .security-note {
+
+            margin-top: 21px;
+
+            padding:
+                13px 15px;
+
+            border:
+                1px solid
+                #cfe7e2;
+
+            background:
+                #eef8f6;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            color:
+                #48726d;
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+        }
+
+
+        .security-icon {
+
+            width: 25px;
+
+            height: 25px;
+
+            min-width: 25px;
+
+            border-radius: 50%;
+
+            background:
+                var(--teal);
+
+            color: #ffffff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+        }
+
+
+        /* =====================================================
+           BUTTONS
+           ===================================================== */
+
+        .form-buttons {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            margin-top: 23px;
+
+        }
+
+
+        .button {
+
+            height: 44px;
+
+            padding:
+                0 20px;
+
+            border-radius: 8px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-family: inherit;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.3px;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+
+        }
+
+
+        .cancel {
+
+            background:
+                #ffffff;
+
+            color:
+                #647370;
+
+            border:
+                1px solid
+                #d4dfdc;
+
+        }
+
+
+        .cancel:hover {
+
+            background:
+                #f5f8f7;
+
+        }
+
+
+        .submit {
+
+            min-width: 190px;
+
+            border:
+                1px solid
+                var(--teal);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--teal),
+                    var(--teal-dark)
+                );
+
+            color:
+                #ffffff;
+
+            box-shadow:
+                0 7px 18px
+                rgba(
+                    8,
+                    127,
+                    115,
+                    0.18
+                );
+
+        }
+
+
+        .submit:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 10px 23px
+                rgba(
+                    8,
+                    127,
+                    115,
+                    0.24
+                );
+
+        }
+
+
+        /* =====================================================
+           ERROR
+           ===================================================== */
+
+        .error-message {
+
+            margin-bottom: 20px;
+
+            padding:
+                12px 14px;
+
+            border:
+                1px solid
+                #efcccc;
+
+            background:
+                #fff1f1;
+
+            color:
+                #a54d53;
+
+            border-radius: 8px;
+
+            font-size: 11px;
+
+        }
+
+
+        /* =====================================================
+           TABLET
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .registration-container {
+
+                grid-template-columns:
+                    38% 62%;
+
+            }
+
+
+            .visual-panel {
+
+                padding:
+                    35px 30px;
+
+            }
+
+
+            .visual-heading {
+
+                font-size: 34px;
+
+            }
+
+
+            .form-panel {
+
+                padding:
+                    42px 38px;
+
+            }
+
+
+            .form-title {
+
+                font-size: 33px;
+
+            }
+
+
+            .medical-visual {
+
+                transform:
+                    scale(0.8);
+
+                transform-origin:
+                    bottom right;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE / SMALL TABLET
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .topbar {
+
+                height: 68px;
+
+                padding:
+                    0 4%;
+
+            }
+
+
+            .logo {
+
+                height: 51px;
+
+            }
+
+
+            .page {
+
+                width: 94%;
+
+                padding:
+                    22px 0 35px;
+
+            }
+
+
+            .registration-container {
+
+                grid-template-columns:
+                    1fr;
+
+                border-radius:
+                    18px;
+
+            }
+
+
+            .visual-panel {
+
+                min-height:
+                    410px;
+
+                padding:
+                    30px 28px;
+
+            }
+
+
+            .visual-heading {
+
+                font-size: 32px;
+
+                max-width: 430px;
+
+            }
+
+
+            .tagline {
+
+                margin-bottom: 25px;
+
+            }
+
+
+            .benefits {
+
+                margin-top: 24px;
+
+            }
+
+
+            .medical-visual {
+
+                transform:
+                    scale(0.65);
+
+                right:
+                    -15px;
+
+            }
+
+
+            .care-message {
+
+                display: none;
+
+            }
+
+
+            .form-panel {
+
+                padding:
+                    35px 28px 32px;
+
+            }
+
+
+            .form-title {
+
+                font-size: 31px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           PHONE
+           ===================================================== */
+
+        @media (max-width: 560px) {
+
+            .topbar {
+
+                padding:
+                    0 18px;
+
+            }
+
+
+            .logo {
+
+                height: 47px;
+
+            }
+
+
+            .back-dashboard {
+
+                font-size: 9px;
+
+            }
+
+
+            .page {
+
+                width: 95%;
+
+                padding:
+                    15px 0 25px;
+
+            }
+
+
+            .registration-container {
+
+                border-radius:
+                    15px;
+
+            }
+
+
+            .visual-panel {
+
+                min-height:
+                    385px;
+
+                padding:
+                    25px 22px;
+
+            }
+
+
+            .visual-logo {
+
+                width:
+                    175px;
+
+            }
+
+
+            .tagline {
+
+                font-size:
+                    8px;
+
+                margin-bottom:
+                    22px;
+
+            }
+
+
+            .visual-heading {
+
+                font-size:
+                    29px;
+
+            }
+
+
+            .visual-description {
+
+                font-size:
+                    12px;
+
+            }
+
+
+            .benefits {
+
+                gap:
+                    12px;
+
+                margin-top:
+                    21px;
+
+            }
+
+
+            .benefit-icon {
+
+                width:
+                    37px;
+
+                height:
+                    37px;
+
+                min-width:
+                    37px;
+
+                font-size:
+                    15px;
+
+            }
+
+
+            .benefit-title {
+
+                font-size:
+                    11px;
+
+            }
+
+
+            .benefit-text {
+
+                font-size:
+                    9px;
+
+            }
+
+
+            .medical-visual {
+
+                opacity:
+                    0.45;
+
+                transform:
+                    scale(0.55);
+
+                right:
+                    -55px;
+
+            }
+
+
+            .form-panel {
+
+                padding:
+                    28px 20px 25px;
+
+            }
+
+
+            .form-kicker {
+
+                font-size:
+                    8px;
+
+            }
+
+
+            .form-title {
+
+                font-size:
+                    27px;
+
+            }
+
+
+            .form-subtitle {
+
+                font-size:
+                    11px;
+
+            }
+
+
+            form {
+
+                margin-top:
+                    24px;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                    15px;
+
+            }
+
+
+            .field.full {
+
+                grid-column:
+                    auto;
+
+            }
+
+
+            input,
+            select {
+
+                height:
+                    45px;
+
+            }
+
+
+            .security-note {
+
+                font-size:
+                    9px;
+
+            }
+
+
+            .form-buttons {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .button {
+
+                width:
+                    100%;
+
+            }
+
+
+            .submit {
+
+                min-width:
+                    0;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     TOP NAVIGATION
+     ========================================================= -->
+
+<header class="topbar">
+
+
+    <a
+        href="/"
+        aria-label="ViQtor Health Home"
+    >
+
+        <img
+            src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+            alt="ViQtor Health"
+            class="logo"
+        >
+
+    </a>
+
+
+    <a
+        href="/admin"
+        class="back-dashboard"
+    >
+
+        ← BACK TO DASHBOARD
+
+    </a>
+
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+     ========================================================= -->
+
+<main class="page">
+
+
+    <section class="registration-container">
+
+
+        <!-- =================================================
+             LEFT VISUAL PANEL
+             ================================================= -->
+
+        <aside class="visual-panel">
+
+
+            <div class="curve-one"></div>
+
+            <div class="curve-two"></div>
+
+
+            <div class="visual-content">
+
+
+                <!-- LOGO -->
+
+                <img
+                    src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+                    alt="ViQtor Health"
+                    class="visual-logo"
+                >
+
+
+                <div class="tagline">
+
+                    PEOPLE · HEALTH · A SAFER TOMORROW
+
+                </div>
+
+
+
+                <!-- HEADING -->
+
+                <h2 class="visual-heading">
+
+                    Better Records.
+                    <br>
+
+                    <span>
+                        Healthier Lives.
+                    </span>
+
+                </h2>
+
+
+                <p class="visual-description">
+
+                    Register a new patient and create a secure
+                    digital health profile with ViQtor Health.
+
+                </p>
+
+
+
+                <!-- BENEFITS -->
+
+                <div class="benefits">
+
+
+                    <div class="benefit">
+
+                        <div class="benefit-icon">
+
+                            ✓
+
+                        </div>
+
+                        <div>
+
+                            <div class="benefit-title">
+
+                                Secure &amp; Confidential
+
+                            </div>
+
+                            <div class="benefit-text">
+
+                                Your health data is protected
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="benefit">
+
+                        <div class="benefit-icon">
+
+                            ♧
+
+                        </div>
+
+                        <div>
+
+                            <div class="benefit-title">
+
+                                Centralized Records
+
+                            </div>
+
+                            <div class="benefit-text">
+
+                                Access records anytime, anywhere
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="benefit">
+
+                        <div class="benefit-icon">
+
+                            ♥
+
+                        </div>
+
+                        <div>
+
+                            <div class="benefit-title">
+
+                                Better Healthcare
+
+                            </div>
+
+                            <div class="benefit-text">
+
+                                Supporting better health decisions
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 DECORATIVE HEALTHCARE VISUAL
+                 ================================================= -->
+
+            <div class="medical-visual">
+
+
+                <div class="medical-circle"></div>
+
+
+                <div class="plant">
+
+
+                    <div class="leaf one"></div>
+
+                    <div class="leaf two"></div>
+
+                    <div class="leaf three"></div>
+
+                    <div class="leaf four"></div>
+
+
+                    <div class="plant-pot"></div>
+
+
+                </div>
+
+
+                <div class="stethoscope"></div>
+
+
+            </div>
+
+
+
+            <div class="care-message">
+
+                Care
+                <br>
+
+                Connects
+                <br>
+
+                Us
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- =================================================
+             RIGHT FORM PANEL
+             ================================================= -->
+
+        <section class="form-panel">
+
+
+            <div class="form-kicker">
+
+                PATIENT REGISTRATION
+
+            </div>
+
+
+            <h1 class="form-title">
+
+                Create Patient Profile
+
+            </h1>
+
+
+            <p class="form-subtitle">
+
+                Add the basic information required to create
+                a secure ViQtor Health profile.
+
+            </p>
+
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+            <div class="error-message">
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 REGISTRATION FORM
+                 ================================================= -->
+
+            <form
+                method="POST"
+                action="/register"
+            >
+
+
+                <div class="form-grid">
+
+
+                    <!-- FIRST NAME -->
+
+                    <div class="field">
+
+                        <label
+                            for="first_name"
+                            class="field-label"
+                        >
+
+                            <span>
+                                FIRST NAME
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ♙
+                            </span>
+
+                            <input
+                                type="text"
+                                id="first_name"
+                                name="first_name"
+                                placeholder="Enter first name"
+                                autocomplete="given-name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- LAST NAME -->
+
+                    <div class="field">
+
+                        <label
+                            for="last_name"
+                            class="field-label"
+                        >
+
+                            <span>
+                                LAST NAME
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ♙
+                            </span>
+
+                            <input
+                                type="text"
+                                id="last_name"
+                                name="last_name"
+                                placeholder="Enter last name"
+                                autocomplete="family-name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- DATE OF BIRTH -->
+
+                    <div class="field">
+
+                        <label
+                            for="dob"
+                            class="field-label"
+                        >
+
+                            <span>
+                                DATE OF BIRTH
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ▣
+                            </span>
+
+                            <input
+                                type="date"
+                                id="dob"
+                                name="dob"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- BLOOD GROUP -->
+
+                    <div class="field">
+
+                        <label
+                            for="blood_group"
+                            class="field-label"
+                        >
+
+                            <span>
+                                BLOOD GROUP
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ♥
+                            </span>
+
+
+                            <select
+                                id="blood_group"
+                                name="blood_group"
+                                required
+                            >
+
+                                <option
+                                    value=""
+                                    selected
+                                    disabled
+                                >
+                                    Select blood group
+                                </option>
+
+                                <option value="A+">
+                                    A+
+                                </option>
+
+                                <option value="A-">
+                                    A-
+                                </option>
+
+                                <option value="B+">
+                                    B+
+                                </option>
+
+                                <option value="B-">
+                                    B-
+                                </option>
+
+                                <option value="AB+">
+                                    AB+
+                                </option>
+
+                                <option value="AB-">
+                                    AB-
+                                </option>
+
+                                <option value="O+">
+                                    O+
+                                </option>
+
+                                <option value="O-">
+                                    O-
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MOBILE -->
+
+                    <div class="field">
+
+                        <label
+                            for="phone"
+                            class="field-label"
+                        >
+
+                            <span>
+                                MOBILE NUMBER
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ☎
+                            </span>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="Enter 10-digit mobile number"
+                                maxlength="10"
+                                inputmode="numeric"
+                                autocomplete="tel"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EMAIL -->
+
+                    <div class="field">
+
+                        <label
+                            for="email"
+                            class="field-label"
+                        >
+
+                            <span>
+                                EMAIL ADDRESS
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ✉
+                            </span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter email address (optional)"
+                                autocomplete="email"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     SECURITY NOTICE
+                     ================================================= -->
+
+                <div class="security-note">
+
+
+                    <div class="security-icon">
+
+                        i
+
+                    </div>
+
+
+                    <div>
+
+                        A secure patient profile and QR code
+                        will be created after registration.
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     BUTTONS
+                     ================================================= -->
+
+                <div class="form-buttons">
+
+
+                    <a
+                        href="/admin"
+                        class="button cancel"
+                    >
+
+                        CANCEL
+
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="button submit"
+                    >
+
+                        CREATE PATIENT PROFILE
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+/* =========================================================
+   MOBILE NUMBER — ONLY DIGITS
+   ========================================================= */
+
+const phoneInput =
+    document.getElementById("phone");
+
+
+if (phoneInput) {
+
+    phoneInput.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value
+                .replace(/\D/g, "")
+                .slice(0, 10);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PREVENT ACCIDENTAL DOUBLE SUBMISSION
+   ========================================================= */
+
+const registrationForm =
+    document.querySelector("form");
+
+
+if (registrationForm) {
+
+    registrationForm.addEventListener(
+        "submit",
+        function () {
+
+            const submitButton =
+                this.querySelector(
+                    ".submit"
+                );
+
+            if (submitButton) {
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "CREATING PROFILE...";
+
+            }
+
+        }
+    );
+
+}
+
+</script>
+
+
+</body>
+</html>

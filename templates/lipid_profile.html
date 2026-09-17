@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lipid Profile | ViQtor Health</title>
+<style>
+:root{
+    --teal:#087f73;--teal-dark:#05665d;--teal-light:#e8f6f3;
+    --navy:#17324d;--gold:#c8942f;--gold-light:#fbf3e3;
+    --text:#536461;--muted:#8a9794;--line:#dce7e4;--bg:#f3f8f7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:var(--bg);color:var(--text)
+}
+a{text-decoration:none;color:inherit}
+.navbar{
+    height:76px;background:#fff;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;padding:0 5%
+}
+.logo{height:57px;width:auto}
+.back{color:var(--teal);font-size:10px;font-weight:900;letter-spacing:.5px}
+.container{width:92%;max-width:1120px;margin:32px auto 50px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px}
+.kicker{font-size:9px;color:var(--teal);font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+h1{font-size:30px;color:var(--navy);font-weight:850}
+.sub{font-size:12px;color:var(--muted);margin-top:6px}
+.patient{background:var(--navy);color:#fff;border-radius:10px;padding:11px 15px;font-size:10px;font-weight:800}
+.patient span{opacity:.7}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 10px 30px rgba(23,50,77,.07);overflow:hidden}
+.card-head{padding:20px 23px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px}
+.mark{width:5px;height:34px;border-radius:5px;background:var(--gold)}
+h2{font-size:18px;color:var(--navy);font-weight:850}
+.card-head p{font-size:10px;color:var(--muted);margin-top:3px}
+.form{padding:24px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.field{display:flex;flex-direction:column;gap:7px}
+.label{font-size:9px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;color:#526360}
+.input{width:100%;height:44px;border:1px solid #d5e1de;border-radius:8px;background:#fbfdfd;padding:0 12px;outline:none;font:inherit;font-size:12px;color:#243736}
+.input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(200,148,47,.09);background:#fff}
+.note{margin-top:22px;padding:12px 14px;border-radius:8px;background:var(--gold-light);border:1px solid #eadcbd;color:#80651f;font-size:10px}
+.buttons{margin-top:22px;display:flex;justify-content:flex-end;gap:9px}
+.button{height:42px;padding:0 18px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;cursor:pointer}
+.cancel{background:#fff;border:1px solid #d3dfdc;color:#667572}
+.save{border:1px solid var(--teal);background:var(--teal);color:#fff;min-width:165px}
+.save:hover{background:var(--teal-dark)}
+.error{margin-bottom:18px;padding:12px 14px;border-radius:8px;background:#fff0f1;border:1px solid #efced1;color:#a54d53;font-size:11px}
+.history{margin-top:20px}
+.history-title{padding:17px 21px;border-bottom:1px solid var(--line);font-size:15px;font-weight:850;color:var(--navy)}
+.history-empty{padding:28px 21px;color:var(--muted);font-size:11px}
+@media(max-width:800px){.head{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.navbar{height:68px;padding:0 4%}.logo{height:50px}.container{width:94%;margin-top:22px}h1{font-size:26px}.grid{grid-template-columns:1fr}.form{padding:18px}.buttons{display:grid;grid-template-columns:1fr}.button{width:100%}}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="/admin">
+        <img src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}" alt="ViQtor Health" class="logo">
+    </a>
+    <a href="/admin" class="back">← BACK TO DASHBOARD</a>
+</nav>
+
+<main class="container">
+
+    <section class="head">
+        <div>
+            <div class="kicker">Laboratory Record</div>
+            <h1>Lipid Profile</h1>
+            <p class="sub">Record and maintain the lipid laboratory profile for this patient.</p>
+        </div>
+
+        <div class="patient">
+            {{ personnel.full_name }}
+            <span> · {{ personnel.personnel_id }}</span>
+        </div>
+    </section>
+
+    <section class="card">
+
+        <div class="card-head">
+            <div class="mark"></div>
+            <div>
+                <h2>Lipid Profile</h2>
+                <p>Enter the patient's latest lipid results.</p>
+            </div>
+        </div>
+
+        <div class="form">
+
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST">
+
+                <div class="grid">
+
+                    <div class="field">
+                        <label class="label" for="total_cholesterol">Total Cholesterol (mg/dL)</label>
+                        <input class="input" type="number" step="0.1" id="total_cholesterol" name="total_cholesterol" placeholder="e.g. 180">
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="ldl">LDL Cholesterol (mg/dL)</label>
+                        <input class="input" type="number" step="0.1" id="ldl" name="ldl" placeholder="e.g. 100">
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="hdl">HDL Cholesterol (mg/dL)</label>
+                        <input class="input" type="number" step="0.1" id="hdl" name="hdl" placeholder="e.g. 55">
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="triglycerides">Triglycerides (mg/dL)</label>
+                        <input class="input" type="number" step="0.1" id="triglycerides" name="triglycerides" placeholder="e.g. 130">
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="vldl">VLDL (mg/dL)</label>
+                        <input class="input" type="number" step="0.1" id="vldl" name="vldl" placeholder="e.g. 26">
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="cholesterol_hdl_ratio">Cholesterol / HDL Ratio</label>
+                        <input class="input" type="number" step="0.01" id="cholesterol_hdl_ratio" name="cholesterol_hdl_ratio" placeholder="e.g. 3.3">
+                    </div>
+
+                </div>
+
+                <div class="note">
+                    Lipid results are stored with this patient's profile and can be reviewed again from the patient record.
+                </div>
+
+                <div class="buttons">
+                    <a href="/profile/{{ personnel.qr_token }}" class="button cancel">CANCEL</a>
+                    <button type="submit" class="button save">SAVE LIPID PROFILE</button>
+                </div>
+
+            </form>
+
+        </div>
+    </section>
+
+    <section class="card history">
+        <div class="history-title">Previous Lipid Records</div>
+
+        {% if lipid_records %}
+            {% for record in lipid_records %}
+            <div class="history-empty">
+                Lipid record {{ loop.index }} · {{ record.recorded_at }}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="history-empty">
+                No previous lipid records have been saved for this patient.
+            </div>
+        {% endif %}
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,2843 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ViQtor Health | Medical Profile</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+
+        /* ==========================================
+           PROFILE PAGE
+        ========================================== */
+
+        .profile-section {
+
+            min-height: calc(100vh - 75px);
+
+            padding: 50px 5% 80px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f3f7fc,
+                    #ffffff,
+                    #eef5ff
+                );
+
+        }
+
+
+        .profile-wrapper {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+        }
+
+
+        /* ==========================================
+           PAGE HEADER
+        ========================================== */
+
+        .profile-heading {
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .profile-heading .badge {
+
+            display: inline-block;
+
+            padding: 7px 13px;
+
+            border-radius: 20px;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.4px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .profile-heading h1 {
+
+            font-size: 36px;
+
+            color: #111827;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .profile-heading p {
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==========================================
+           PERSONNEL CARD
+        ========================================== */
+
+        .person-profile-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6ee;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(15,23,42,0.06);
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .person-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+        }
+
+
+        .person-avatar {
+
+            width: 65px;
+
+            height: 65px;
+
+            border-radius: 50%;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+        }
+
+
+        .person-header-info {
+
+            flex: 1;
+
+        }
+
+
+        .person-header-info h2 {
+
+            font-size: 25px;
+
+            color: #111827;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .person-header-info p {
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+        }
+
+
+        .profile-id-box {
+
+            text-align: right;
+
+        }
+
+
+        .profile-id-box span {
+
+            display: block;
+
+            font-size: 9px;
+
+            color: #2563eb;
+
+            font-weight: 800;
+
+            letter-spacing: 1.3px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .profile-id-box strong {
+
+            font-size: 18px;
+
+            letter-spacing: 1px;
+
+            color: #111827;
+
+        }
+
+
+        /* ==========================================
+           PERSONNEL DETAILS
+        ========================================== */
+
+        .details-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-top: 25px;
+
+            padding-top: 25px;
+
+            border-top:
+                1px solid #edf0f4;
+
+        }
+
+
+        .detail-box {
+
+            background: #f8fafc;
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+        }
+
+
+        .detail-box span {
+
+            display: block;
+
+            font-size: 10px;
+
+            color: #8a94a6;
+
+            margin-bottom: 6px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+
+        }
+
+
+        .detail-box strong {
+
+            font-size: 13px;
+
+            color: #1f2937;
+
+        }
+
+
+        /* ==========================================
+           SECTION HEADER
+        ========================================== */
+
+        .medical-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .medical-header h2 {
+
+            font-size: 21px;
+
+            color: #111827;
+
+        }
+
+
+        .medical-header p {
+
+            color: #8a94a6;
+
+            font-size: 12px;
+
+            margin-top: 4px;
+
+        }
+
+
+        .record-date {
+
+            padding: 8px 13px;
+
+            background: #f1f5f9;
+
+            border-radius: 8px;
+
+            color: #475569;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* ==========================================
+           LATEST VITALS
+        ========================================== */
+
+        .vitals-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 16px;
+
+        }
+
+
+        .vital-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6ee;
+
+            border-radius: 14px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,0.04);
+
+        }
+
+
+        .vital-card-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .vital-name {
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
+
+        }
+
+
+        .vital-icon {
+
+            width: 35px;
+
+            height: 35px;
+
+            border-radius: 8px;
+
+            background: #eff6ff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .vital-value {
+
+            font-size: 27px;
+
+            font-weight: 800;
+
+            color: #111827;
+
+        }
+
+
+        .vital-unit {
+
+            font-size: 11px;
+
+            color: #94a3b8;
+
+            margin-left: 4px;
+
+        }
+
+
+        /* ==========================================
+           HEALTH STATUS
+        ========================================== */
+
+        .health-status {
+
+            margin-top: 25px;
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+            background: #f0fdf4;
+
+            border: 1px solid #bbf7d0;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .status-icon {
+
+            width: 43px;
+
+            height: 43px;
+
+            border-radius: 50%;
+
+            background: #dcfce7;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #16a34a;
+
+            font-size: 20px;
+
+        }
+
+
+        .health-status span {
+
+            display: block;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            color: #16a34a;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .health-status strong {
+
+            display: block;
+
+            color: #166534;
+
+            font-size: 16px;
+
+            margin-top: 3px;
+
+        }
+
+
+        /* ==========================================
+           NO RECORD
+        ========================================== */
+
+        .no-record {
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6ee;
+
+            border-radius: 16px;
+
+            padding: 55px 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 30px
+                rgba(15,23,42,0.04);
+
+        }
+
+
+        .no-record-icon {
+
+            font-size: 40px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .no-record h3 {
+
+            color: #1f2937;
+
+            font-size: 19px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .no-record p {
+
+            color: #8a94a6;
+
+            font-size: 13px;
+
+        }
+
+
+        /* ==========================================
+           CHART SECTION
+        ========================================== */
+
+        .charts-section {
+
+            margin-top: 35px;
+
+        }
+
+
+        .charts-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+
+        }
+
+
+        .chart-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6ee;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(15,23,42,0.04);
+
+        }
+
+
+        .chart-card h3 {
+
+            font-size: 16px;
+
+            color: #1f2937;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .chart-card p {
+
+            font-size: 11px;
+
+            color: #8a94a6;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .chart-container {
+
+            position: relative;
+
+            height: 280px;
+
+        }
+
+
+        /* ==========================================
+           MEDICAL HISTORY
+        ========================================== */
+
+        .history-section {
+
+            margin-top: 35px;
+
+        }
+
+
+        .history-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6ee;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 10px 30px
+                rgba(15,23,42,0.04);
+
+        }
+
+
+        .history-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+
+        .history-table th {
+
+            text-align: left;
+
+            padding: 15px 20px;
+
+            background: #f8fafc;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
+
+        }
+
+
+        .history-table td {
+
+            padding: 16px 20px;
+
+            border-top:
+                1px solid #edf0f4;
+
+            color: #374151;
+
+            font-size: 13px;
+
+        }
+
+
+        .status-pill {
+
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #ecfdf5;
+
+            color: #15803d;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+        }
+
+
+        /* ==========================================
+           ADDITIONAL MEDICAL DETAILS
+        ========================================== */
+
+        .additional-section {
+
+            margin-top: 35px;
+
+        }
+
+
+        .additional-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+        }
+
+
+        .additional-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6ee;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+        }
+
+
+        .additional-card span {
+
+            display: block;
+
+            font-size: 10px;
+
+            color: #8a94a6;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .additional-card strong {
+
+            color: #1f2937;
+
+            font-size: 17px;
+
+        }
+
+
+        /* ==========================================
+           ACTIONS
+        ========================================== */
+
+        .profile-actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 35px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .profile-action {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            height: 46px;
+
+            padding: 0 22px;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .primary-action {
+
+            background: #2563eb;
+
+            color: white;
+
+        }
+
+
+        .secondary-action {
+
+            background: white;
+
+            color: #374151;
+
+            border: 1px solid #d8dee8;
+
+        }
+
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 900px) {
+
+            .details-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .vitals-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .additional-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .charts-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .profile-section {
+
+                padding:
+                    35px 5% 60px;
+
+            }
+
+
+            .profile-heading h1 {
+
+                font-size: 29px;
+
+            }
+
+
+            .person-profile-card {
+
+                padding: 22px;
+
+            }
+
+
+            .person-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+            }
+
+
+            .profile-id-box {
+
+                text-align: left;
+
+            }
+
+
+            .details-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .vitals-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .additional-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .medical-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 12px;
+
+            }
+
+
+            .history-card {
+
+                overflow-x: auto;
+
+            }
+
+
+            .history-table {
+
+                min-width: 700px;
+
+            }
+
+        }
+
+    </style>
+
+
+<style>
+/* ==========================================================
+   VIQTOR HEALTH — PROFILE PAGE VISUAL SYSTEM
+   Keeps the original Flask/Jinja content and chart logic.
+========================================================== */
+:root{
+  --vq-olive:#506631;
+  --vq-olive-dark:#3f5227;
+  --vq-olive-soft:#edf2e8;
+  --vq-bg:#f5f7f5;
+  --vq-border:#e1e7e0;
+  --vq-text:#17233c;
+  --vq-muted:#69768a;
+}
+html,body{background:var(--vq-bg)!important;color:var(--vq-text)!important}
+body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
+
+/* top */
+.navbar{
+ position:fixed!important;top:0!important;left:0!important;right:0!important;
+ height:72px!important;padding:0 25px!important;
+ display:flex!important;align-items:center!important;gap:25px!important;
+ z-index:1000!important;background:#fff!important;
+ border-bottom:1px solid #e3e8e2!important;
+ box-shadow:0 2px 12px rgba(30,45,25,.05)!important;
+}
+.nav-logo{width:285px!important;display:flex!important;align-items:center!important}
+.nav-logo img{height:50px!important;width:auto!important}
+.vq-top-search{
+ width:420px;height:38px;border:1px solid #dce3dc;border-radius:7px;
+ background:#f9fbf9;display:flex;align-items:center;gap:10px;
+ padding:0 13px;color:#758197;font-size:11px;
+}
+.vq-top-search span:first-child{font-size:19px;color:var(--vq-olive)}
+.vq-top-user{margin-left:auto;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.vq-top-user strong{display:block;font-size:11px;color:#18233b}
+.vq-top-user small{display:block;font-size:9px;color:#728096}
+.vq-bell{position:relative;font-size:19px;color:var(--vq-olive-dark);margin-right:12px}
+.vq-bell b{position:absolute;right:-7px;top:-6px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;background:#e33434;color:#fff;font:700 8px Arial}
+.vq-user-avatar{width:38px;height:38px;border-radius:50%;background:#52663a;color:#fff;display:grid;place-items:center;font-size:17px}
+.vq-chevron{font-size:17px;margin-left:5px}
+.nav-links{display:flex!important;gap:6px!important;margin-left:10px!important}
+.nav-links a{font-size:10px!important;padding:6px 8px!important;text-decoration:none!important;color:#536071!important}
+.nav-links a:hover{color:var(--vq-olive-dark)!important;background:var(--vq-olive-soft)!important}
+
+/* sidebar */
+.vq-sidebar{
+ position:fixed;left:0;top:72px;bottom:0;width:200px;background:#fff;
+ border-right:1px solid #e3e8e2;padding:18px 10px;z-index:900;
+ display:flex;flex-direction:column;
+}
+.vq-side-link{
+ display:flex;align-items:center;gap:13px;height:43px;margin:2px 0;
+ padding:0 13px;border-radius:8px;text-decoration:none;
+ color:#16223a;font-size:12px;font-weight:550;
+}
+.vq-side-link span{width:18px;text-align:center;color:var(--vq-olive-dark);font-size:15px}
+.vq-side-link:hover,.vq-side-link.active{background:#edf2e8;color:#15210f}
+.vq-side-link.active{border-left:3px solid var(--vq-olive);padding-left:10px;font-weight:700}
+.vq-side-link em{margin-left:auto;width:17px;height:17px;border-radius:50%;background:#e33434;color:#fff;font-style:normal;font-size:8px;display:grid;place-items:center}
+.vq-sidebar-spacer{flex:1}
+.vq-motto{margin:18px 13px 10px;padding-top:17px;border-top:1px solid #edf0eb;font:15px/1.45 Georgia,serif;color:#293522}
+.vq-brand-small{margin:0 13px;font-size:9px;letter-spacing:1.4px;color:#68755e;font-weight:700}
+.vq-version{margin:12px 13px;font-size:9px;color:#8a9289;line-height:1.6}
+
+/* main grid */
+.profile-section{
+ margin-top:72px!important;min-height:calc(100vh - 72px)!important;
+ padding:24px 24px 65px 224px!important;background:transparent!important;
+}
+.profile-wrapper{
+ max-width:none!important;margin:0!important;width:100%!important;
+ display:grid!important;grid-template-columns:minmax(0,1fr) 315px!important;
+ gap:18px!important;align-items:start!important;
+}
+.profile-wrapper > *{grid-column:1}
+.profile-heading{
+ margin:0!important;min-height:95px;padding:20px 24px!important;
+ border:1px solid var(--vq-border)!important;border-radius:9px!important;
+ background:linear-gradient(110deg,#fff 0%,#fff 70%,#f1f4ed 100%)!important;
+ box-shadow:0 5px 18px rgba(22,35,22,.035)!important;position:relative;
+}
+.profile-heading .badge{display:none!important}
+.profile-heading h1{font-size:29px!important;line-height:1.15;color:#0d1730!important;margin:0 0 5px!important}
+.profile-heading p{font-size:13px!important;color:#647187!important;margin:0!important}
+.profile-heading:after{
+ content:"“A Healthier Force\A A Stronger Tomorrow”";white-space:pre;
+ position:absolute;right:28px;top:20px;text-align:right;
+ font:italic 18px/1.35 Georgia,serif;color:#4a593d;
+}
+
+/* original cards */
+.person-profile-card,.vital-card,.chart-card,.history-card,.additional-card{
+ background:#fff!important;border:1px solid var(--vq-border)!important;
+ box-shadow:0 5px 18px rgba(22,35,22,.035)!important;border-radius:9px!important;
+}
+.person-profile-card{padding:18px!important;margin-bottom:0!important}
+.person-header{gap:14px!important}
+.person-avatar{width:62px!important;height:62px!important;border-radius:8px!important;background:#edf2e8!important;color:var(--vq-olive-dark)!important}
+.person-header-info h2{font-size:18px!important;color:#111b32!important}
+.profile-id-box span{color:#70805c!important}
+.profile-id-box strong{color:#172039!important}
+.details-grid{gap:9px!important;margin-top:15px!important;padding-top:15px!important}
+.detail-box{background:#f8faf8!important;border:1px solid #edf0eb!important;border-radius:7px!important;padding:11px!important}
+.medical-header h2{font-size:17px!important;color:#111b32!important}
+.medical-header p{font-size:10px!important}
+.vitals-grid{grid-template-columns:repeat(6,1fr)!important;gap:9px!important}
+.vital-card{padding:13px!important;box-shadow:none!important}
+.vital-icon{background:#eff3ea!important}
+.vital-value{font-size:21px!important;color:#14203a!important}
+.health-status{margin-top:12px!important;padding:12px 14px!important;border-radius:8px!important}
+.additional-grid{grid-template-columns:repeat(4,1fr)!important;gap:9px!important}
+.additional-card{padding:13px!important;box-shadow:none!important}
+.charts-grid{grid-template-columns:1.35fr 1fr!important;gap:14px!important}
+.chart-card{padding:16px!important;box-shadow:none!important}
+.chart-container{height:230px!important}
+.history-table th{background:#f5f7f3!important;padding:11px 13px!important}
+.history-table td{padding:11px 13px!important}
+.profile-actions{justify-content:flex-start!important;margin-top:0!important}
+.primary-action{background:var(--vq-olive)!important}
+.primary-action:hover{background:var(--vq-olive-dark)!important}
+
+/* right column */
+.vq-right-column{
+ grid-column:2!important;grid-row:1 / span 30!important;
+ display:flex;flex-direction:column;gap:12px;
+}
+.vq-right-card{
+ background:#fff;border:1px solid var(--vq-border);border-radius:9px;
+ padding:15px;box-shadow:0 5px 18px rgba(22,35,22,.035);
+}
+.vq-right-title{
+ display:flex;align-items:center;gap:8px;margin-bottom:12px;
+ color:#111b32;font-size:14px;font-weight:750;
+}
+.vq-icon{width:27px;height:27px;border-radius:7px;background:#edf2e8;color:var(--vq-olive-dark);display:grid;place-items:center;font-size:12px}
+.vq-mini-person{display:grid;grid-template-columns:92px 1fr;gap:12px}
+.vq-mini-photo{height:116px;border-radius:6px;background:linear-gradient(145deg,#dfe7da,#f2f5ef);border:1px solid #d8e0d2;display:grid;place-items:center;font-size:34px;font-weight:800;color:#51643a}
+.vq-mini-id{font-size:18px;font-weight:800;color:#111b34;line-height:1.1;word-break:break-all}
+.vq-mini-name{font-size:14px;font-weight:700;color:#18233b;margin-top:5px}
+.vq-active-pill{display:inline-block;margin:7px 0 7px;padding:4px 9px;border-radius:20px;background:#def3e2;color:#147236;font-size:9px;font-weight:800}
+.vq-mini-meta{font-size:10px;line-height:1.7;color:#68758a}
+.vq-quote{margin-top:12px;padding:13px 8px;text-align:center;border-radius:7px;background:#f5f6f0;color:#486039;font:italic 14px/1.35 Georgia,serif}
+.vq-fit{margin-left:auto;background:#def3e2;color:#147236;padding:4px 9px;border-radius:20px;font-size:9px;font-weight:800}
+.vq-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #edf0eb;font-size:10px;color:#68758a}
+.vq-row:last-child{border-bottom:0}
+.vq-row b{color:#1d2a43;text-align:right}
+.vq-view{margin-left:auto;font-size:9px;color:var(--vq-olive)}
+.vq-timeline{position:relative;margin-left:6px;padding-left:17px}
+.vq-timeline:before{content:"";position:absolute;left:3px;top:7px;bottom:8px;width:1px;background:#ccd6c6}
+.vq-event{position:relative;padding:0 0 12px;font-size:10px}
+.vq-event:before{content:"";position:absolute;left:-18px;top:3px;width:7px;height:7px;border-radius:50%;background:var(--vq-olive);border:2px solid #edf3e8}
+.vq-event strong{display:block;color:#1b2740}
+.vq-event span{display:block;color:#718096;margin-top:2px}
+.vq-note{font-size:10px;line-height:1.6;color:#66738a;background:#f7f9f6;border:1px solid #edf0eb;border-radius:7px;padding:11px}
+.vq-logo-card{text-align:center;padding:20px 10px}
+.vq-med-symbol{font-size:38px;color:var(--vq-olive);margin-bottom:3px}
+.vq-logo-card strong{display:block;font-size:15px;color:#111b32}
+.vq-logo-card small{font-size:8px;letter-spacing:.8px;color:#68755e}
+
+/* footer */
+.footer{margin-left:200px!important;padding:12px 24px!important;background:#fff!important;border-top:1px solid #e3e8e2!important;color:#718096!important;font-size:10px!important}
+
+@media(max-width:1100px){
+ .profile-section{padding-left:214px!important}
+ .profile-wrapper{grid-template-columns:minmax(0,1fr) 280px!important}
+ .vitals-grid{grid-template-columns:repeat(3,1fr)!important}
+ .details-grid{grid-template-columns:repeat(2,1fr)!important}
+ .additional-grid{grid-template-columns:repeat(2,1fr)!important}
+ .vq-top-search{width:300px}
+}
+@media(max-width:850px){
+ .vq-sidebar{display:none}
+ .profile-section{padding:18px!important}
+ .profile-wrapper{display:block!important}
+ .vq-right-column{margin-top:14px}
+ .profile-heading:after{display:none}
+ .footer{margin-left:0!important}
+ .nav-logo{width:auto!important}
+ .nav-links a:nth-child(1),.nav-links a:nth-child(2){display:none!important}
+ .vitals-grid{grid-template-columns:repeat(2,1fr)!important}
+ .charts-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:560px){
+ .navbar{padding:0 12px!important;gap:10px!important}
+ .vq-top-search{display:none}
+ .vq-top-user{margin-left:auto}
+ .profile-heading h1{font-size:23px!important}
+ .person-header{grid-template-columns:52px 1fr!important}
+ .profile-id-box{grid-column:1/-1;text-align:left!important}
+ .details-grid,.additional-grid,.vitals-grid{grid-template-columns:1fr!important}
+ .vq-mini-person{grid-template-columns:78px 1fr}
+ .vq-mini-photo{height:100px}
+}
+
+/* ==========================================================
+   LABORATORY PROFILE CARDS
+========================================================== */
+.vq-lab-section{
+    margin-top:22px;
+}
+.vq-lab-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+.vq-lab-card{
+    background:#fff;
+    border:1px solid var(--vq-border);
+    border-radius:9px;
+    padding:16px;
+    box-shadow:0 5px 18px rgba(22,35,22,.035);
+}
+.vq-lab-card.cbc{border-top:3px solid #315c78}
+.vq-lab-card.lipid{border-top:3px solid #c8942f}
+.vq-lab-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:13px;
+}
+.vq-lab-title{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+.vq-lab-title h3{
+    font-size:15px;
+    color:#111b32;
+}
+.vq-lab-title p{
+    font-size:9px;
+    color:#84908d;
+    margin-top:2px;
+}
+.vq-lab-icon{
+    width:30px;height:30px;border-radius:7px;
+    display:grid;place-items:center;font-size:13px;font-weight:800;
+}
+.cbc .vq-lab-icon{background:#edf4fa;color:#315c78}
+.lipid .vq-lab-icon{background:#fbf3e3;color:#89651d}
+.vq-lab-date{
+    font-size:8px;
+    color:#8a9694;
+    text-align:right;
+}
+.vq-lab-values{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+}
+.vq-lab-value{
+    background:#f8faf9;
+    border:1px solid #edf1ef;
+    border-radius:6px;
+    padding:9px;
+}
+.vq-lab-value span{
+    display:block;
+    font-size:8px;
+    color:#7b8784;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:4px;
+}
+.vq-lab-value strong{
+    font-size:13px;
+    color:#17233c;
+}
+.vq-lab-empty{
+    padding:15px;
+    background:#f8faf9;
+    border:1px dashed #dce5e1;
+    border-radius:7px;
+    color:#8a9694;
+    font-size:10px;
+}
+.vq-lab-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    height:32px;
+    padding:0 11px;
+    margin-top:11px;
+    border-radius:6px;
+    font-size:9px;
+    font-weight:850;
+    text-decoration:none;
+}
+.cbc .vq-lab-button{background:#edf4fa;color:#315c78;border:1px solid #d5e2eb}
+.lipid .vq-lab-button{background:#fbf3e3;color:#89651d;border:1px solid #eadcbd}
+.vq-lab-button:hover{filter:brightness(.97);transform:translateY(-1px)}
+@media(max-width:850px){.vq-lab-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.vq-lab-values{grid-template-columns:1fr 1fr}}
+
+
+/* ==========================================================
+   VIQTOR HEALTH — UNIFIED HEALTH SNAPSHOT
+========================================================== */
+.vq-snapshot-section{
+    margin:0 0 30px;
+}
+.vq-snapshot-card{
+    background:#fff;
+    border:1px solid #e1e7e0;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 10px 30px rgba(15,23,42,.045);
+}
+.vq-snapshot-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+}
+.vq-snapshot-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.vq-snapshot-icon{
+    width:42px;height:42px;border-radius:10px;
+    display:grid;place-items:center;
+    background:#edf2e8;color:#506631;
+    font-weight:850;font-size:18px;
+}
+.vq-snapshot-title h2{font-size:20px;color:#17233c;margin:0 0 3px}
+.vq-snapshot-title p{font-size:11px;color:#7a8797;margin:0}
+.vq-snapshot-date{
+    padding:8px 11px;border-radius:8px;
+    background:#f5f7f5;border:1px solid #e3e8e2;
+    color:#69768a;font-size:10px;font-weight:750;
+}
+.vq-snapshot-grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+}
+.vq-snapshot-item{
+    padding:14px 12px;
+    border:1px solid #edf0f2;
+    border-radius:10px;
+    background:#fafbfc;
+}
+.vq-snapshot-item span{
+    display:block;font-size:9px;color:#8490a0;
+    text-transform:uppercase;letter-spacing:.55px;margin-bottom:7px;
+}
+.vq-snapshot-item strong{font-size:18px;color:#17233c}
+.vq-snapshot-item em{font-size:9px;color:#8995a4;font-style:normal;margin-left:3px}
+.vq-snapshot-empty{
+    padding:17px;border-radius:10px;
+    background:#f8faf9;border:1px dashed #dce5e1;
+    color:#7d8986;font-size:11px;
+}
+@media(max-width:1000px){.vq-snapshot-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){
+    .vq-snapshot-card{padding:18px}
+    .vq-snapshot-top{align-items:flex-start;flex-direction:column}
+    .vq-snapshot-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+</style>
+
+</head>
+
+
+<body>
+<!-- VIQTOR SIDEBAR -->
+<aside class="vq-sidebar">
+    <a class="vq-side-link" href="/admin"><span>⌂</span>Dashboard</a>
+    <a class="vq-side-link" href="/doctor/scanner"><span>⌗</span>QR Scanner</a>
+    <a class="vq-side-link" href="/admin"><span>♟</span>Patients</a>
+    <a class="vq-side-link active" href="/admin"><span>▣</span>Medical Records</a>
+    <a class="vq-side-link" href="/cbc/{{ personnel.personnel_id }}"><span>▣</span>CBC Profile</a>
+    <a class="vq-side-link" href="/lipid/{{ personnel.personnel_id }}"><span>◈</span>Lipid Profile</a>
+    <div class="vq-sidebar-spacer"></div>
+    <div class="vq-motto">YOUR HEALTH<br>ONE SECURE<br>PLATFORM</div>
+    <div class="vq-brand-small">VIQTOR HEALTH</div>
+    <div class="vq-version">v1.0.0<br>Secure • Confidential • Reliable</div>
+</aside>
+
+
+
+<!-- ==========================================
+     VIQTOR TOP BAR
+========================================== -->
+<nav class="navbar">
+    <a href="/" class="nav-logo">
+        <img src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+             alt="ViQtor Health">
+    </a>
+
+    <div class="vq-top-search">
+        <span>⌕</span>
+        <span>Search patients by name or ID...</span>
+    </div>
+
+    <div class="vq-top-user">
+        <div class="vq-bell">♧<b>3</b></div>
+        <div class="vq-user-avatar">●</div>
+        <div>
+            <strong>{{ username or "Medical Officer" }}</strong>
+            <small>{{ role|title }} Portal</small>
+        </div>
+        <span class="vq-chevron">⌄</span>
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/register">Register Patient</a>
+        <a href="/admin">Dashboard</a>
+    </div>
+</nav>
+
+
+<!-- ==========================================
+     PROFILE
+========================================== -->
+
+<section class="profile-section">
+
+    <div class="profile-wrapper">
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="profile-heading">
+
+            <div class="badge">
+                SECURE MEDICAL PROFILE
+            </div>
+
+            <h1>
+                Patient Health Profile
+            </h1>
+
+            <p>
+                Medical information associated with this
+                ViQtor Health profile.
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             PATIENT INFORMATION
+        ======================================= -->
+
+        <div class="person-profile-card">
+
+            <div class="person-header">
+
+
+                <div class="person-avatar">
+
+                    {{ personnel.first_name[0]|upper }}
+
+                </div>
+
+
+                <div class="person-header-info">
+
+                    <h2>
+                        {{ personnel.full_name }}
+                    </h2>
+
+                    <p>
+                        Digital Health Profile
+                    </p>
+
+                </div>
+
+
+                <div class="profile-id-box">
+
+                    <span>
+                        UNIQUE PATIENT ID
+                    </span>
+
+                    <strong>
+                        {{ personnel.personnel_id }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- PERSONNEL DETAILS -->
+
+            <div class="details-grid">
+
+
+                <div class="detail-box">
+
+                    <span>
+                        Date of Birth
+                    </span>
+
+                    <strong>
+                        {{ personnel.dob }}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <span>
+                        Blood Group
+                    </span>
+
+                    <strong>
+                        {{ personnel.blood_group }}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <span>
+                        Contact
+                    </span>
+
+                    <strong>
+                        {{ personnel.phone }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- ======================================
+             UNIFIED HEALTH SNAPSHOT
+        ======================================= -->
+
+        <div class="vq-snapshot-section">
+
+            <div class="vq-snapshot-card">
+
+                <div class="vq-snapshot-top">
+
+                    <div class="vq-snapshot-title">
+                        <div class="vq-snapshot-icon">♥</div>
+                        <div>
+                            <h2>Health Snapshot</h2>
+                            <p>Quick view of the patient's latest recorded health information</p>
+                        </div>
+                    </div>
+
+                    {% if latest_health %}
+                    <div class="vq-snapshot-date">
+                        Last updated: {{ latest_health.recorded_at }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                {% if latest_health %}
+
+                <div class="vq-snapshot-grid">
+
+                    <div class="vq-snapshot-item">
+                        <span>Heart Rate</span>
+                        <strong>{{ latest_health.heart_rate or "—" }}</strong>
+                        <em>bpm</em>
+                    </div>
+
+                    <div class="vq-snapshot-item">
+                        <span>Blood Pressure</span>
+                        <strong>{{ latest_health.systolic_bp or "—" }}/{{ latest_health.diastolic_bp or "—" }}</strong>
+                        <em>mmHg</em>
+                    </div>
+
+                    <div class="vq-snapshot-item">
+                        <span>SpO₂</span>
+                        <strong>{{ latest_health.spo2 or "—" }}</strong>
+                        <em>%</em>
+                    </div>
+
+                    <div class="vq-snapshot-item">
+                        <span>Temperature</span>
+                        <strong>{{ latest_health.temperature or "—" }}</strong>
+                        <em>°C</em>
+                    </div>
+
+                    <div class="vq-snapshot-item">
+                        <span>Respiratory Rate</span>
+                        <strong>{{ latest_health.respiratory_rate or "—" }}</strong>
+                        <em>/min</em>
+                    </div>
+
+                    <div class="vq-snapshot-item">
+                        <span>BMI</span>
+                        <strong>{{ latest_health.bmi or "—" }}</strong>
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="vq-snapshot-empty">
+                    No medical examination has been recorded for this patient yet.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- ======================================
+             LABORATORY PROFILES
+        ======================================= -->
+
+        <div class="vq-lab-section">
+
+            <div class="medical-header">
+
+                <div>
+                    <h2>Laboratory Profiles</h2>
+                    <p>Latest CBC and lipid results recorded for this patient</p>
+                </div>
+
+            </div>
+
+            <div class="vq-lab-grid">
+
+                <!-- CBC -->
+
+                <div class="vq-lab-card cbc">
+
+                    <div class="vq-lab-head">
+
+                        <div class="vq-lab-title">
+                            <div class="vq-lab-icon">CBC</div>
+                            <div>
+                                <h3>Complete Blood Count</h3>
+                                <p>Latest CBC laboratory results</p>
+                            </div>
+                        </div>
+
+                        {% if latest_cbc %}
+                        <div class="vq-lab-date">
+                            {{ latest_cbc.recorded_at }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% if latest_cbc %}
+
+                    <div class="vq-lab-values">
+
+                        <div class="vq-lab-value">
+                            <span>Hemoglobin</span>
+                            <strong>{{ latest_cbc.hemoglobin or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>RBC</span>
+                            <strong>{{ latest_cbc.rbc or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>WBC</span>
+                            <strong>{{ latest_cbc.wbc or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>Platelets</span>
+                            <strong>{{ latest_cbc.platelets or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>Hematocrit</span>
+                            <strong>{{ latest_cbc.hematocrit or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>MCV</span>
+                            <strong>{{ latest_cbc.mcv or "—" }}</strong>
+                        </div>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="vq-lab-empty">
+                        No CBC profile has been recorded for this patient.
+                    </div>
+
+                    {% endif %}
+
+                    <a href="/cbc/{{ personnel.personnel_id }}" class="vq-lab-button">
+                        {{ "VIEW / UPDATE CBC" if latest_cbc else "+ ADD CBC PROFILE" }}
+                    </a>
+
+                </div>
+
+
+                <!-- LIPID -->
+
+                <div class="vq-lab-card lipid">
+
+                    <div class="vq-lab-head">
+
+                        <div class="vq-lab-title">
+                            <div class="vq-lab-icon">LIP</div>
+                            <div>
+                                <h3>Lipid Profile</h3>
+                                <p>Latest lipid laboratory results</p>
+                            </div>
+                        </div>
+
+                        {% if latest_lipid %}
+                        <div class="vq-lab-date">
+                            {{ latest_lipid.recorded_at }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% if latest_lipid %}
+
+                    <div class="vq-lab-values">
+
+                        <div class="vq-lab-value">
+                            <span>Total Cholesterol</span>
+                            <strong>{{ latest_lipid.total_cholesterol or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>LDL</span>
+                            <strong>{{ latest_lipid.ldl or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>HDL</span>
+                            <strong>{{ latest_lipid.hdl or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>Triglycerides</span>
+                            <strong>{{ latest_lipid.triglycerides or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>VLDL</span>
+                            <strong>{{ latest_lipid.vldl or "—" }}</strong>
+                        </div>
+
+                        <div class="vq-lab-value">
+                            <span>Chol / HDL</span>
+                            <strong>{{ latest_lipid.cholesterol_hdl_ratio or "—" }}</strong>
+                        </div>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="vq-lab-empty">
+                        No lipid profile has been recorded for this patient.
+                    </div>
+
+                    {% endif %}
+
+                    <a href="/lipid/{{ personnel.personnel_id }}" class="vq-lab-button">
+                        {{ "VIEW / UPDATE LIPID" if latest_lipid else "+ ADD LIPID PROFILE" }}
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             LATEST MEDICAL RECORD
+        ======================================= -->
+
+        {% if latest_health %}
+
+
+        <div class="medical-header">
+
+            <div>
+
+                <h2>
+                    Last Medical Examination
+                </h2>
+
+                <p>
+                    Most recent recorded medical assessment
+                </p>
+
+            </div>
+
+
+            <div class="record-date">
+
+                {{ latest_health.recorded_at }}
+
+            </div>
+
+        </div>
+
+
+        <!-- VITAL CARDS -->
+
+        <div class="vitals-grid">
+
+
+            <!-- HEART RATE -->
+
+            <div class="vital-card">
+
+                <div class="vital-card-top">
+
+                    <span class="vital-name">
+                        Heart Rate
+                    </span>
+
+                    <div class="vital-icon">
+                        ❤️
+                    </div>
+
+                </div>
+
+                <span class="vital-value">
+                    {{ latest_health.heart_rate }}
+                </span>
+
+                <span class="vital-unit">
+                    BPM
+                </span>
+
+            </div>
+
+
+            <!-- BLOOD PRESSURE -->
+
+            <div class="vital-card">
+
+                <div class="vital-card-top">
+
+                    <span class="vital-name">
+                        Blood Pressure
+                    </span>
+
+                    <div class="vital-icon">
+                        🩺
+                    </div>
+
+                </div>
+
+                <span class="vital-value">
+
+                    {{ latest_health.systolic_bp }}
+                    /
+                    {{ latest_health.diastolic_bp }}
+
+                </span>
+
+                <span class="vital-unit">
+                    mmHg
+                </span>
+
+            </div>
+
+
+            <!-- SPO2 -->
+
+            <div class="vital-card">
+
+                <div class="vital-card-top">
+
+                    <span class="vital-name">
+                        SpO₂
+                    </span>
+
+                    <div class="vital-icon">
+                        O₂
+                    </div>
+
+                </div>
+
+                <span class="vital-value">
+                    {{ latest_health.spo2 }}
+                </span>
+
+                <span class="vital-unit">
+                    %
+                </span>
+
+            </div>
+
+
+            <!-- TEMPERATURE -->
+
+            <div class="vital-card">
+
+                <div class="vital-card-top">
+
+                    <span class="vital-name">
+                        Temperature
+                    </span>
+
+                    <div class="vital-icon">
+                        🌡️
+                    </div>
+
+                </div>
+
+                <span class="vital-value">
+                    {{ latest_health.temperature }}
+                </span>
+
+                <span class="vital-unit">
+                    °C
+                </span>
+
+            </div>
+
+
+            <!-- RESPIRATORY RATE -->
+
+            <div class="vital-card">
+
+                <div class="vital-card-top">
+
+                    <span class="vital-name">
+                        Respiratory Rate
+                    </span>
+
+                    <div class="vital-icon">
+                        🫁
+                    </div>
+
+                </div>
+
+                <span class="vital-value">
+                    {{ latest_health.respiratory_rate }}
+                </span>
+
+                <span class="vital-unit">
+                    /min
+                </span>
+
+            </div>
+
+
+            <!-- BMI -->
+
+            <div class="vital-card">
+
+                <div class="vital-card-top">
+
+                    <span class="vital-name">
+                        BMI
+                    </span>
+
+                    <div class="vital-icon">
+                        ⚖️
+                    </div>
+
+                </div>
+
+                <span class="vital-value">
+                    {{ latest_health.bmi or "—" }}
+                </span>
+
+                <span class="vital-unit">
+                    kg/m²
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- HEALTH STATUS -->
+
+        <div class="health-status">
+
+            <div class="status-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <span>
+                    OVERALL HEALTH STATUS
+                </span>
+
+                <strong>
+                    {{ latest_health.overall_health_status }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             ADDITIONAL MEDICAL INFORMATION
+        ======================================= -->
+
+        <div class="additional-section">
+
+            <div class="medical-header">
+
+                <div>
+
+                    <h2>
+                        Additional Health Parameters
+                    </h2>
+
+                    <p>
+                        Information recorded during the latest examination
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="additional-grid">
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Weight
+                    </span>
+
+                    <strong>
+                        {{ latest_health.weight or "—" }}
+                        {% if latest_health.weight %}kg{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Height
+                    </span>
+
+                    <strong>
+                        {{ latest_health.height or "—" }}
+                        {% if latest_health.height %}cm{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Blood Glucose
+                    </span>
+
+                    <strong>
+                        {{ latest_health.blood_glucose or "—" }}
+                        {% if latest_health.blood_glucose %}mg/dL{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Resting Heart Rate
+                    </span>
+
+                    <strong>
+                        {{ latest_health.resting_heart_rate or "—" }}
+                        {% if latest_health.resting_heart_rate %}BPM{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Body Fat
+                    </span>
+
+                    <strong>
+                        {{ latest_health.body_fat or "—" }}
+                        {% if latest_health.body_fat %}%{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Muscle Mass
+                    </span>
+
+                    <strong>
+                        {{ latest_health.muscle_mass or "—" }}
+                        {% if latest_health.muscle_mass %}kg{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Hydration
+                    </span>
+
+                    <strong>
+                        {{ latest_health.hydration or "—" }}
+                        {% if latest_health.hydration %}%{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        ECG Status
+                    </span>
+
+                    <strong>
+                        {{ latest_health.ecg_status or "—" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Sleep Duration
+                    </span>
+
+                    <strong>
+                        {{ latest_health.sleep_duration or "—" }}
+                        {% if latest_health.sleep_duration %}hrs{% endif %}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Sleep Quality
+                    </span>
+
+                    <strong>
+                        {{ latest_health.sleep_quality or "—" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Stress Level
+                    </span>
+
+                    <strong>
+                        {{ latest_health.stress_level or "—" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="additional-card">
+
+                    <span>
+                        Fatigue Level
+                    </span>
+
+                    <strong>
+                        {{ latest_health.fatigue_level or "—" }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        {% endif %}
+
+
+        <!-- ======================================
+             VITAL TRENDS
+        ======================================= -->
+
+        {% if health_records|length > 1 %}
+
+        <div class="charts-section">
+
+            <div class="medical-header">
+
+                <div>
+
+                    <h2>
+                        Vital Trends
+                    </h2>
+
+                    <p>
+                        Changes in recorded health parameters over time
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="charts-grid">
+
+
+                <!-- HEART RATE CHART -->
+
+                <div class="chart-card">
+
+                    <h3>
+                        Heart Rate Trend
+                    </h3>
+
+                    <p>
+                        Beats per minute
+                    </p>
+
+                    <div class="chart-container">
+
+                        <canvas id="heartRateChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SPO2 CHART -->
+
+                <div class="chart-card">
+
+                    <h3>
+                        SpO₂ Trend
+                    </h3>
+
+                    <p>
+                        Oxygen saturation percentage
+                    </p>
+
+                    <div class="chart-container">
+
+                        <canvas id="spo2Chart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TEMPERATURE CHART -->
+
+                <div class="chart-card">
+
+                    <h3>
+                        Temperature Trend
+                    </h3>
+
+                    <p>
+                        Body temperature in °C
+                    </p>
+
+                    <div class="chart-container">
+
+                        <canvas id="temperatureChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BLOOD PRESSURE CHART -->
+
+                <div class="chart-card">
+
+                    <h3>
+                        Blood Pressure Trend
+                    </h3>
+
+                    <p>
+                        Systolic and diastolic pressure
+                    </p>
+
+                    <div class="chart-container">
+
+                        <canvas id="bloodPressureChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ======================================
+             COMPLETE MEDICAL HISTORY
+        ======================================= -->
+
+        {% if health_records %}
+
+        <div class="history-section">
+
+            <div class="medical-header">
+
+                <div>
+
+                    <h2>
+                        Medical History
+                    </h2>
+
+                    <p>
+                        Complete record of previous medical examinations
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="history-card">
+
+                <table class="history-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Examination
+                            </th>
+
+                            <th>
+                                Heart Rate
+                            </th>
+
+                            <th>
+                                Blood Pressure
+                            </th>
+
+                            <th>
+                                SpO₂
+                            </th>
+
+                            <th>
+                                Temperature
+                            </th>
+
+                            <th>
+                                BMI
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in health_records %}
+
+                        <tr>
+
+                            <td>
+                                {{ record.recorded_at }}
+                            </td>
+
+                            <td>
+                                {{ record.heart_rate }} BPM
+                            </td>
+
+                            <td>
+                                {{ record.systolic_bp }}
+                                /
+                                {{ record.diastolic_bp }}
+                            </td>
+
+                            <td>
+                                {{ record.spo2 }}%
+                            </td>
+
+                            <td>
+                                {{ record.temperature }} °C
+                            </td>
+
+                            <td>
+                                {{ record.bmi or "—" }}
+                            </td>
+
+                            <td>
+
+                                <span class="status-pill">
+
+                                    {{ record.overall_health_status }}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ======================================
+             ACTIONS
+        ======================================= -->
+
+        <div class="profile-actions">
+
+            <a
+                href="/health/{{ personnel.personnel_id }}"
+                class="profile-action primary-action"
+            >
+                + Add Medical Record
+            </a>
+
+
+            <a
+                href="/"
+                class="profile-action secondary-action"
+            >
+                Return Home
+            </a>
+
+        </div>
+
+
+
+        <!-- RIGHT PROFILE SUMMARY -->
+        <aside class="vq-right-column">
+            <div class="vq-right-card">
+                <div class="vq-right-title"><span class="vq-icon">●</span> Patient Information</div>
+                <div class="vq-mini-person">
+                    <div class="vq-mini-photo">{{ personnel.first_name[0]|upper }}</div>
+                    <div>
+                        <div class="vq-mini-id">{{ personnel.personnel_id }}</div>
+                        <div class="vq-mini-name">{{ personnel.full_name }}</div>
+                        <span class="vq-active-pill">Active</span>
+                        <div class="vq-mini-meta">Blood Group: {{ personnel.blood_group }}<br>DOB: {{ personnel.dob }}<br>Contact: {{ personnel.phone }}</div>
+                    </div>
+                </div>
+                <div class="vq-quote">“Your Health. One Secure Platform.”</div>
+            </div>
+
+            <div class="vq-right-card">
+                <div class="vq-right-title"><span class="vq-icon">♥</span> Medical Status {% if latest_health %}<span class="vq-fit">{{ latest_health.overall_health_status }}</span>{% endif %}</div>
+                {% if latest_health %}
+                <div class="vq-row"><span>Last Examination</span><b>{{ latest_health.recorded_at }}</b></div>
+                <div class="vq-row"><span>Heart Rate</span><b>{{ latest_health.heart_rate }} BPM</b></div>
+                <div class="vq-row"><span>SpO₂</span><b>{{ latest_health.spo2 }}%</b></div>
+                <div class="vq-row"><span>BMI</span><b>{{ latest_health.bmi or "—" }}</b></div>
+                {% else %}<div class="vq-note">No medical examination has been recorded yet.</div>{% endif %}
+            </div>
+
+            {% if health_records %}
+            <div class="vq-right-card">
+                <div class="vq-right-title"><span class="vq-icon">◷</span> Recent Activity <span class="vq-view">View All</span></div>
+                <div class="vq-timeline">
+                    {% for record in health_records[:5] %}
+                    <div class="vq-event"><strong>{{ record.recorded_at }}</strong><span>Medical Examination</span></div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="vq-right-card">
+                <div class="vq-right-title"><span class="vq-icon">✓</span> Notes & Observations</div>
+                <div class="vq-note">{% if latest_health %}Patient is currently recorded as <b>{{ latest_health.overall_health_status }}</b>.{% if latest_health.medication_status %}<br>Medication: {{ latest_health.medication_status }}.{% endif %}{% else %}Medical notes and observations will appear after an examination is recorded.{% endif %}</div>
+            </div>
+
+            <div class="vq-right-card vq-logo-card"><div class="vq-med-symbol">⚕</div><strong>ViQtor Health</strong><small>SMART DIGITAL HEALTH</small></div>
+        </aside>
+    </div>
+
+</section>
+
+
+<!-- ==========================================
+     FOOTER
+========================================== -->
+
+<footer class="footer">
+
+    <p>
+        © 2026 ViQtor Health |
+        Smart Digital Health & Medical Record Platform
+    </p>
+
+</footer>
+
+
+<!-- ==========================================
+     CHART JAVASCRIPT
+========================================== -->
+
+{% if health_records|length > 1 %}
+
+<script>
+
+    /*
+     * Health records are received from Flask.
+     *
+     * We reverse them so the graphs show
+     * oldest → newest.
+     */
+
+    const records =
+        {{ health_records | reverse | list | tojson }};
+
+
+    /*
+     * DATE LABELS
+     */
+
+    const labels = records.map(
+        record => {
+
+            const date =
+                new Date(record.recorded_at);
+
+            return date.toLocaleDateString(
+                'en-IN',
+                {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                }
+            );
+
+        }
+    );
+
+
+    /*
+     * HEART RATE
+     */
+
+    new Chart(
+        document.getElementById(
+            'heartRateChart'
+        ),
+        {
+
+            type: 'line',
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+
+                        label: 'Heart Rate',
+
+                        data: records.map(
+                            record =>
+                                record.heart_rate
+                        ),
+
+                        tension: 0.3,
+
+                        borderWidth: 2,
+
+                        pointRadius: 4
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: false
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * SPO2
+     */
+
+    new Chart(
+        document.getElementById(
+            'spo2Chart'
+        ),
+        {
+
+            type: 'line',
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+
+                        label: 'SpO₂',
+
+                        data: records.map(
+                            record =>
+                                record.spo2
+                        ),
+
+                        tension: 0.3,
+
+                        borderWidth: 2,
+
+                        pointRadius: 4
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * TEMPERATURE
+     */
+
+    new Chart(
+        document.getElementById(
+            'temperatureChart'
+        ),
+        {
+
+            type: 'line',
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+
+                        label: 'Temperature',
+
+                        data: records.map(
+                            record =>
+                                record.temperature
+                        ),
+
+                        tension: 0.3,
+
+                        borderWidth: 2,
+
+                        pointRadius: 4
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * BLOOD PRESSURE
+     */
+
+    new Chart(
+        document.getElementById(
+            'bloodPressureChart'
+        ),
+        {
+
+            type: 'line',
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+
+                        label: 'Systolic',
+
+                        data: records.map(
+                            record =>
+                                record.systolic_bp
+                        ),
+
+                        tension: 0.3,
+
+                        borderWidth: 2,
+
+                        pointRadius: 4
+
+                    },
+
+                    {
+
+                        label: 'Diastolic',
+
+                        data: records.map(
+                            record =>
+                                record.diastolic_bp
+                        ),
+
+                        tension: 0.3,
+
+                        borderWidth: 2,
+
+                        pointRadius: 4
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: false
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+</script>
+
+{% endif %}
+
+
+</body>
+
+</html>

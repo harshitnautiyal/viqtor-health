@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.git/
+.env
+.env.*
+
+firebase_config.json
+
+qr_codes/*
+
+hs_err_pid*.log
+replay_pid*.log

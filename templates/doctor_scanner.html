@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ViQtor Health | Patient QR Scanner</title>
+
+    <!-- QR SCANNER LIBRARY -->
+    <script
+        src="https://unpkg.com/html5-qrcode"
+        type="text/javascript">
+    </script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --green: #596b35;
+            --green-dark: #435129;
+            --green-soft: #edf2e8;
+            --olive-light: #e8ecdf;
+            --gold: #9a8750;
+            --text: #1d2923;
+            --muted: #6b766f;
+            --border: #dce3de;
+            --background: #f5f7f6;
+            --white: #ffffff;
+            --slate: #52616b;
+            --success: #47714d;
+            --danger: #a33a30;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* ==================================================
+           NAVBAR
+        ================================================== */
+
+        .navbar {
+            min-height: 82px;
+            padding: 0 4.5%;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(29,41,35,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            height: 58px;
+            width: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .doctor-info {
+            text-align: right;
+        }
+
+        .doctor-name {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .doctor-role {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .logout {
+            text-decoration: none;
+            color: var(--text);
+            background: var(--white);
+            border: 1px solid #cbd5ce;
+            border-radius: 7px;
+            padding: 10px 17px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+        }
+
+        .logout:hover {
+            background: var(--green-soft);
+            border-color: var(--green);
+            color: var(--green-dark);
+        }
+
+        /* ==================================================
+           PAGE
+        ================================================== */
+
+        .container {
+            width: 92%;
+            max-width: 1180px;
+            margin: 34px auto 55px;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            margin-bottom: 22px;
+        }
+
+        .heading-left {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+        }
+
+        .heading-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 15px;
+            background: var(--olive-light);
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 1px solid #dce4d4;
+        }
+
+        .page-heading h1 {
+            color: var(--text);
+            font-size: 30px;
+            line-height: 1.15;
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .heading-badge {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 22px;
+            text-align: center;
+            color: #a0aaa4;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+        }
+
+        .heading-badge span {
+            display: block;
+            margin-top: 7px;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* ==================================================
+           MAIN GRID
+        ================================================== */
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.95fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            box-shadow: 0 4px 16px rgba(29,41,35,0.045);
+        }
+
+        /* ==================================================
+           SCANNER CARD
+        ================================================== */
+
+        .scanner-card {
+            padding: 27px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 18px;
+        }
+
+        .card-title-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-title h2 {
+            color: var(--text);
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .card-title p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        #reader {
+            width: 100%;
+            min-height: 300px;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 10px;
+            background: #101211;
+            border: 1px solid #d5ddd8;
+            border-radius: 9px;
+            overflow: hidden;
+        }
+
+        #reader video {
+            width: 100% !important;
+            max-height: 430px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        #reader img {
+            max-width: 100%;
+        }
+
+        #reader__scan_region {
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        #reader__dashboard {
+            padding: 10px 4px 3px !important;
+            background: #101211;
+        }
+
+        #reader button {
+            margin: 5px 4px 0;
+            padding: 9px 15px;
+            border: 1px solid #9aa68f;
+            border-radius: 6px;
+            background: var(--green);
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        #reader button:hover {
+            background: var(--green-dark);
+        }
+
+        .scanner-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 13px;
+        }
+
+        .control-button {
+            min-height: 48px;
+            border-radius: 7px;
+            border: 1px solid var(--green);
+            background: var(--green);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .control-button.secondary {
+            background: var(--white);
+            color: var(--text);
+            border-color: #bcc8c0;
+        }
+
+        .control-button:hover {
+            background: var(--green-dark);
+            color: white;
+        }
+
+        .control-button.secondary:hover {
+            background: var(--green-soft);
+            color: var(--green-dark);
+            border-color: var(--green);
+        }
+
+        .status {
+            margin-top: 13px;
+            padding: 13px 15px;
+            border: 1px solid #dce5dc;
+            border-radius: 7px;
+            background: #f0f5ee;
+            color: #596a5e;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        /* ==================================================
+           INSTRUCTIONS
+        ================================================== */
+
+        .instructions-card {
+            padding: 27px;
+        }
+
+        .instruction-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 20px;
+        }
+
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--slate);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .instruction-header h2 {
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .instruction-header p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 38px 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .step-number {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .step-text {
+            padding-top: 3px;
+            color: #526058;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .tips {
+            border-top: 1px solid #e1e6e2;
+            margin-top: 20px;
+            padding-top: 19px;
+        }
+
+        .tips h3 {
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .tips ul {
+            padding-left: 18px;
+            color: #5c6861;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+
+        .secure-box {
+            margin-top: 19px;
+            padding: 15px;
+            background: #f0f3eb;
+            border: 1px solid #e0e7d9;
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .secure-icon {
+            color: var(--green);
+            font-size: 21px;
+        }
+
+        .secure-box strong {
+            display: block;
+            color: var(--text);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .secure-box p {
+            color: #68736c;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        /* ==================================================
+           MANUAL ENTRY
+        ================================================== */
+
+        .manual-card {
+            margin-top: 20px;
+            padding: 20px 25px;
+        }
+
+        .manual-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 12px;
+        }
+
+        .manual-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 50%;
+            background: var(--slate);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .manual-header h2 {
+            font-size: 17px;
+            color: var(--text);
+        }
+
+        .manual-header p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .manual-form {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 10px;
+        }
+
+        .manual-form input {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 15px;
+            border: 1px solid #ccd6d0;
+            border-radius: 7px;
+            background: white;
+            color: var(--text);
+            outline: none;
+            font-size: 13px;
+        }
+
+        .manual-form input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(89,107,53,0.10);
+        }
+
+        .manual-form button {
+            min-height: 48px;
+            border: 1px solid var(--green);
+            border-radius: 7px;
+            background: var(--green);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+        }
+
+        .manual-form button:hover {
+            background: var(--green-dark);
+        }
+
+        .back-row {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--green-dark);
+            background: white;
+            border: 1px solid #ccd6d0;
+            border-radius: 6px;
+            padding: 9px 15px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .back-button:hover {
+            background: var(--green-soft);
+            border-color: var(--green);
+        }
+
+        .confidential {
+            color: #89938d;
+            font-size: 10px;
+            letter-spacing: 0.6px;
+        }
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+            margin-top: 28px;
+            padding: 23px 4.5%;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand img {
+            height: 43px;
+            width: auto;
+        }
+
+        .footer-brand strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .footer-brand span {
+            display: block;
+            color: #89938d;
+            font-size: 9px;
+            margin-top: 3px;
+        }
+
+        .footer-center {
+            text-align: center;
+            color: #68736c;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .footer-right {
+            text-align: right;
+            color: #89938d;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 900px) {
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .manual-form {
+                grid-template-columns: 1fr;
+            }
+
+            .heading-badge {
+                display: none;
+            }
+
+            .footer {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-brand {
+                justify-content: center;
+            }
+
+            .footer-right {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                min-height: 72px;
+                padding: 10px 4%;
+            }
+
+            .brand-logo {
+                height: 48px;
+            }
+
+            .doctor-info {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 22px;
+            }
+
+            .page-heading {
+                margin-bottom: 17px;
+            }
+
+            .heading-left {
+                gap: 12px;
+            }
+
+            .heading-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 23px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .page-heading p {
+                font-size: 12px;
+            }
+
+            .scanner-card,
+            .instructions-card {
+                padding: 20px;
+            }
+
+            .scanner-controls {
+                grid-template-columns: 1fr;
+            }
+
+            #reader {
+                min-height: 250px;
+                padding: 7px;
+            }
+
+            .manual-card {
+                padding: 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- ======================================================
+     NAVBAR
+======================================================= -->
+
+<nav class="navbar">
+
+    <a
+        href="/admin"
+        class="brand"
+    >
+
+        <img
+            src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+            alt="ViQtor Health"
+            class="brand-logo"
+        >
+
+    </a>
+
+
+    <div class="navbar-right">
+
+        <div class="doctor-info">
+
+            <div class="doctor-name">
+                Doctor
+            </div>
+
+            <div class="doctor-role">
+                Doctor Portal
+            </div>
+
+        </div>
+
+
+        <a
+            href="/logout"
+            class="logout"
+        >
+            LOGOUT
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ======================================================
+     MAIN CONTENT
+======================================================= -->
+
+<main class="container">
+
+
+    <!-- ==================================================
+         PAGE HEADING
+    =================================================== -->
+
+    <section class="page-heading">
+
+        <div class="heading-left">
+
+            <div class="heading-icon">
+                ▣
+            </div>
+
+            <div>
+
+                <h1>
+                    Patient QR Scanner
+                </h1>
+
+                <p>
+                    Scan the patient QR code to securely access the medical profile,
+                    health history and records.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="heading-badge">
+
+            SCAN &nbsp; • &nbsp; VERIFY &nbsp; • &nbsp; ACCESS
+
+            <span>
+                FAST &nbsp; | &nbsp; SECURE &nbsp; | &nbsp; CONFIDENTIAL
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         MAIN GRID
+    =================================================== -->
+
+    <section class="main-grid">
+
+
+        <!-- ==================================================
+             SCANNER
+        =================================================== -->
+
+        <div class="card scanner-card">
+
+            <div class="card-title">
+
+                <div class="card-title-icon">
+                    ●
+                </div>
+
+                <div>
+
+                    <h2>
+                        Scan QR Code
+                    </h2>
+
+                    <p>
+                        Allow camera access and align the QR code within the frame.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CAMERA QR READER -->
+
+            <div id="reader"></div>
+
+
+            <!-- SCANNER CONTROLS -->
+
+            <div class="scanner-controls">
+
+                <button
+                    type="button"
+                    class="control-button"
+                    onclick="startScanner()"
+                >
+                    START SCANNER
+                </button>
+
+
+                <button
+                    type="button"
+                    class="control-button secondary"
+                    onclick="switchCamera()"
+                >
+                    SWITCH CAMERA
+                </button>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div
+                id="status"
+                class="status"
+            >
+                Camera is ready. Allow camera access to scan QR codes.
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             INSTRUCTIONS
+        =================================================== -->
+
+        <aside class="card instructions-card">
+
+            <div class="instruction-header">
+
+                <div class="info-icon">
+                    i
+                </div>
+
+                <div>
+
+                    <h2>
+                        Instructions
+                    </h2>
+
+                    <p>
+                        Follow these simple steps to scan and view patient records.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="steps">
+
+                <div class="step">
+
+                    <div class="step-number">
+                        1
+                    </div>
+
+                    <div class="step-text">
+                        Click <strong>Start Scanner</strong> and allow camera access
+                        when prompted by your browser.
+                    </div>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        2
+                    </div>
+
+                    <div class="step-text">
+                        Point the patient QR code towards the camera and keep it
+                        inside the scanning frame.
+                    </div>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        3
+                    </div>
+
+                    <div class="step-text">
+                        The QR code will be processed automatically.
+                    </div>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        4
+                    </div>
+
+                    <div class="step-text">
+                        You will be redirected to the medical profile of the patient.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="tips">
+
+                <h3>
+                    💡 &nbsp; Tips for best results
+                </h3>
+
+                <ul>
+                    <li>Ensure good lighting.</li>
+                    <li>Keep the QR code steady and inside the frame.</li>
+                    <li>Maintain a suitable distance from the camera.</li>
+                    <li>If scanning does not work, use manual entry below.</li>
+                </ul>
+
+            </div>
+
+
+            <div class="secure-box">
+
+                <div class="secure-icon">
+                    ◆
+                </div>
+
+                <div>
+
+                    <strong>
+                        Secure Access
+                    </strong>
+
+                    <p>
+                        Scanned access is restricted to authorised medical
+                        patient through the secure profile system.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+
+    <!-- ==================================================
+         MANUAL ENTRY
+    =================================================== -->
+
+    <section class="card manual-card">
+
+        <div class="manual-header">
+
+            <div class="manual-icon">
+                ▦
+            </div>
+
+            <div>
+
+                <h2>
+                    Manual Entry
+                    <span style="font-weight:400; color:#69746d;">
+                        (If scanning does not work)
+                    </span>
+                </h2>
+
+                <p>
+                    Enter the secure QR token manually to access the profile.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            class="manual-form"
+            onsubmit="openManualToken(event)"
+        >
+
+            <input
+                type="text"
+                id="manualToken"
+                placeholder="Enter secure QR token..."
+                autocomplete="off"
+                required
+            >
+
+
+            <button type="submit">
+                ACCESS PROFILE
+            </button>
+
+        </form>
+
+
+        <div class="back-row">
+
+            <a
+                href="/admin"
+                class="back-button"
+            >
+                ← BACK TO DASHBOARD
+            </a>
+
+            <div class="confidential">
+                CONFIDENTIAL • AUTHORISED MEDICAL ACCESS ONLY
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ======================================================
+     FOOTER
+======================================================= -->
+
+<footer class="footer">
+
+    <div class="footer-brand">
+
+        <img
+            src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}"
+            alt="ViQtor Health"
+        >
+
+        <div>
+
+            <strong>
+                ViQtor Health
+            </strong>
+
+            <span>
+                Trusted Care for Our People
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-center">
+
+        Secure &nbsp; | &nbsp; Confidential &nbsp; | &nbsp; Reliable
+
+        <br>
+
+        Smart Digital Health & Medical Record Platform
+
+    </div>
+
+
+    <div class="footer-right">
+
+        © 2026 ViQtor Health
+
+        <br>
+
+        All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<script>
+
+/* ========================================================
+   ORIGINAL QR SCANNER LOGIC
+   ======================================================== */
+
+// ========================================================
+// STATUS ELEMENT
+// ========================================================
+
+const statusElement =
+    document.getElementById("status");
+
+
+// ========================================================
+// PREVENT MULTIPLE SCANS
+// ========================================================
+
+let scanProcessed = false;
+
+
+// ========================================================
+// QR SCAN SUCCESS
+// ========================================================
+
+function onScanSuccess(
+    decodedText,
+    decodedResult
+) {
+
+    if (scanProcessed) {
+
+        return;
+
+    }
+
+
+    scanProcessed = true;
+
+
+    console.log(
+        "QR Code detected:",
+        decodedText
+    );
+
+
+    statusElement.innerText =
+        "QR detected. Verifying patient access...";
+
+
+    statusElement.style.color =
+        "#4b5a32";
+
+
+    // ----------------------------------------------------
+    // QR contains a ViQtor Health access URL
+    // ----------------------------------------------------
+
+    if (
+        decodedText.includes("/doctor/qr-access/")
+    ) {
+
+        window.location.href =
+            decodedText;
+
+        return;
+
+    }
+
+
+    // ----------------------------------------------------
+    // Backward compatibility for existing QR codes
+    // that still contain /profile/<secure-token>.
+    // ----------------------------------------------------
+
+    if (
+        decodedText.includes("/profile/")
+    ) {
+
+        const token =
+            decodedText.split("/profile/")[1]
+                .split("?")[0]
+                .split("#")[0];
+
+        window.location.href =
+            "/doctor/qr-access/" +
+            encodeURIComponent(token);
+
+        return;
+
+    }
+
+
+    // ----------------------------------------------------
+    // QR contains only the secure token
+    // ----------------------------------------------------
+
+    window.location.href =
+        "/doctor/qr-access/" +
+        encodeURIComponent(
+            decodedText
+        );
+
+}
+
+
+// ========================================================
+// QR SCAN FAILURE
+// ========================================================
+
+function onScanFailure(error) {
+
+    // The scanner continuously searches
+    // for a QR code.
+    //
+    // Continuous scan errors are ignored
+    // intentionally.
+
+}
+
+
+// ========================================================
+// CREATE QR SCANNER
+// ========================================================
+
+const html5QrCode =
+    new Html5Qrcode(
+        "reader"
+    );
+
+
+// ========================================================
+// SCANNER CONFIGURATION
+// ========================================================
+
+const scannerConfig = {
+
+    fps: 10,
+
+    qrbox: {
+
+        width: 250,
+
+        height: 250
+
+    }
+
+};
+
+
+// ========================================================
+// MANUAL TOKEN
+// ========================================================
+
+function openManualToken(event) {
+
+    event.preventDefault();
+
+
+    const token =
+        document
+            .getElementById(
+                "manualToken"
+            )
+            .value
+            .trim();
+
+
+    if (!token) {
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "/profile/" +
+        encodeURIComponent(
+            token
+        );
+
+}
+
+/* ========================================================
+   CAMERA CONTROL
+   Uses one scanner instance only.
+   ======================================================== */
+
+let scannerStarted = false;
+let currentCameraId = null;
+let availableCameras = [];
+let currentCameraIndex = 0;
+
+
+/* ========================================================
+   START SCANNER
+   ======================================================== */
+
+function startScanner() {
+
+    if (scannerStarted) {
+
+        statusElement.innerText =
+            "Scanner is already active. Point the patient QR code at the camera.";
+
+        return;
+    }
+
+
+    statusElement.innerText =
+        "Requesting camera access...";
+
+
+    /*
+     * First try the rear/environment camera.
+     * This matches the original working scanner behaviour.
+     */
+
+    html5QrCode
+        .start(
+            {
+                facingMode: "environment"
+            },
+            scannerConfig,
+            onScanSuccess,
+            onScanFailure
+        )
+        .then(() => {
+
+            scannerStarted = true;
+
+            statusElement.innerText =
+                "Camera active. Point the patient QR code at the scanner.";
+
+            statusElement.style.color =
+                "#47714d";
+
+
+            /*
+             * Get the available cameras after permission
+             * has been granted so SWITCH CAMERA can work.
+             */
+
+            return Html5Qrcode
+                .getCameras();
+
+        })
+        .then((cameras) => {
+
+            if (cameras && cameras.length > 0) {
+
+                availableCameras = cameras;
+
+                /*
+                 * The environment camera is normally the
+                 * first useful camera on a phone/tablet.
+                 */
+
+                currentCameraIndex = 0;
+
+                currentCameraId =
+                    cameras[currentCameraIndex].id;
+            }
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "Camera error:",
+                error
+            );
+
+
+            scannerStarted = false;
+
+
+            statusElement.innerText =
+                "Camera access unavailable. Allow camera permission and click START SCANNER again.";
+
+            statusElement.style.color =
+                "#a33a30";
+
+        });
+
+}
+
+
+/* ========================================================
+   SWITCH CAMERA
+   ======================================================== */
+
+function switchCamera() {
+
+    if (!scannerStarted) {
+
+        statusElement.innerText =
+            "Start the scanner first, then use SWITCH CAMERA.";
+
+        statusElement.style.color =
+            "#6b766f";
+
+        return;
+    }
+
+
+    if (!availableCameras || availableCameras.length < 2) {
+
+        statusElement.innerText =
+            "Only one camera is available on this device.";
+
+        return;
+    }
+
+
+    statusElement.innerText =
+        "Switching camera...";
+
+
+    html5QrCode
+        .stop()
+        .then(() => {
+
+            scannerStarted = false;
+
+
+            currentCameraIndex =
+                (currentCameraIndex + 1) %
+                availableCameras.length;
+
+
+            currentCameraId =
+                availableCameras[
+                    currentCameraIndex
+                ].id;
+
+
+            return html5QrCode.start(
+                currentCameraId,
+                scannerConfig,
+                onScanSuccess,
+                onScanFailure
+            );
+
+        })
+        .then(() => {
+
+            scannerStarted = true;
+
+            statusElement.innerText =
+                "Camera switched. Point the patient QR code at the scanner.";
+
+            statusElement.style.color =
+                "#47714d";
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "Camera switch error:",
+                error
+            );
+
+
+            scannerStarted = false;
+
+
+            statusElement.innerText =
+                "Unable to switch camera. Click START SCANNER to try again.";
+
+            statusElement.style.color =
+                "#a33a30";
+
+        });
+
+}
+
+
+/* ========================================================
+   AUTO START
+   ======================================================== */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        /*
+         * Try automatic startup first, just like the
+         * original working scanner. If the browser blocks
+         * it, the user can click START SCANNER.
+         */
+
+        startScanner();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
