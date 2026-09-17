@@ -1,0 +1,5 @@
+Flask
+firebase-admin
+qrcode[pil]
+Pillow
+gunicorn
