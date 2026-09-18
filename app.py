@@ -621,8 +621,13 @@ def register():
         # PROFILE URL
         # ====================================================
 
+        PUBLIC_BASE_URL = os.environ.get(
+            "PUBLIC_BASE_URL",
+            "https://viqtor-health.onrender.com"
+        ).rstrip("/")
+
         profile_url = (
-            request.host_url.rstrip("/")
+            PUBLIC_BASE_URL
             + "/profile/"
             + qr_token
         )
