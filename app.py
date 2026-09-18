@@ -762,17 +762,16 @@ def register():
 
 
 # ============================================================
-# MEDICAL PROFILE
+# MEDICAL PROFILE / QR ACCESS
 # ============================================================
 
 @app.route(
     "/profile/<qr_token>"
 )
-@login_required
 def profile(qr_token):
 
     # ========================================================
-    # FIND PERSONNEL USING QR TOKEN
+    # FIND PERSONNEL USING SECURE QR TOKEN
     # ========================================================
 
     personnel_query = (
@@ -786,16 +785,13 @@ def profile(qr_token):
         .stream()
     )
 
-
     personnel = None
-
 
     for doc in personnel_query:
 
         personnel = doc.to_dict()
 
         break
-
 
     if not personnel:
 
@@ -804,14 +800,12 @@ def profile(qr_token):
             404
         )
 
-
     personnel_id = personnel[
         "personnel_id"
     ]
 
-
     # ========================================================
-    # HEALTH RECORDS
+    # LATEST HEALTH RECORD
     # ========================================================
 
     health_query = (
@@ -824,9 +818,7 @@ def profile(qr_token):
         .stream()
     )
 
-
     health_records = []
-
 
     for doc in health_query:
 
@@ -838,44 +830,172 @@ def profile(qr_token):
             record
         )
 
-
-    # ========================================================
-    # NEWEST FIRST
-    # ========================================================
-
     health_records.sort(
-
         key=lambda x: x.get(
             "recorded_at",
             ""
         ),
-
         reverse=True
     )
 
+    latest_health = (
+        health_records[0]
+        if health_records
+        else None
+    )
 
     # ========================================================
-    # LATEST HEALTH RECORD
+    # LATEST CBC PROFILE
     # ========================================================
 
-    latest_health = None
+    cbc_query = (
+        db.collection("cbc_records")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
 
+    cbc_records = []
 
-    if health_records:
+    for doc in cbc_query:
 
-        latest_health = (
-            health_records[0]
+        record = doc.to_dict()
+
+        record["document_id"] = doc.id
+
+        cbc_records.append(
+            record
         )
 
+    cbc_records.sort(
+        key=lambda x: x.get(
+            "recorded_at",
+            ""
+        ),
+        reverse=True
+    )
+
+    latest_cbc = (
+        cbc_records[0]
+        if cbc_records
+        else None
+    )
+
+    # ========================================================
+    # LATEST LIPID PROFILE
+    # ========================================================
+
+    lipid_query = (
+        db.collection("lipid_records")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    lipid_records = []
+
+    for doc in lipid_query:
+
+        record = doc.to_dict()
+
+        record["document_id"] = doc.id
+
+        lipid_records.append(
+            record
+        )
+
+    lipid_records.sort(
+        key=lambda x: x.get(
+            "recorded_at",
+            ""
+        ),
+        reverse=True
+    )
+
+    latest_lipid = (
+        lipid_records[0]
+        if lipid_records
+        else None
+    )
+
+    # ========================================================
+    # AUTHENTICATED ACCESS
+    #
+    # Admin/doctor users continue to receive the existing
+    # detailed medical profile.
+    # ========================================================
+
+    if session.get("logged_in"):
+
+        current_role = session.get(
+            "role"
+        )
+
+        if current_role in ["admin", "doctor"]:
+
+            return render_template(
+                "profile.html",
+                personnel=personnel,
+                latest_health=latest_health,
+                health_records=health_records,
+                latest_cbc=latest_cbc,
+                latest_lipid=latest_lipid,
+                username=(
+                    current_role.upper()
+                    if current_role
+                    else "Medical Officer"
+                ),
+                role=current_role
+            )
+
+    # ========================================================
+    # PUBLIC QR ACCESS
+    #
+    # No login is required for this page.
+    # Only the deliberately public health snapshot is shown.
+    # Phone, email, detailed history, doctor notes and other
+    # confidential fields are NOT sent to the public template.
+    # ========================================================
+
+    public_personnel = {
+        "first_name": personnel.get(
+            "first_name",
+            ""
+        ),
+        "last_name": personnel.get(
+            "last_name",
+            ""
+        ),
+        "full_name": personnel.get(
+            "full_name",
+            ""
+        ),
+        "personnel_id": personnel.get(
+            "personnel_id",
+            ""
+        ),
+        "dob": personnel.get(
+            "dob",
+            ""
+        ),
+        "blood_group": personnel.get(
+            "blood_group",
+            ""
+        )
+    }
 
     return render_template(
-        "profile.html",
-
-        personnel=personnel,
-
+        "qr_access.html",
+        personnel=public_personnel,
         latest_health=latest_health,
-
-        health_records=health_records
+        latest_cbc=latest_cbc,
+        latest_lipid=latest_lipid
     )
 
 
