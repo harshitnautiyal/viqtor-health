@@ -25,14 +25,25 @@ from functools import wraps
 
 app = Flask(__name__)
 
-app.secret_key = os.environ.get(
-    "FLASK_SECRET_KEY",
-    "viqtor-health-development-secret-key"
-)
+# Production-safe Flask configuration.
+# On Render, FLASK_SECRET_KEY must be supplied as an environment variable.
+IS_RENDER = os.environ.get("RENDER", "").lower() == "true"
+FLASK_SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")
+
+if IS_RENDER and not FLASK_SECRET_KEY:
+    raise RuntimeError(
+        "FLASK_SECRET_KEY is not configured. "
+        "Add it in Render > Environment before deploying."
+    )
+
+app.secret_key = FLASK_SECRET_KEY or "viqtor-health-development-only-secret"
 
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SECURE"] = False
+app.config["SESSION_COOKIE_SECURE"] = IS_RENDER
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_NAME"] = "viqtor_health_session"
+app.config["PERMANENT_SESSION_LIFETIME"] = 60 * 60 * 8
+app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 
 # ============================================================
@@ -70,9 +81,11 @@ db = firestore.client()
 # QR CODE FOLDER
 # ============================================================
 
-QR_FOLDER = os.path.join(
-    BASE_DIR,
-    "qr_codes"
+# QR_FOLDER can point to a Render Persistent Disk, e.g. /var/data/qr_codes.
+# Locally it falls back to the project's qr_codes folder.
+QR_FOLDER = os.environ.get(
+    "QR_FOLDER",
+    os.path.join(BASE_DIR, "qr_codes")
 )
 
 os.makedirs(
@@ -1783,8 +1796,29 @@ def qr_code(filename):
 # RUN APPLICATION
 # ============================================================
 
+@app.after_request
+def add_security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault(
+        "Permissions-Policy",
+        "camera=(self), microphone=(), geolocation=()"
+    )
+
+    if IS_RENDER:
+        response.headers.setdefault(
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains"
+        )
+
+    return response
+
+
 if __name__ == "__main__":
 
     app.run(
-        debug=True
+        host="127.0.0.1",
+        port=5000,
+        debug=not IS_RENDER
     )
