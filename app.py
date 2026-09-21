@@ -951,6 +951,86 @@ def profile(qr_token):
     )
 
     # ========================================================
+    # LATEST ALLERGY PROFILE
+    # ========================================================
+
+    allergy_query = (
+        db.collection("allergy_records")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    allergy_records = []
+
+    for doc in allergy_query:
+
+        record = doc.to_dict()
+
+        record["document_id"] = doc.id
+
+        allergy_records.append(
+            record
+        )
+
+    allergy_records.sort(
+        key=lambda x: x.get(
+            "recorded_at",
+            ""
+        ),
+        reverse=True
+    )
+
+    latest_allergy = (
+        allergy_records[0]
+        if allergy_records
+        else None
+    )
+
+    # ========================================================
+    # LATEST THYROID PROFILE
+    # ========================================================
+
+    thyroid_query = (
+        db.collection("thyroid_records")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    thyroid_records = []
+
+    for doc in thyroid_query:
+
+        record = doc.to_dict()
+
+        record["document_id"] = doc.id
+
+        thyroid_records.append(
+            record
+        )
+
+    thyroid_records.sort(
+        key=lambda x: x.get(
+            "recorded_at",
+            ""
+        ),
+        reverse=True
+    )
+
+    latest_thyroid = (
+        thyroid_records[0]
+        if thyroid_records
+        else None
+    )
+
+    # ========================================================
     # AUTHENTICATED ACCESS
     #
     # Admin/doctor users continue to receive the existing
@@ -972,6 +1052,8 @@ def profile(qr_token):
                 health_records=health_records,
                 latest_cbc=latest_cbc,
                 latest_lipid=latest_lipid,
+                latest_allergy=latest_allergy,
+                latest_thyroid=latest_thyroid,
                 username=(
                     current_role.upper()
                     if current_role

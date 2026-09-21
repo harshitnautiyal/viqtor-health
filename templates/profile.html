@@ -1502,7 +1502,15 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
                 <div class="vq-med-card">
                     <h3>Allergic Conditions</h3>
-                    <div class="vq-med-row"><span>Known allergies</span><strong>{{ latest_health.allergic_conditions or "None recorded" }}</strong></div>
+                    {% if latest_allergy %}
+                    <div class="vq-med-row"><span>Allergen</span><strong>{{ latest_allergy.allergen or "—" }}</strong></div>
+                    <div class="vq-med-row"><span>Type</span><strong>{{ latest_allergy.allergy_type or "—" }}</strong></div>
+                    <div class="vq-med-row"><span>Reaction</span><strong>{{ latest_allergy.reaction or "—" }}</strong></div>
+                    <div class="vq-med-row"><span>Severity</span><strong>{{ latest_allergy.severity or "—" }}</strong></div>
+                    <div class="vq-med-row"><span>Status</span><strong>{{ latest_allergy.status or "—" }}</strong></div>
+                    {% else %}
+                    <div class="vq-med-row"><span>Known allergies</span><strong>None recorded</strong></div>
+                    {% endif %}
                 </div>
 
                 <div class="vq-med-card">
@@ -1515,11 +1523,15 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
                 <div class="vq-med-card">
                     <h3>Thyroid Profile</h3>
-                    <div class="vq-med-row"><span>TSH</span><strong>{{ latest_health.thyroid_tsh if latest_health.thyroid_tsh is not none else "—" }}</strong></div>
-                    <div class="vq-med-row"><span>T3</span><strong>{{ latest_health.thyroid_t3 if latest_health.thyroid_t3 is not none else "—" }}</strong></div>
-                    <div class="vq-med-row"><span>T4</span><strong>{{ latest_health.thyroid_t4 if latest_health.thyroid_t4 is not none else "—" }}</strong></div>
-                    <div class="vq-med-row"><span>Free T3</span><strong>{{ latest_health.thyroid_free_t3 if latest_health.thyroid_free_t3 is not none else "—" }}</strong></div>
-                    <div class="vq-med-row"><span>Free T4</span><strong>{{ latest_health.thyroid_free_t4 if latest_health.thyroid_free_t4 is not none else "—" }}</strong></div>
+                    {% if latest_thyroid %}
+                    <div class="vq-med-row"><span>TSH</span><strong>{{ latest_thyroid.tsh if latest_thyroid.tsh is not none else "—" }}</strong></div>
+                    <div class="vq-med-row"><span>T3</span><strong>{{ latest_thyroid.t3 if latest_thyroid.t3 is not none else "—" }}</strong></div>
+                    <div class="vq-med-row"><span>T4</span><strong>{{ latest_thyroid.t4 if latest_thyroid.t4 is not none else "—" }}</strong></div>
+                    <div class="vq-med-row"><span>Free T3</span><strong>{{ latest_thyroid.free_t3 if latest_thyroid.free_t3 is not none else "—" }}</strong></div>
+                    <div class="vq-med-row"><span>Free T4</span><strong>{{ latest_thyroid.free_t4 if latest_thyroid.free_t4 is not none else "—" }}</strong></div>
+                    {% else %}
+                    <div class="vq-med-row"><span>Latest thyroid test</span><strong>None recorded</strong></div>
+                    {% endif %}
                 </div>
 
                 <div class="vq-med-card vq-med-wide">
@@ -1701,34 +1713,112 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
                 <!-- ALLERGY -->
 
                 <div class="vq-lab-card allergy">
+
                     <div class="vq-lab-head">
                         <div class="vq-lab-title">
                             <div class="vq-lab-icon">ALL</div>
                             <div>
                                 <h3>Allergy Profile</h3>
-                                <p>Known allergies and allergic reactions</p>
+                                <p>Latest allergy and allergic reaction information</p>
                             </div>
                         </div>
+
+                        {% if latest_allergy %}
+                        <div class="vq-lab-date">{{ latest_allergy.recorded_at }}</div>
+                        {% endif %}
                     </div>
-                    <div class="vq-lab-empty">Manage drug, food, environmental and other allergy information.</div>
-                    <a href="/allergy/{{ personnel.personnel_id }}" class="vq-lab-button">+ ADD / VIEW ALLERGY</a>
+
+                    {% if latest_allergy %}
+                    <div class="vq-lab-values">
+                        <div class="vq-lab-value">
+                            <span>Allergen</span>
+                            <strong>{{ latest_allergy.allergen or "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Type</span>
+                            <strong>{{ latest_allergy.allergy_type or "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Reaction</span>
+                            <strong>{{ latest_allergy.reaction or "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Severity</span>
+                            <strong>{{ latest_allergy.severity or "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Status</span>
+                            <strong>{{ latest_allergy.status or "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Emergency</span>
+                            <strong>{{ latest_allergy.emergency_allergy or "No" }}</strong>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="vq-lab-empty">No allergy profile has been recorded for this patient.</div>
+                    {% endif %}
+
+                    <a href="/allergy/{{ personnel.personnel_id }}" class="vq-lab-button">
+                        {{ "VIEW / UPDATE ALLERGY" if latest_allergy else "+ ADD ALLERGY PROFILE" }}
+                    </a>
+
                 </div>
 
 
                 <!-- THYROID -->
 
                 <div class="vq-lab-card thyroid">
+
                     <div class="vq-lab-head">
                         <div class="vq-lab-title">
                             <div class="vq-lab-icon">THY</div>
                             <div>
                                 <h3>Thyroid Profile</h3>
-                                <p>Thyroid laboratory investigation</p>
+                                <p>Latest thyroid laboratory results</p>
                             </div>
                         </div>
+
+                        {% if latest_thyroid %}
+                        <div class="vq-lab-date">{{ latest_thyroid.investigation_date or latest_thyroid.recorded_at }}</div>
+                        {% endif %}
                     </div>
-                    <div class="vq-lab-empty">Manage TSH, T3, T4, Free T3 and Free T4 results.</div>
-                    <a href="/thyroid/{{ personnel.personnel_id }}" class="vq-lab-button">+ ADD / VIEW THYROID</a>
+
+                    {% if latest_thyroid %}
+                    <div class="vq-lab-values">
+                        <div class="vq-lab-value">
+                            <span>TSH</span>
+                            <strong>{{ latest_thyroid.tsh if latest_thyroid.tsh is not none else "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>T3</span>
+                            <strong>{{ latest_thyroid.t3 if latest_thyroid.t3 is not none else "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>T4</span>
+                            <strong>{{ latest_thyroid.t4 if latest_thyroid.t4 is not none else "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Free T3</span>
+                            <strong>{{ latest_thyroid.free_t3 if latest_thyroid.free_t3 is not none else "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Free T4</span>
+                            <strong>{{ latest_thyroid.free_t4 if latest_thyroid.free_t4 is not none else "—" }}</strong>
+                        </div>
+                        <div class="vq-lab-value">
+                            <span>Condition</span>
+                            <strong>{{ latest_thyroid.thyroid_condition or "—" }}</strong>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="vq-lab-empty">No thyroid profile has been recorded for this patient.</div>
+                    {% endif %}
+
+                    <a href="/thyroid/{{ personnel.personnel_id }}" class="vq-lab-button">
+                        {{ "VIEW / UPDATE THYROID" if latest_thyroid else "+ ADD THYROID PROFILE" }}
+                    </a>
+
                 </div>
 
             </div>
