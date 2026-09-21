@@ -1277,74 +1277,6 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 @media(max-width:850px){.vq-lab-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.vq-lab-values{grid-template-columns:1fr 1fr}}
 
-
-/* ==========================================================
-   VIQTOR HEALTH — UNIFIED HEALTH SNAPSHOT
-========================================================== */
-.vq-snapshot-section{
-    margin:0 0 30px;
-}
-.vq-snapshot-card{
-    background:#fff;
-    border:1px solid #e1e7e0;
-    border-radius:16px;
-    padding:24px;
-    box-shadow:0 10px 30px rgba(15,23,42,.045);
-}
-.vq-snapshot-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
-    margin-bottom:18px;
-}
-.vq-snapshot-title{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-.vq-snapshot-icon{
-    width:42px;height:42px;border-radius:10px;
-    display:grid;place-items:center;
-    background:#edf2e8;color:#506631;
-    font-weight:850;font-size:18px;
-}
-.vq-snapshot-title h2{font-size:20px;color:#17233c;margin:0 0 3px}
-.vq-snapshot-title p{font-size:11px;color:#7a8797;margin:0}
-.vq-snapshot-date{
-    padding:8px 11px;border-radius:8px;
-    background:#f5f7f5;border:1px solid #e3e8e2;
-    color:#69768a;font-size:10px;font-weight:750;
-}
-.vq-snapshot-grid{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:10px;
-}
-.vq-snapshot-item{
-    padding:14px 12px;
-    border:1px solid #edf0f2;
-    border-radius:10px;
-    background:#fafbfc;
-}
-.vq-snapshot-item span{
-    display:block;font-size:9px;color:#8490a0;
-    text-transform:uppercase;letter-spacing:.55px;margin-bottom:7px;
-}
-.vq-snapshot-item strong{font-size:18px;color:#17233c}
-.vq-snapshot-item em{font-size:9px;color:#8995a4;font-style:normal;margin-left:3px}
-.vq-snapshot-empty{
-    padding:17px;border-radius:10px;
-    background:#f8faf9;border:1px dashed #dce5e1;
-    color:#7d8986;font-size:11px;
-}
-@media(max-width:1000px){.vq-snapshot-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:560px){
-    .vq-snapshot-card{padding:18px}
-    .vq-snapshot-top{align-items:flex-start;flex-direction:column}
-    .vq-snapshot-grid{grid-template-columns:repeat(2,1fr)}
-}
-
 </style>
 
 </head>
@@ -1429,7 +1361,7 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
 
         <!-- ======================================
-             PATIENT INFORMATION
+             PERSONNEL INFORMATION
         ======================================= -->
 
         <div class="person-profile-card">
@@ -1460,7 +1392,7 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
                 <div class="profile-id-box">
 
                     <span>
-                        UNIQUE PATIENT ID
+                        UNIQUE PERSONNEL ID
                     </span>
 
                     <strong>
@@ -1522,86 +1454,6 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
         </div>
 
 
-
-
-        <!-- ======================================
-             UNIFIED HEALTH SNAPSHOT
-        ======================================= -->
-
-        <div class="vq-snapshot-section">
-
-            <div class="vq-snapshot-card">
-
-                <div class="vq-snapshot-top">
-
-                    <div class="vq-snapshot-title">
-                        <div class="vq-snapshot-icon">♥</div>
-                        <div>
-                            <h2>Health Snapshot</h2>
-                            <p>Quick view of the patient's latest recorded health information</p>
-                        </div>
-                    </div>
-
-                    {% if latest_health %}
-                    <div class="vq-snapshot-date">
-                        Last updated: {{ latest_health.recorded_at }}
-                    </div>
-                    {% endif %}
-
-                </div>
-
-                {% if latest_health %}
-
-                <div class="vq-snapshot-grid">
-
-                    <div class="vq-snapshot-item">
-                        <span>Heart Rate</span>
-                        <strong>{{ latest_health.heart_rate or "—" }}</strong>
-                        <em>bpm</em>
-                    </div>
-
-                    <div class="vq-snapshot-item">
-                        <span>Blood Pressure</span>
-                        <strong>{{ latest_health.systolic_bp or "—" }}/{{ latest_health.diastolic_bp or "—" }}</strong>
-                        <em>mmHg</em>
-                    </div>
-
-                    <div class="vq-snapshot-item">
-                        <span>SpO₂</span>
-                        <strong>{{ latest_health.spo2 or "—" }}</strong>
-                        <em>%</em>
-                    </div>
-
-                    <div class="vq-snapshot-item">
-                        <span>Temperature</span>
-                        <strong>{{ latest_health.temperature or "—" }}</strong>
-                        <em>°C</em>
-                    </div>
-
-                    <div class="vq-snapshot-item">
-                        <span>Respiratory Rate</span>
-                        <strong>{{ latest_health.respiratory_rate or "—" }}</strong>
-                        <em>/min</em>
-                    </div>
-
-                    <div class="vq-snapshot-item">
-                        <span>BMI</span>
-                        <strong>{{ latest_health.bmi or "—" }}</strong>
-                    </div>
-
-                </div>
-
-                {% else %}
-
-                <div class="vq-snapshot-empty">
-                    No medical examination has been recorded for this patient yet.
-                </div>
-
-                {% endif %}
-
-            </div>
-
-        </div>
 
         <!-- ======================================
              LABORATORY PROFILES
@@ -2837,6 +2689,45 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
 {% endif %}
 
+
+
+
+<!-- VIQTOR ADDITIONAL HEALTH SNAPSHOT -->
+<section class="vq-extra-card">
+    <div class="vq-extra-head">
+        <div>
+            <div class="vq-extra-kicker">ADDITIONAL HEALTH INFORMATION</div>
+            <h2>Important Health Background</h2>
+            <p>Latest recorded information available in the patient's health record.</p>
+        </div>
+        <a class="vq-pdf-button" href="{{ url_for('medical_profile_pdf', qr_token=personnel.qr_token) }}">Download Medical Profile PDF</a>
+    </div>
+
+    {% if latest_health %}
+    <div class="vq-extra-grid">
+        <div class="vq-extra-item"><span>Blood Sugar</span><strong>{{ latest_health.blood_glucose if latest_health.blood_glucose is not none else '—' }}{% if latest_health.blood_glucose is not none %} mg/dL{% endif %}</strong></div>
+        <div class="vq-extra-item"><span>Allergic Conditions</span><strong>{{ latest_health.allergic_conditions or 'None recorded' }}</strong></div>
+        <div class="vq-extra-item"><span>Critical / Last Hospital Admission</span><strong>{{ latest_health.critical_hospital_admission or 'None recorded' }}</strong></div>
+    </div>
+
+    <div class="vq-thyroid-profile">
+        <div class="vq-thyroid-profile-title">Thyroid Profile</div>
+        <div class="vq-extra-grid five">
+            <div class="vq-extra-item"><span>TSH</span><strong>{{ latest_health.thyroid_tsh or '—' }}</strong></div>
+            <div class="vq-extra-item"><span>T3</span><strong>{{ latest_health.thyroid_t3 or '—' }}</strong></div>
+            <div class="vq-extra-item"><span>T4</span><strong>{{ latest_health.thyroid_t4 or '—' }}</strong></div>
+            <div class="vq-extra-item"><span>Free T3</span><strong>{{ latest_health.thyroid_free_t3 or '—' }}</strong></div>
+            <div class="vq-extra-item"><span>Free T4</span><strong>{{ latest_health.thyroid_free_t4 or '—' }}</strong></div>
+        </div>
+    </div>
+    {% else %}
+    <div class="vq-extra-empty">No additional health information has been recorded yet.</div>
+    {% endif %}
+</section>
+
+<style>
+.vq-extra-card{max-width:1180px;margin:26px auto;padding:24px;background:#fff;border:1px solid #e2ebe8;border-radius:16px;box-shadow:0 8px 28px rgba(20,48,62,.06)}.vq-extra-head{display:flex;justify-content:space-between;gap:20px;align-items:center}.vq-extra-kicker{font-size:10px;font-weight:850;letter-spacing:1.2px;color:#4d9186}.vq-extra-head h2{margin:5px 0;color:#17324d}.vq-extra-head p{margin:0;color:#73807e;font-size:13px}.vq-pdf-button{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:9px;background:#26736a;color:#fff;text-decoration:none;font-weight:800;font-size:12px;white-space:nowrap}.vq-pdf-button:hover{filter:brightness(.95)}.vq-extra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.vq-extra-grid.five{grid-template-columns:repeat(5,1fr)}.vq-extra-item{padding:13px;background:#f7faf9;border:1px solid #e6efec;border-radius:10px}.vq-extra-item span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#7d8987;margin-bottom:6px}.vq-extra-item strong{display:block;color:#17324d;font-size:12px;line-height:1.45}.vq-thyroid-profile{margin-top:18px}.vq-thyroid-profile-title{font-size:12px;font-weight:850;color:#26736a;margin-bottom:8px}.vq-extra-empty{margin-top:18px;padding:15px;background:#f8faf9;border:1px dashed #d8e4e1;border-radius:10px;color:#7c8886}@media(max-width:850px){.vq-extra-head{flex-direction:column;align-items:flex-start}.vq-extra-grid,.vq-extra-grid.five{grid-template-columns:1fr 1fr}}@media(max-width:560px){.vq-extra-grid,.vq-extra-grid.five{grid-template-columns:1fr}}
+</style>
 
 </body>
 

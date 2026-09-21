@@ -868,6 +868,48 @@ footer{margin-left:198px;background:#fff;border-top:1px solid #e3e8e2;padding:11
                          SUBMIT
                     ========================== -->
 
+                    <!-- =========================
+                         ADDITIONAL HEALTH INFORMATION
+                    ========================== -->
+
+                    <div class="health-form-section vq-additional-health">
+
+                        <div class="health-section-title">
+                            <div class="health-section-icon">✚</div>
+                            <div>
+                                <h2>Additional Health Information</h2>
+                                <p>Important background information and thyroid investigations.</p>
+                            </div>
+                        </div>
+
+                        <div class="health-form-grid">
+                            <div class="health-form-group">
+                                <label for="allergic_conditions">Allergic Conditions</label>
+                                <textarea id="allergic_conditions" name="allergic_conditions" rows="3" placeholder="List known allergies or write None"></textarea>
+                            </div>
+
+                            <div class="health-form-group">
+                                <label for="critical_hospital_admission">Critical / Last Hospital Admission</label>
+                                <textarea id="critical_hospital_admission" name="critical_hospital_admission" rows="3" placeholder="Reason, date or relevant admission history"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="vq-thyroid-box">
+                            <div class="vq-thyroid-title">Thyroid Profile</div>
+                            <div class="health-form-grid">
+                                <div class="health-form-group"><label for="thyroid_tsh">TSH <span>µIU/mL</span></label><input type="number" step="0.01" id="thyroid_tsh" name="thyroid_tsh" placeholder="e.g. 2.50"></div>
+                                <div class="health-form-group"><label for="thyroid_t3">T3 <span>ng/mL</span></label><input type="number" step="0.01" id="thyroid_t3" name="thyroid_t3" placeholder="e.g. 1.20"></div>
+                                <div class="health-form-group"><label for="thyroid_t4">T4 <span>µg/dL</span></label><input type="number" step="0.01" id="thyroid_t4" name="thyroid_t4" placeholder="e.g. 8.00"></div>
+                                <div class="health-form-group"><label for="thyroid_free_t3">Free T3 <span>pg/mL</span></label><input type="number" step="0.01" id="thyroid_free_t3" name="thyroid_free_t3" placeholder="e.g. 3.20"></div>
+                                <div class="health-form-group"><label for="thyroid_free_t4">Free T4 <span>ng/dL</span></label><input type="number" step="0.01" id="thyroid_free_t4" name="thyroid_free_t4" placeholder="e.g. 1.10"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .vq-additional-health{margin-top:24px}.vq-thyroid-box{margin-top:18px;padding:18px;border:1px solid #dfe9e6;border-radius:14px;background:#f8fbfa}.vq-thyroid-title{font-size:14px;font-weight:800;color:#17324d;margin-bottom:12px}.health-form-group textarea{width:100%;box-sizing:border-box;border:1px solid #d9e3e0;border-radius:9px;padding:11px;font:inherit;resize:vertical;min-height:92px;background:#fff}.health-form-group textarea:focus{outline:none;border-color:#4c9a8d;box-shadow:0 0 0 3px rgba(76,154,141,.10)}
+                    </style>
+
                     <div class="health-form-actions">
 
                         <a href="/"

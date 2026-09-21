@@ -5,7 +5,8 @@ from flask import (
     redirect,
     url_for,
     session,
-    send_from_directory
+    send_from_directory,
+    send_file
 )
 
 import firebase_admin
@@ -17,6 +18,13 @@ import secrets
 
 from datetime import datetime
 from functools import wraps
+from io import BytesIO
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 
 
 # ============================================================
@@ -1271,6 +1279,45 @@ def health_record(personnel_id):
 
 
             # =================================================
+            # ADDITIONAL HEALTH INFORMATION
+            # =================================================
+
+            allergic_conditions = (
+                request.form.get(
+                    "allergic_conditions",
+                    ""
+                ).strip()
+            )
+
+            critical_hospital_admission = (
+                request.form.get(
+                    "critical_hospital_admission",
+                    ""
+                ).strip()
+            )
+
+            thyroid_tsh = get_float(
+                "thyroid_tsh"
+            )
+
+            thyroid_t3 = get_float(
+                "thyroid_t3"
+            )
+
+            thyroid_t4 = get_float(
+                "thyroid_t4"
+            )
+
+            thyroid_free_t3 = get_float(
+                "thyroid_free_t3"
+            )
+
+            thyroid_free_t4 = get_float(
+                "thyroid_free_t4"
+            )
+
+
+            # =================================================
             # HEALTH DATA
             # =================================================
 
@@ -1353,6 +1400,27 @@ def health_record(personnel_id):
 
                 "overall_health_status":
                     overall_health_status,
+
+                "allergic_conditions":
+                    allergic_conditions,
+
+                "critical_hospital_admission":
+                    critical_hospital_admission,
+
+                "thyroid_tsh":
+                    thyroid_tsh,
+
+                "thyroid_t3":
+                    thyroid_t3,
+
+                "thyroid_t4":
+                    thyroid_t4,
+
+                "thyroid_free_t3":
+                    thyroid_free_t3,
+
+                "thyroid_free_t4":
+                    thyroid_free_t4,
 
                 "recorded_at":
                     datetime.now().isoformat(),
@@ -1774,6 +1842,152 @@ def lipid_profile(personnel_id):
         personnel=personnel,
         lipid_records=lipid_records,
         latest_lipid=latest_lipid
+    )
+
+
+# ============================================================
+# DOWNLOAD MEDICAL PROFILE PDF
+# ADMIN + DOCTOR
+# ============================================================
+
+@app.route(
+    "/profile/<qr_token>/pdf"
+)
+@role_required(
+    "admin",
+    "doctor"
+)
+def medical_profile_pdf(qr_token):
+
+    personnel_query = (
+        db.collection("personnel")
+        .where("qr_token", "==", qr_token)
+        .limit(1)
+        .stream()
+    )
+
+    personnel = None
+    for doc in personnel_query:
+        personnel = doc.to_dict()
+        break
+
+    if not personnel:
+        return "Patient not found.", 404
+
+    personnel_id = personnel.get("personnel_id", "")
+
+    def records_for(collection_name):
+        records = []
+        for doc in db.collection(collection_name).where(
+            "personnel_id", "==", personnel_id
+        ).stream():
+            item = doc.to_dict()
+            records.append(item)
+        records.sort(key=lambda x: x.get("recorded_at", ""), reverse=True)
+        return records
+
+    health_records = records_for("health_records")
+    cbc_records = records_for("cbc_records")
+    lipid_records = records_for("lipid_records")
+
+    latest_health = health_records[0] if health_records else None
+    latest_cbc = cbc_records[0] if cbc_records else None
+    latest_lipid = lipid_records[0] if lipid_records else None
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        rightMargin=16*mm, leftMargin=16*mm,
+        topMargin=16*mm, bottomMargin=16*mm
+    )
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        "ViQTitle", parent=styles["Title"], fontSize=20,
+        leading=24, textColor=colors.HexColor("#17324d"), spaceAfter=4
+    )
+    section_style = ParagraphStyle(
+        "ViQSection", parent=styles["Heading2"], fontSize=12,
+        leading=15, textColor=colors.HexColor("#26736a"), spaceBefore=10, spaceAfter=6
+    )
+    body_style = ParagraphStyle(
+        "ViQBody", parent=styles["BodyText"], fontSize=9, leading=12, textColor=colors.HexColor("#263238")
+    )
+
+    story = [
+        Paragraph("ViQtor Health", title_style),
+        Paragraph("Smart Digital Health & Medical Record Platform", body_style),
+        Spacer(1, 8),
+        Paragraph("Medical Profile", section_style)
+    ]
+
+    patient_rows = [
+        ["Patient", personnel.get("full_name", "")],
+        ["Patient ID", personnel.get("personnel_id", "")],
+        ["Date of Birth", personnel.get("dob", "")],
+        ["Blood Group", personnel.get("blood_group", "")],
+    ]
+    story.append(Table(patient_rows, colWidths=[42*mm, 125*mm], style=TableStyle([
+        ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#eef6f4")),
+        ("GRID", (0,0), (-1,-1), 0.4, colors.HexColor("#d8e4e1")),
+        ("FONTNAME", (0,0), (0,-1), "Helvetica-Bold"),
+        ("FONTSIZE", (0,0), (-1,-1), 9),
+        ("VALIGN", (0,0), (-1,-1), "TOP"),
+        ("LEFTPADDING", (0,0), (-1,-1), 7), ("RIGHTPADDING", (0,0), (-1,-1), 7),
+        ("TOPPADDING", (0,0), (-1,-1), 6), ("BOTTOMPADDING", (0,0), (-1,-1), 6)
+    ])))
+
+    def add_kv_section(title, pairs):
+        story.append(Paragraph(title, section_style))
+        rows = [[str(k), "" if v is None else str(v)] for k,v in pairs]
+        story.append(Table(rows, colWidths=[60*mm, 107*mm], style=TableStyle([
+            ("GRID", (0,0), (-1,-1), 0.35, colors.HexColor("#dfe7e5")),
+            ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#f7faf9")),
+            ("FONTNAME", (0,0), (0,-1), "Helvetica-Bold"),
+            ("FONTSIZE", (0,0), (-1,-1), 8.5),
+            ("VALIGN", (0,0), (-1,-1), "TOP"),
+            ("LEFTPADDING", (0,0), (-1,-1), 6), ("RIGHTPADDING", (0,0), (-1,-1), 6),
+            ("TOPPADDING", (0,0), (-1,-1), 5), ("BOTTOMPADDING", (0,0), (-1,-1), 5)
+        ])))
+
+    if latest_health:
+        add_kv_section("Health Snapshot", [
+            ("Heart Rate", latest_health.get("heart_rate")),
+            ("Blood Pressure", f"{latest_health.get('systolic_bp','')} / {latest_health.get('diastolic_bp','')}"),
+            ("SpO₂", latest_health.get("spo2")),
+            ("Temperature", latest_health.get("temperature")),
+            ("Respiratory Rate", latest_health.get("respiratory_rate")),
+            ("Weight", latest_health.get("weight")),
+            ("Height", latest_health.get("height")),
+            ("BMI", latest_health.get("bmi")),
+            ("Blood Glucose", latest_health.get("blood_glucose")),
+            ("Allergic Conditions", latest_health.get("allergic_conditions")),
+            ("Critical / Last Hospital Admission", latest_health.get("critical_hospital_admission")),
+            ("Overall Health Status", latest_health.get("overall_health_status")),
+        ])
+        add_kv_section("Thyroid Profile", [
+            ("TSH", latest_health.get("thyroid_tsh")),
+            ("T3", latest_health.get("thyroid_t3")),
+            ("T4", latest_health.get("thyroid_t4")),
+            ("Free T3", latest_health.get("thyroid_free_t3")),
+            ("Free T4", latest_health.get("thyroid_free_t4")),
+        ])
+
+    if latest_cbc:
+        add_kv_section("Latest CBC Profile", [(k.replace("_", " ").title(), v) for k,v in latest_cbc.items() if k not in {"personnel_id", "recorded_by", "recorded_by_role", "document_id"}])
+
+    if latest_lipid:
+        add_kv_section("Latest Lipid Profile", [(k.replace("_", " ").title(), v) for k,v in latest_lipid.items() if k not in {"personnel_id", "recorded_by", "recorded_by_role", "document_id"}])
+
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("Generated from ViQtor Health. This document reflects the records available at the time of generation.", body_style))
+    doc.build(story)
+    buffer.seek(0)
+
+    safe_id = personnel_id.replace("/", "-")
+    return send_file(
+        buffer, mimetype="application/pdf", as_attachment=True,
+        download_name=f"ViQtor_Health_Medical_Profile_{safe_id}.pdf"
     )
 
 
