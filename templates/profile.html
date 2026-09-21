@@ -1489,7 +1489,7 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
                     <h2>Extended Health Information</h2>
                     <p>Sugar, allergies, hospital history and thyroid profile</p>
                 </div>
-                <a href="/medical-report/{{ personnel.personnel_id }}" class="vq-report-btn">↓ DOWNLOAD MEDICAL PDF</a>
+                <a href="/profile/{{ personnel.qr_token }}/pdf" class="vq-report-btn">↓ DOWNLOAD MEDICAL PDF</a>
             </div>
 
             {% if latest_health %}
