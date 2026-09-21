@@ -1303,6 +1303,28 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
 </style>
 
+
+<style>
+.vq-ai-section{margin:24px 0 28px}
+.vq-ai-card{background:linear-gradient(135deg,#ffffff,#f5fbfa);border:1px solid #dcebe7;border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(20,48,62,.06)}
+.vq-ai-head{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.vq-ai-title-wrap{display:flex;align-items:center;gap:14px}
+.vq-ai-icon{width:46px;height:46px;border-radius:12px;background:#e8f4f1;color:#26736a;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.5px;border:1px solid #d4e9e4}
+.vq-ai-kicker{font-size:9px;letter-spacing:1.1px;font-weight:900;color:#26736a;margin-bottom:4px}
+.vq-ai-card h2{margin:0;color:#17324d;font-size:20px}
+.vq-ai-card p{margin:5px 0 0;color:#6d7b79;font-size:12px;line-height:1.5;max-width:720px}
+.vq-ai-generate{border:0;border-radius:9px;background:#26736a;color:#fff;padding:12px 16px;font-weight:850;font-size:11px;letter-spacing:.2px;cursor:pointer;white-space:nowrap;box-shadow:0 5px 14px rgba(38,115,106,.18)}
+.vq-ai-generate:hover{filter:brightness(.96)}
+.vq-ai-safety{margin-top:16px;padding:9px 12px;background:#f1f7f5;border:1px solid #dfebe8;border-radius:9px;color:#61726f;font-size:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vq-ai-safety span:first-child{font-weight:850;color:#26736a}
+.vq-ai-last{margin-top:12px;padding:12px 14px;border:1px solid #e1ebe9;border-radius:10px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.vq-ai-last span{display:block;color:#7a8986;font-size:9px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.vq-ai-last strong{font-size:11px;color:#17324d}
+.vq-ai-view{padding:8px 12px;border-radius:8px;background:#eef7f5;color:#26736a;text-decoration:none;font-weight:850;font-size:10px;border:1px solid #d7e9e5}
+.vq-ai-empty{margin-top:12px;padding:13px;border:1px dashed #d6e4e1;border-radius:10px;background:#fff;color:#788783;font-size:11px}
+@media(max-width:760px){.vq-ai-head{flex-direction:column;align-items:flex-start}.vq-ai-generate{width:100%}.vq-ai-last{align-items:flex-start;flex-direction:column}.vq-ai-view{width:100%;text-align:center}}
+</style>
+
 </head>
 
 
@@ -1837,7 +1859,62 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
             <div>
 
-                <h2>
+                
+
+        <!-- ======================================
+             AI HEALTH INTELLIGENCE
+        ======================================= -->
+
+        <section class="vq-ai-section">
+            <div class="vq-ai-card">
+                <div class="vq-ai-head">
+                    <div class="vq-ai-title-wrap">
+                        <div class="vq-ai-icon">AI</div>
+                        <div>
+                            <div class="vq-ai-kicker">VIQTOR HEALTH INTELLIGENCE</div>
+                            <h2>Personalized Nutrition &amp; Wellness</h2>
+                            <p>
+                                AI analyzes the latest available vitals, CBC, lipid, allergy and thyroid records
+                                to prepare an allergy-aware wellness and nutrition plan.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form method="POST"
+                          action="{{ url_for('generate_ai_health_plan_route', personnel_id=personnel.personnel_id) }}">
+                        <button type="submit" class="vq-ai-generate">
+                            ✦ GENERATE AI HEALTH PLAN
+                        </button>
+                    </form>
+                </div>
+
+                <div class="vq-ai-safety">
+                    <span>AI decision support</span>
+                    <span>•</span>
+                    <span>Allergy-aware</span>
+                    <span>•</span>
+                    <span>Admin / Doctor review</span>
+                </div>
+
+                {% if latest_ai_report %}
+                <div class="vq-ai-last">
+                    <div>
+                        <span>Latest AI report</span>
+                        <strong>{{ latest_ai_report.generated_at }}</strong>
+                    </div>
+                    <a href="{{ url_for('view_ai_health_plan', report_id=latest_ai_report.document_id) }}" class="vq-ai-view">
+                        VIEW REPORT →
+                    </a>
+                </div>
+                {% else %}
+                <div class="vq-ai-empty">
+                    No AI nutrition and wellness report has been generated for this patient yet.
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+<h2>
                     Last Medical Examination
                 </h2>
 

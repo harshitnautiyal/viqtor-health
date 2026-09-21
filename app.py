@@ -19,6 +19,12 @@ import secrets
 from datetime import datetime
 from functools import wraps
 from io import BytesIO
+from html import escape
+
+from ai_health_service import (
+    generate_ai_health_plan,
+    AI_MODEL
+)
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -1031,6 +1037,44 @@ def profile(qr_token):
     )
 
     # ========================================================
+    # LATEST AI HEALTH REPORT
+    # ========================================================
+
+    ai_query = (
+        db.collection("ai_health_reports")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    ai_reports = []
+
+    for doc in ai_query:
+
+        report = doc.to_dict()
+
+        report["document_id"] = doc.id
+
+        ai_reports.append(report)
+
+    ai_reports.sort(
+        key=lambda x: x.get(
+            "generated_at",
+            ""
+        ),
+        reverse=True
+    )
+
+    latest_ai_report = (
+        ai_reports[0]
+        if ai_reports
+        else None
+    )
+
+    # ========================================================
     # AUTHENTICATED ACCESS
     #
     # Admin/doctor users continue to receive the existing
@@ -1054,6 +1098,7 @@ def profile(qr_token):
                 latest_lipid=latest_lipid,
                 latest_allergy=latest_allergy,
                 latest_thyroid=latest_thyroid,
+                latest_ai_report=latest_ai_report,
                 username=(
                     current_role.upper()
                     if current_role
@@ -2430,6 +2475,451 @@ def thyroid_profile(personnel_id):
         thyroid_records=thyroid_records,
         latest_thyroid=latest_thyroid
     )
+
+# ============================================================
+# AI PERSONALIZED NUTRITION & WELLNESS
+# ADMIN + DOCTOR
+# ============================================================
+
+
+def _latest_collection_record(collection_name, personnel_id):
+
+    records = []
+
+    query = (
+        db.collection(collection_name)
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    for doc in query:
+        record = doc.to_dict()
+        record["document_id"] = doc.id
+        records.append(record)
+
+    records.sort(
+        key=lambda x: x.get("recorded_at", ""),
+        reverse=True
+    )
+
+    return records
+
+
+@app.route(
+    "/ai-health-plan/<personnel_id>",
+    methods=["POST"]
+)
+@role_required(
+    "admin",
+    "doctor"
+)
+def generate_ai_health_plan_route(personnel_id):
+
+    personnel_doc = (
+        db.collection("personnel")
+        .document(personnel_id)
+        .get()
+    )
+
+    if not personnel_doc.exists:
+        return "Patient not found.", 404
+
+    personnel = personnel_doc.to_dict()
+
+    try:
+        health_records = _latest_collection_record(
+            "health_records",
+            personnel_id
+        )
+        cbc_records = _latest_collection_record(
+            "cbc_records",
+            personnel_id
+        )
+        lipid_records = _latest_collection_record(
+            "lipid_records",
+            personnel_id
+        )
+        allergy_records = _latest_collection_record(
+            "allergy_records",
+            personnel_id
+        )
+        thyroid_records = _latest_collection_record(
+            "thyroid_records",
+            personnel_id
+        )
+
+        latest_health = health_records[0] if health_records else None
+        latest_cbc = cbc_records[0] if cbc_records else None
+        latest_lipid = lipid_records[0] if lipid_records else None
+        latest_thyroid = thyroid_records[0] if thyroid_records else None
+
+        active_allergies = []
+        for allergy in allergy_records:
+            status = str(allergy.get("status", "")).strip().lower()
+            if status in ["active", "ongoing", "current"]:
+                active_allergies.append({
+                    "allergy_type": allergy.get("allergy_type"),
+                    "allergen": allergy.get("allergen"),
+                    "reaction": allergy.get("reaction"),
+                    "severity": allergy.get("severity"),
+                    "emergency_allergy": allergy.get("emergency_allergy")
+                })
+
+        hard_exclusions = []
+        for allergy in active_allergies:
+            allergen = str(allergy.get("allergen") or "").strip()
+            if allergen:
+                hard_exclusions.append(allergen)
+
+        dob = str(personnel.get("dob") or "").strip()
+        age = None
+        if dob:
+            try:
+                birth_date = datetime.strptime(dob, "%Y-%m-%d").date()
+                today = datetime.now().date()
+                age = today.year - birth_date.year - (
+                    (today.month, today.day) <
+                    (birth_date.month, birth_date.day)
+                )
+            except ValueError:
+                age = None
+
+        patient_context = {
+            "age_years": age,
+            "blood_group": personnel.get("blood_group"),
+            "latest_vitals": latest_health,
+            "latest_cbc": latest_cbc,
+            "latest_lipid": latest_lipid,
+            "latest_thyroid": latest_thyroid,
+            "active_allergies": active_allergies,
+            "hard_food_exclusions": hard_exclusions,
+            "data_availability": {
+                "health_record": bool(latest_health),
+                "cbc": bool(latest_cbc),
+                "lipid": bool(latest_lipid),
+                "allergy": bool(allergy_records),
+                "thyroid": bool(latest_thyroid)
+            }
+        }
+
+        plan = generate_ai_health_plan(
+            patient_context
+        )
+
+        generated_at = datetime.now().isoformat()
+
+        report_data = {
+            "personnel_id": personnel_id,
+            "generated_at": generated_at,
+            "generated_by": session.get("email"),
+            "generated_by_role": session.get("role"),
+            "model": AI_MODEL,
+            "plan": plan,
+            "source_timestamps": {
+                "health": (latest_health or {}).get("recorded_at"),
+                "cbc": (latest_cbc or {}).get("recorded_at"),
+                "lipid": (latest_lipid or {}).get("recorded_at"),
+                "thyroid": (latest_thyroid or {}).get("recorded_at")
+            },
+            "active_allergy_count": len(active_allergies)
+        }
+
+        report_ref = db.collection(
+            "ai_health_reports"
+        ).add(report_data)[1]
+
+        return redirect(
+            url_for(
+                "view_ai_health_plan",
+                report_id=report_ref.id
+            )
+        )
+
+    except Exception as error:
+        print(
+            "AI HEALTH PLAN ERROR:",
+            repr(error)
+        )
+
+        return render_template(
+            "ai_health_plan.html",
+            personnel=personnel,
+            report=None,
+            error=(
+                "Unable to generate the AI health plan. "
+                + str(error)
+            )
+        ), 500
+
+
+@app.route(
+    "/ai-health-plan/<report_id>",
+    methods=["GET"]
+)
+@role_required(
+    "admin",
+    "doctor"
+)
+def view_ai_health_plan(report_id):
+
+    report_doc = (
+        db.collection("ai_health_reports")
+        .document(report_id)
+        .get()
+    )
+
+    if not report_doc.exists:
+        return "AI report not found.", 404
+
+    report = report_doc.to_dict()
+    report["document_id"] = report_doc.id
+
+    personnel_id = report.get("personnel_id")
+
+    personnel_doc = (
+        db.collection("personnel")
+        .document(personnel_id)
+        .get()
+    )
+
+    if not personnel_doc.exists:
+        return "Patient not found.", 404
+
+    personnel = personnel_doc.to_dict()
+
+    return render_template(
+        "ai_health_plan.html",
+        personnel=personnel,
+        report=report,
+        error=None
+    )
+
+
+@app.route(
+    "/ai-health-plan/<report_id>/pdf",
+    methods=["GET"]
+)
+@role_required(
+    "admin",
+    "doctor"
+)
+def ai_health_plan_pdf(report_id):
+
+    report_doc = (
+        db.collection("ai_health_reports")
+        .document(report_id)
+        .get()
+    )
+
+    if not report_doc.exists:
+        return "AI report not found.", 404
+
+    report = report_doc.to_dict()
+
+    personnel_id = report.get("personnel_id")
+
+    personnel_doc = (
+        db.collection("personnel")
+        .document(personnel_id)
+        .get()
+    )
+
+    if not personnel_doc.exists:
+        return "Patient not found.", 404
+
+    personnel = personnel_doc.to_dict()
+    plan = report.get("plan") or {}
+
+    buffer = BytesIO()
+
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=16 * mm,
+        leftMargin=16 * mm,
+        topMargin=16 * mm,
+        bottomMargin=16 * mm
+    )
+
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        "AIPlanTitle",
+        parent=styles["Title"],
+        fontSize=20,
+        leading=24,
+        textColor=colors.HexColor("#17324d"),
+        spaceAfter=5
+    )
+
+    subtitle_style = ParagraphStyle(
+        "AIPlanSubtitle",
+        parent=styles["BodyText"],
+        fontSize=9,
+        leading=12,
+        textColor=colors.HexColor("#667575"),
+        spaceAfter=10
+    )
+
+    section_style = ParagraphStyle(
+        "AIPlanSection",
+        parent=styles["Heading2"],
+        fontSize=12,
+        leading=15,
+        textColor=colors.HexColor("#26736a"),
+        spaceBefore=10,
+        spaceAfter=6
+    )
+
+    body_style = ParagraphStyle(
+        "AIPlanBody",
+        parent=styles["BodyText"],
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor("#263238"),
+        spaceAfter=5
+    )
+
+    bullet_style = ParagraphStyle(
+        "AIPlanBullet",
+        parent=body_style,
+        leftIndent=10,
+        firstLineIndent=-6,
+        spaceAfter=4
+    )
+
+    story = [
+        Paragraph("ViQtor Health", title_style),
+        Paragraph(
+            "AI Personalized Nutrition & Wellness Report",
+            subtitle_style
+        ),
+        Paragraph(
+            "Patient: " + escape(str(personnel.get("full_name", "Patient"))),
+            body_style
+        ),
+        Paragraph(
+            "Patient ID: " + escape(str(personnel_id)),
+            body_style
+        ),
+        Paragraph(
+            "Generated: " + escape(str(report.get("generated_at", ""))),
+            body_style
+        )
+    ]
+
+    def add_section(title, text=None, bullets=None):
+        story.append(Paragraph(escape(title), section_style))
+        if text:
+            story.append(Paragraph(escape(str(text)), body_style))
+        for item in bullets or []:
+            story.append(Paragraph("• " + escape(str(item)), bullet_style))
+
+    add_section(
+        "Executive Summary",
+        plan.get("executive_summary")
+    )
+
+    add_section(
+        "Priority Focus",
+        bullets=plan.get("priority_focus", [])
+    )
+
+    add_section(
+        "Nutrition Goals",
+        bullets=plan.get("nutrition_goals", [])
+    )
+
+    story.append(Paragraph("Recommended Foods", section_style))
+    for item in plan.get("recommended_foods", []):
+        story.append(
+            Paragraph(
+                "<b>" + escape(str(item.get("category", ""))) + "</b>: "
+                + escape(str(item.get("examples", "")))
+                + " — "
+                + escape(str(item.get("reason", ""))),
+                body_style
+            )
+        )
+
+    story.append(Paragraph("Foods to Avoid", section_style))
+    for item in plan.get("foods_to_avoid", []):
+        story.append(
+            Paragraph(
+                "<b>" + escape(str(item.get("item", ""))) + "</b>: "
+                + escape(str(item.get("reason", ""))),
+                body_style
+            )
+        )
+
+    story.append(Paragraph("Daily Meal Framework", section_style))
+    for item in plan.get("meal_framework", []):
+        story.append(
+            Paragraph(
+                "<b>" + escape(str(item.get("meal", ""))) + "</b>: "
+                + escape(str(item.get("options", ""))),
+                body_style
+            )
+        )
+
+    add_section(
+        "Hydration Guidance",
+        plan.get("hydration_guidance")
+    )
+
+    add_section(
+        "Activity & Lifestyle",
+        bullets=plan.get("activity_and_lifestyle", [])
+    )
+
+    add_section(
+        "Allergy Safety",
+        bullets=plan.get("allergy_safety", [])
+    )
+
+    add_section(
+        "Laboratory Considerations",
+        bullets=plan.get("lab_considerations", [])
+    )
+
+    add_section(
+        "Professional Review",
+        bullets=plan.get("clinician_review", [])
+    )
+
+    add_section(
+        "Important Disclaimer",
+        plan.get("disclaimer")
+    )
+
+    story.append(Spacer(1, 8))
+    story.append(
+        Paragraph(
+            "Generated by ViQtor Health AI. This report should be reviewed by a qualified healthcare professional or dietitian when individualized medical or nutrition advice is required.",
+            subtitle_style
+        )
+    )
+
+    document.build(story)
+    buffer.seek(0)
+
+    safe_id = str(personnel_id).replace("/", "-")
+
+    return send_file(
+        buffer,
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=(
+            "ViQtor_AI_Nutrition_Wellness_"
+            + safe_id
+            + ".pdf"
+        )
+    )
+
 
 # ============================================================
 # RUN APPLICATION
