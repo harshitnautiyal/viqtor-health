@@ -2007,6 +2007,349 @@ def qr_code(filename):
 
 
 # ============================================================
+# ALLERGY PROFILE
+# ADMIN + DOCTOR
+# ============================================================
+
+@app.route(
+    "/allergy/<personnel_id>",
+    methods=["GET", "POST"]
+)
+@role_required(
+    "admin",
+    "doctor"
+)
+def allergy_profile(personnel_id):
+
+    personnel_doc = (
+        db.collection("personnel")
+        .document(personnel_id)
+        .get()
+    )
+
+    if not personnel_doc.exists:
+        return "Patient not found.", 404
+
+    personnel = personnel_doc.to_dict()
+
+    if request.method == "POST":
+
+        try:
+
+            allergy_data = {
+                "personnel_id":
+                    personnel_id,
+
+                "allergy_type":
+                    request.form.get(
+                        "allergy_type",
+                        ""
+                    ).strip(),
+
+                "allergen":
+                    request.form.get(
+                        "allergen",
+                        ""
+                    ).strip(),
+
+                "reaction":
+                    request.form.get(
+                        "reaction",
+                        ""
+                    ).strip(),
+
+                "severity":
+                    request.form.get(
+                        "severity",
+                        ""
+                    ).strip(),
+
+                "first_identified":
+                    request.form.get(
+                        "first_identified",
+                        ""
+                    ).strip(),
+
+                "status":
+                    request.form.get(
+                        "status",
+                        "Active"
+                    ).strip(),
+
+                "emergency_allergy":
+                    (
+                        "Yes"
+                        if request.form.get(
+                            "emergency_allergy"
+                        )
+                        else "No"
+                    ),
+
+                "notes":
+                    request.form.get(
+                        "notes",
+                        ""
+                    ).strip(),
+
+                "recorded_at":
+                    datetime.now().isoformat(),
+
+                "recorded_by":
+                    session.get("email"),
+
+                "recorded_by_role":
+                    session.get("role")
+            }
+
+            db.collection(
+                "allergy_records"
+            ).add(
+                allergy_data
+            )
+
+            return redirect(
+                url_for(
+                    "allergy_profile",
+                    personnel_id=personnel_id
+                )
+            )
+
+        except Exception as error:
+
+            print(
+                "ALLERGY PROFILE ERROR:",
+                error
+            )
+
+            return render_template(
+                "allergy_profile.html",
+                personnel=personnel,
+                allergy_records=[],
+                error=(
+                    "Unable to save the allergy profile."
+                )
+            )
+
+    allergy_query = (
+        db.collection("allergy_records")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    allergy_records = []
+
+    for doc in allergy_query:
+
+        record = doc.to_dict()
+
+        record["document_id"] = doc.id
+
+        allergy_records.append(record)
+
+    allergy_records.sort(
+        key=lambda x: x.get(
+            "recorded_at",
+            ""
+        ),
+        reverse=True
+    )
+
+    return render_template(
+        "allergy_profile.html",
+        personnel=personnel,
+        allergy_records=allergy_records
+    )
+
+
+# ============================================================
+# THYROID PROFILE
+# ADMIN + DOCTOR
+# ============================================================
+
+@app.route(
+    "/thyroid/<personnel_id>",
+    methods=["GET", "POST"]
+)
+@role_required(
+    "admin",
+    "doctor"
+)
+def thyroid_profile(personnel_id):
+
+    personnel_doc = (
+        db.collection("personnel")
+        .document(personnel_id)
+        .get()
+    )
+
+    if not personnel_doc.exists:
+        return "Patient not found.", 404
+
+    personnel = personnel_doc.to_dict()
+
+    if request.method == "POST":
+
+        try:
+
+            def get_float(field_name):
+
+                value = request.form.get(
+                    field_name,
+                    ""
+                ).strip()
+
+                if value == "":
+                    return None
+
+                return float(value)
+
+
+            thyroid_data = {
+
+                "personnel_id":
+                    personnel_id,
+
+                "tsh":
+                    get_float("tsh"),
+
+                "t3":
+                    get_float("t3"),
+
+                "t4":
+                    get_float("t4"),
+
+                "free_t3":
+                    get_float("free_t3"),
+
+                "free_t4":
+                    get_float("free_t4"),
+
+                "investigation_date":
+                    request.form.get(
+                        "investigation_date",
+                        ""
+                    ).strip(),
+
+                "thyroid_condition":
+                    request.form.get(
+                        "thyroid_condition",
+                        ""
+                    ).strip(),
+
+                "medication":
+                    request.form.get(
+                        "medication",
+                        ""
+                    ).strip(),
+
+                "clinical_notes":
+                    request.form.get(
+                        "clinical_notes",
+                        ""
+                    ).strip(),
+
+                "recorded_at":
+                    datetime.now().isoformat(),
+
+                "recorded_by":
+                    session.get("email"),
+
+                "recorded_by_role":
+                    session.get("role")
+            }
+
+            db.collection(
+                "thyroid_records"
+            ).add(
+                thyroid_data
+            )
+
+            return redirect(
+                url_for(
+                    "thyroid_profile",
+                    personnel_id=personnel_id
+                )
+            )
+
+        except ValueError:
+
+            return render_template(
+                "thyroid_profile.html",
+                personnel=personnel,
+                thyroid_records=[],
+                latest_thyroid=None,
+                error=(
+                    "Please enter valid numeric thyroid values."
+                )
+            )
+
+        except Exception as error:
+
+            print(
+                "THYROID PROFILE ERROR:",
+                error
+            )
+
+            return render_template(
+                "thyroid_profile.html",
+                personnel=personnel,
+                thyroid_records=[],
+                latest_thyroid=None,
+                error=(
+                    "Unable to save the thyroid profile."
+                )
+            )
+
+
+    thyroid_query = (
+        db.collection("thyroid_records")
+        .where(
+            "personnel_id",
+            "==",
+            personnel_id
+        )
+        .stream()
+    )
+
+    thyroid_records = []
+
+    for doc in thyroid_query:
+
+        record = doc.to_dict()
+
+        record["document_id"] = doc.id
+
+        thyroid_records.append(record)
+
+
+    thyroid_records.sort(
+        key=lambda x: x.get(
+            "recorded_at",
+            ""
+        ),
+        reverse=True
+    )
+
+
+    latest_thyroid = (
+        thyroid_records[0]
+        if thyroid_records
+        else None
+    )
+
+
+    return render_template(
+        "thyroid_profile.html",
+        personnel=personnel,
+        thyroid_records=thyroid_records,
+        latest_thyroid=latest_thyroid
+    )
+
+# ============================================================
 # RUN APPLICATION
 # ============================================================
 
@@ -2036,3 +2379,4 @@ if __name__ == "__main__":
         port=5000,
         debug=not IS_RENDER
     )
+

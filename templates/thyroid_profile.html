@@ -1,0 +1,981 @@
+<!-- templates/thyroid_profile.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Thyroid Profile | ViQtor Health</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+            background: #f5f8f7;
+            color: #17233c;
+        }
+
+        .topbar {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #e5ebe8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 34px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(
+                135deg,
+                #157a72,
+                #2e9b91
+            );
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 850;
+            color: #173d3a;
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
+            color: #7c8986;
+            margin-top: 2px;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-btn {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #dce5e2;
+            background: white;
+            color: #315c57;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .top-btn.primary {
+            background: #157a72;
+            color: white;
+            border-color: #157a72;
+        }
+
+        .page {
+            max-width: 1180px;
+            margin: auto;
+            padding: 36px 24px 60px;
+        }
+
+        .eyebrow {
+            color: #157a72;
+            font-size: 11px;
+            font-weight: 850;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            color: #74817e;
+            font-size: 14px;
+            margin: 8px 0 28px;
+        }
+
+        .patient-card {
+            background: white;
+            border: 1px solid #e3ebe8;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(26,58,53,.04);
+        }
+
+        .patient-name {
+            font-size: 20px;
+            font-weight: 850;
+        }
+
+        .patient-id {
+            margin-top: 5px;
+            color: #7d8987;
+            font-size: 12px;
+        }
+
+        .blood {
+            background: #edf7f5;
+            color: #157a72;
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 850;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e3ebe8;
+            border-radius: 16px;
+            padding: 26px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(26,58,53,.04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            background: #f1edf9;
+            color: #6d4e9c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .title {
+            font-size: 19px;
+            font-weight: 850;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #7d8987;
+            margin-top: 3px;
+        }
+
+        .thyroid-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+        .lab-box {
+            border: 1px solid #e5eae8;
+            background: #fafcfb;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .lab-name {
+            font-size: 11px;
+            font-weight: 850;
+            color: #687773;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .lab-value {
+            font-size: 24px;
+            font-weight: 850;
+            color: #17233c;
+            margin-top: 10px;
+        }
+
+        .lab-unit {
+            font-size: 10px;
+            color: #8a9693;
+            margin-top: 4px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #43514f;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #dce5e2;
+            background: #fbfcfc;
+            border-radius: 9px;
+            padding: 12px 13px;
+            font-size: 13px;
+            color: #263532;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #42a79d;
+            box-shadow: 0 0 0 3px rgba(66,167,157,.10);
+        }
+
+        textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .range {
+            font-size: 10px;
+            color: #899491;
+            margin-top: 5px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 20px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .secondary {
+            background: #f1f5f4;
+            color: #48605c;
+        }
+
+        .primary {
+            background: #157a72;
+            color: white;
+        }
+
+        .history {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history th {
+            background: #f5f8f7;
+            color: #667572;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 13px;
+            text-align: left;
+        }
+
+        .history td {
+            padding: 14px 13px;
+            border-top: 1px solid #edf1ef;
+            font-size: 12px;
+        }
+
+        .empty {
+            padding: 30px;
+            text-align: center;
+            color: #8a9693;
+            background: #fafcfb;
+            border: 1px dashed #dce5e2;
+            border-radius: 10px;
+        }
+
+        .error {
+            background: #fff0ef;
+            color: #a63d36;
+            border: 1px solid #f0cbc7;
+            border-radius: 9px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        @media(max-width: 850px) {
+
+            .thyroid-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media(max-width: 650px) {
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .top-actions .top-btn:not(.primary) {
+                display: none;
+            }
+
+            .patient-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .thyroid-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                overflow-x: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<header class="topbar">
+
+    <a
+        href="{{ url_for('admin') }}"
+        class="brand">
+
+        <div class="brand-mark">
+            V
+        </div>
+
+        <div>
+
+            <div class="brand-name">
+                ViQtor Health
+            </div>
+
+            <div class="brand-subtitle">
+                Smart Digital Health & Medical Record Platform
+            </div>
+
+        </div>
+
+    </a>
+
+
+    <div class="top-actions">
+
+        <a
+            href="{{ url_for('profile', qr_token=personnel.qr_token) }}"
+            class="top-btn">
+            Patient Profile
+        </a>
+
+        <a
+            href="{{ url_for('admin') }}"
+            class="top-btn primary">
+            Dashboard
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+
+    <section class="page-header">
+
+        <div class="eyebrow">
+            Laboratory Profile
+        </div>
+
+        <h1>
+            Thyroid Profile
+        </h1>
+
+        <p>
+            Record and review thyroid investigation results and related clinical information.
+        </p>
+
+    </section>
+
+
+    <section class="patient-card">
+
+        <div>
+
+            <div class="patient-name">
+                {{ personnel.full_name or
+                   ((personnel.first_name or '') ~ ' ' ~
+                    (personnel.last_name or '')) }}
+            </div>
+
+            <div class="patient-id">
+                Patient ID:
+                {{ personnel.personnel_id }}
+            </div>
+
+        </div>
+
+        {% if personnel.blood_group %}
+
+        <div class="blood">
+            Blood Group:
+            {{ personnel.blood_group }}
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    {% if error %}
+
+    <div class="error">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <form method="POST">
+
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div class="icon">
+                    🧪
+                </div>
+
+                <div>
+
+                    <div class="title">
+                        Thyroid Investigation
+                    </div>
+
+                    <div class="subtitle">
+                        Enter the latest thyroid laboratory results.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div>
+
+                    <label for="tsh">
+                        TSH
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="tsh"
+                        name="tsh"
+                        placeholder="e.g. 2.40">
+
+                    <div class="range">
+                        Unit: µIU/mL
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label for="t3">
+                        T3
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="t3"
+                        name="t3"
+                        placeholder="e.g. 1.20">
+
+                    <div class="range">
+                        Unit: ng/mL
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label for="t4">
+                        T4
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="t4"
+                        name="t4"
+                        placeholder="e.g. 8.10">
+
+                    <div class="range">
+                        Unit: µg/dL
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label for="free_t3">
+                        Free T3
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="free_t3"
+                        name="free_t3"
+                        placeholder="e.g. 3.20">
+
+                    <div class="range">
+                        Unit: pg/mL
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label for="free_t4">
+                        Free T4
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="free_t4"
+                        name="free_t4"
+                        placeholder="e.g. 1.20">
+
+                    <div class="range">
+                        Unit: ng/dL
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label for="investigation_date">
+                        Investigation Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="investigation_date"
+                        name="investigation_date">
+
+                </div>
+
+
+                <div>
+
+                    <label for="thyroid_condition">
+                        Thyroid Condition
+                    </label>
+
+                    <select
+                        id="thyroid_condition"
+                        name="thyroid_condition">
+
+                        <option value="">
+                            Select condition
+                        </option>
+
+                        <option value="Normal">
+                            Normal / No Known Condition
+                        </option>
+
+                        <option value="Hypothyroidism">
+                            Hypothyroidism
+                        </option>
+
+                        <option value="Hyperthyroidism">
+                            Hyperthyroidism
+                        </option>
+
+                        <option value="Thyroiditis">
+                            Thyroiditis
+                        </option>
+
+                        <option value="Goitre">
+                            Goitre
+                        </option>
+
+                        <option value="Thyroid Nodule">
+                            Thyroid Nodule
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label for="medication">
+                        Current Thyroid Medication
+                    </label>
+
+                    <input
+                        type="text"
+                        id="medication"
+                        name="medication"
+                        placeholder="e.g. Levothyroxine">
+
+                </div>
+
+
+                <div class="full">
+
+                    <label for="clinical_notes">
+                        Clinical Notes
+                    </label>
+
+                    <textarea
+                        id="clinical_notes"
+                        name="clinical_notes"
+                        placeholder="Additional thyroid-related observations or clinical notes..."></textarea>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="actions">
+
+                <a
+                    href="{{ url_for('profile', qr_token=personnel.qr_token) }}"
+                    class="btn secondary">
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn primary">
+                    Save Thyroid Profile
+                </button>
+
+            </div>
+
+        </section>
+
+    </form>
+
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div class="icon">
+                📊
+            </div>
+
+            <div>
+
+                <div class="title">
+                    Latest Thyroid Results
+                </div>
+
+                <div class="subtitle">
+                    Most recently recorded thyroid investigation.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if latest_thyroid %}
+
+        <div class="thyroid-grid">
+
+
+            <div class="lab-box">
+
+                <div class="lab-name">
+                    TSH
+                </div>
+
+                <div class="lab-value">
+                    {{ latest_thyroid.get('tsh', '—') }}
+                </div>
+
+                <div class="lab-unit">
+                    µIU/mL
+                </div>
+
+            </div>
+
+
+            <div class="lab-box">
+
+                <div class="lab-name">
+                    T3
+                </div>
+
+                <div class="lab-value">
+                    {{ latest_thyroid.get('t3', '—') }}
+                </div>
+
+                <div class="lab-unit">
+                    ng/mL
+                </div>
+
+            </div>
+
+
+            <div class="lab-box">
+
+                <div class="lab-name">
+                    T4
+                </div>
+
+                <div class="lab-value">
+                    {{ latest_thyroid.get('t4', '—') }}
+                </div>
+
+                <div class="lab-unit">
+                    µg/dL
+                </div>
+
+            </div>
+
+
+            <div class="lab-box">
+
+                <div class="lab-name">
+                    Free T3
+                </div>
+
+                <div class="lab-value">
+                    {{ latest_thyroid.get('free_t3', '—') }}
+                </div>
+
+                <div class="lab-unit">
+                    pg/mL
+                </div>
+
+            </div>
+
+
+            <div class="lab-box">
+
+                <div class="lab-name">
+                    Free T4
+                </div>
+
+                <div class="lab-value">
+                    {{ latest_thyroid.get('free_t4', '—') }}
+                </div>
+
+                <div class="lab-unit">
+                    ng/dL
+                </div>
+
+            </div>
+
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+            No thyroid profile has been recorded yet.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div class="icon">
+                ☑
+            </div>
+
+            <div>
+
+                <div class="title">
+                    Thyroid History
+                </div>
+
+                <div class="subtitle">
+                    Previous thyroid investigations.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if thyroid_records %}
+
+        <table class="history">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+                    <th>TSH</th>
+                    <th>T3</th>
+                    <th>T4</th>
+                    <th>Free T3</th>
+                    <th>Free T4</th>
+                    <th>Condition</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for record in thyroid_records %}
+
+                <tr>
+
+                    <td>
+                        {{ record.get(
+                            'investigation_date',
+                            record.get('recorded_at', '—')
+                        ) }}
+                    </td>
+
+                    <td>
+                        {{ record.get('tsh', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('t3', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('t4', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('free_t3', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('free_t4', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get(
+                            'thyroid_condition',
+                            '—'
+                        ) }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+            No previous thyroid records available.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>

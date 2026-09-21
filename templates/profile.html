@@ -1066,11 +1066,7 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 .profile-heading .badge{display:none!important}
 .profile-heading h1{font-size:29px!important;line-height:1.15;color:#0d1730!important;margin:0 0 5px!important}
 .profile-heading p{font-size:13px!important;color:#647187!important;margin:0!important}
-.profile-heading:after{
- content:"“A Healthier Force\A A Stronger Tomorrow”";white-space:pre;
- position:absolute;right:28px;top:20px;text-align:right;
- font:italic 18px/1.35 Georgia,serif;color:#4a593d;
-}
+
 
 /* original cards */
 .person-profile-card,.vital-card,.chart-card,.history-card,.additional-card{
@@ -1157,13 +1153,7 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
  .profile-section{padding:18px!important}
  .profile-wrapper{display:block!important}
  .vq-right-column{margin-top:14px}
- .profile-heading:after{display:none}
- .footer{margin-left:0!important}
- .nav-logo{width:auto!important}
- .nav-links a:nth-child(1),.nav-links a:nth-child(2){display:none!important}
- .vitals-grid{grid-template-columns:repeat(2,1fr)!important}
- .charts-grid{grid-template-columns:1fr!important}
-}
+
 @media(max-width:560px){
  .navbar{padding:0 12px!important;gap:10px!important}
  .vq-top-search{display:none}
@@ -1274,6 +1264,13 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 .cbc .vq-lab-button{background:#edf4fa;color:#315c78;border:1px solid #d5e2eb}
 .lipid .vq-lab-button{background:#fbf3e3;color:#89651d;border:1px solid #eadcbd}
 .vq-lab-button:hover{filter:brightness(.97);transform:translateY(-1px)}
+.vq-lab-card.allergy{border-top:3px solid #8b5e83}
+.vq-lab-card.thyroid{border-top:3px solid #5d6fa8}
+.allergy .vq-lab-icon{background:#f5edf4;color:#8b5e83}
+.thyroid .vq-lab-icon{background:#eef1fa;color:#5d6fa8}
+.allergy .vq-lab-button{background:#f5edf4;color:#8b5e83;border:1px solid #e3d1df}
+.thyroid .vq-lab-button{background:#eef1fa;color:#5d6fa8;border:1px solid #d5dcef}
+
 @media(max-width:850px){.vq-lab-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.vq-lab-values{grid-template-columns:1fr 1fr}}
 
@@ -1291,6 +1288,8 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
     <a class="vq-side-link active" href="/admin"><span>▣</span>Medical Records</a>
     <a class="vq-side-link" href="/cbc/{{ personnel.personnel_id }}"><span>▣</span>CBC Profile</a>
     <a class="vq-side-link" href="/lipid/{{ personnel.personnel_id }}"><span>◈</span>Lipid Profile</a>
+    <a class="vq-side-link" href="/allergy/{{ personnel.personnel_id }}"><span>♡</span>Allergy Profile</a>
+    <a class="vq-side-link" href="/thyroid/{{ personnel.personnel_id }}"><span>◉</span>Thyroid Profile</a>
     <div class="vq-sidebar-spacer"></div>
     <div class="vq-motto">YOUR HEALTH<br>ONE SECURE<br>PLATFORM</div>
     <div class="vq-brand-small">VIQTOR HEALTH</div>
@@ -1613,6 +1612,52 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif!important}
 
                     <a href="/lipid/{{ personnel.personnel_id }}" class="vq-lab-button">
                         {{ "VIEW / UPDATE LIPID" if latest_lipid else "+ ADD LIPID PROFILE" }}
+                    </a>
+
+                </div>
+
+                <!-- ALLERGY -->
+                <div class="vq-lab-card allergy">
+
+                    <div class="vq-lab-head">
+                        <div class="vq-lab-title">
+                            <div class="vq-lab-icon">ALL</div>
+                            <div>
+                                <h3>Allergy Profile</h3>
+                                <p>Known allergies and allergic reactions</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vq-lab-empty">
+                        Manage drug, food, environmental and other allergy information.
+                    </div>
+
+                    <a href="/allergy/{{ personnel.personnel_id }}" class="vq-lab-button">
+                        + ADD / VIEW ALLERGY
+                    </a>
+
+                </div>
+
+                <!-- THYROID -->
+                <div class="vq-lab-card thyroid">
+
+                    <div class="vq-lab-head">
+                        <div class="vq-lab-title">
+                            <div class="vq-lab-icon">THY</div>
+                            <div>
+                                <h3>Thyroid Profile</h3>
+                                <p>Thyroid laboratory investigation</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vq-lab-empty">
+                        Manage TSH, T3, T4, Free T3 and Free T4 results.
+                    </div>
+
+                    <a href="/thyroid/{{ personnel.personnel_id }}" class="vq-lab-button">
+                        + ADD / VIEW THYROID
                     </a>
 
                 </div>

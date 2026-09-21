@@ -1,0 +1,843 @@
+<!-- templates/allergy_profile.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Allergy Profile | ViQtor Health</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+            background: #f5f8f7;
+            color: #17233c;
+        }
+
+        .topbar {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5ebe8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 34px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(
+                135deg,
+                #157a72,
+                #2e9b91
+            );
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 850;
+            color: #173d3a;
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
+            color: #7c8986;
+            margin-top: 2px;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-btn {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #dce5e2;
+            background: white;
+            color: #315c57;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .top-btn.primary {
+            background: #157a72;
+            color: white;
+            border-color: #157a72;
+        }
+
+        .page {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 36px 24px 60px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: #157a72;
+            font-size: 11px;
+            font-weight: 850;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #17233c;
+        }
+
+        .page-header p {
+            color: #74817e;
+            margin: 8px 0 0;
+            font-size: 14px;
+        }
+
+        .patient-card {
+            background: white;
+            border: 1px solid #e3ebe8;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(26, 58, 53, .04);
+        }
+
+        .patient-name {
+            font-size: 20px;
+            font-weight: 850;
+        }
+
+        .patient-id {
+            margin-top: 5px;
+            color: #7d8987;
+            font-size: 12px;
+        }
+
+        .patient-blood {
+            background: #edf7f5;
+            color: #157a72;
+            border-radius: 9px;
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 850;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e3ebe8;
+            border-radius: 16px;
+            padding: 26px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(26, 58, 53, .04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            background: #edf7f5;
+            color: #157a72;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 850;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: #7d8987;
+            margin-top: 3px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #43514f;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #dce5e2;
+            background: #fbfcfc;
+            border-radius: 9px;
+            padding: 12px 13px;
+            font-size: 13px;
+            color: #263532;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #42a79d;
+            box-shadow: 0 0 0 3px rgba(66,167,157,.10);
+        }
+
+        textarea {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .hint {
+            color: #899491;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding-top: 27px;
+        }
+
+        .checkbox-row input {
+            width: 17px;
+            height: 17px;
+        }
+
+        .checkbox-row label {
+            margin: 0;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 20px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: #f1f5f4;
+            color: #48605c;
+        }
+
+        .btn-primary {
+            background: #157a72;
+            color: white;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #f5f8f7;
+            color: #667572;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 13px 12px;
+            text-align: left;
+        }
+
+        .history-table td {
+            padding: 14px 12px;
+            border-top: 1px solid #edf1ef;
+            font-size: 12px;
+            color: #394744;
+        }
+
+        .severity {
+            display: inline-flex;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .severity.mild {
+            background: #eef7f1;
+            color: #39754e;
+        }
+
+        .severity.moderate {
+            background: #fff6df;
+            color: #94701d;
+        }
+
+        .severity.severe {
+            background: #fff0ef;
+            color: #b0443d;
+        }
+
+        .empty {
+            padding: 30px;
+            text-align: center;
+            color: #8a9693;
+            font-size: 13px;
+            background: #fafcfb;
+            border: 1px dashed #dce5e2;
+            border-radius: 10px;
+        }
+
+        .error {
+            background: #fff0ef;
+            color: #a63d36;
+            border: 1px solid #f0cbc7;
+            border-radius: 9px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        @media(max-width: 720px) {
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .top-actions .top-btn:not(.primary) {
+                display: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .patient-card {
+                align-items: flex-start;
+                gap: 15px;
+                flex-direction: column;
+            }
+
+            .history-table {
+                min-width: 700px;
+            }
+
+            .card {
+                overflow-x: auto;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <a href="{{ url_for('admin') }}" class="brand">
+
+        <div class="brand-mark">
+            V
+        </div>
+
+        <div>
+            <div class="brand-name">
+                ViQtor Health
+            </div>
+
+            <div class="brand-subtitle">
+                Smart Digital Health & Medical Record Platform
+            </div>
+        </div>
+
+    </a>
+
+    <div class="top-actions">
+
+        <a
+            href="{{ url_for('profile', qr_token=personnel.qr_token) }}"
+            class="top-btn">
+            Patient Profile
+        </a>
+
+        <a
+            href="{{ url_for('admin') }}"
+            class="top-btn primary">
+            Dashboard
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <section class="page-header">
+
+        <div class="eyebrow">
+            Medical Record
+        </div>
+
+        <h1>
+            Allergy Profile
+        </h1>
+
+        <p>
+            Record and review known allergies and allergic reactions.
+        </p>
+
+    </section>
+
+
+    <section class="patient-card">
+
+        <div>
+
+            <div class="patient-name">
+                {{ personnel.full_name or
+                   ((personnel.first_name or '') ~ ' ' ~
+                    (personnel.last_name or '')) }}
+            </div>
+
+            <div class="patient-id">
+                Patient ID:
+                {{ personnel.personnel_id }}
+            </div>
+
+        </div>
+
+        {% if personnel.blood_group %}
+
+        <div class="patient-blood">
+            Blood Group:
+            {{ personnel.blood_group }}
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    {% if error %}
+
+    <div class="error">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <form method="POST">
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div class="icon">
+                    ⚕
+                </div>
+
+                <div>
+
+                    <div class="card-title">
+                        Add Allergy
+                    </div>
+
+                    <div class="card-subtitle">
+                        Record a known allergy or allergic condition.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div class="field">
+
+                    <label for="allergy_type">
+                        Allergy Type
+                    </label>
+
+                    <select
+                        id="allergy_type"
+                        name="allergy_type"
+                        required>
+
+                        <option value="">
+                            Select allergy type
+                        </option>
+
+                        <option value="Drug">
+                            Drug / Medication
+                        </option>
+
+                        <option value="Food">
+                            Food
+                        </option>
+
+                        <option value="Environmental">
+                            Environmental
+                        </option>
+
+                        <option value="Insect">
+                            Insect / Venom
+                        </option>
+
+                        <option value="Latex">
+                            Latex
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="allergen">
+                        Allergen
+                    </label>
+
+                    <input
+                        type="text"
+                        id="allergen"
+                        name="allergen"
+                        placeholder="e.g. Penicillin, Peanuts"
+                        required>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="reaction">
+                        Reaction
+                    </label>
+
+                    <input
+                        type="text"
+                        id="reaction"
+                        name="reaction"
+                        placeholder="e.g. Rash, Swelling, Breathing difficulty">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="severity">
+                        Severity
+                    </label>
+
+                    <select
+                        id="severity"
+                        name="severity">
+
+                        <option value="">
+                            Select severity
+                        </option>
+
+                        <option value="Mild">
+                            Mild
+                        </option>
+
+                        <option value="Moderate">
+                            Moderate
+                        </option>
+
+                        <option value="Severe">
+                            Severe
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="first_identified">
+                        First Identified
+                    </label>
+
+                    <input
+                        type="date"
+                        id="first_identified"
+                        name="first_identified">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="status">
+                        Current Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status">
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Resolved">
+                            Resolved
+                        </option>
+
+                        <option value="Unknown">
+                            Unknown
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <label for="notes">
+                        Additional Notes
+                    </label>
+
+                    <textarea
+                        id="notes"
+                        name="notes"
+                        placeholder="Additional information about the allergy..."></textarea>
+
+                </div>
+
+
+                <div class="field full">
+
+                    <div class="checkbox-row">
+
+                        <input
+                            type="checkbox"
+                            id="emergency_allergy"
+                            name="emergency_allergy"
+                            value="Yes">
+
+                        <label for="emergency_allergy">
+                            Mark this as a critical / emergency allergy
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="actions">
+
+                <a
+                    href="{{ url_for('profile', qr_token=personnel.qr_token) }}"
+                    class="btn btn-secondary">
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Save Allergy
+                </button>
+
+            </div>
+
+        </section>
+
+    </form>
+
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div class="icon">
+                ☑
+            </div>
+
+            <div>
+
+                <div class="card-title">
+                    Allergy History
+                </div>
+
+                <div class="card-subtitle">
+                    Previously recorded allergies for this patient.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if allergy_records %}
+
+        <table class="history-table">
+
+            <thead>
+
+                <tr>
+                    <th>Allergen</th>
+                    <th>Type</th>
+                    <th>Reaction</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Emergency</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for record in allergy_records %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ record.get('allergen', '—') }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ record.get('allergy_type', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('reaction', '—') }}
+                    </td>
+
+                    <td>
+
+                        {% set sev = record.get('severity', '')|lower %}
+
+                        {% if sev %}
+
+                        <span class="severity {{ sev }}">
+                            {{ record.get('severity') }}
+                        </span>
+
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ record.get('status', '—') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('emergency_allergy', 'No') }}
+                    </td>
+
+                    <td>
+                        {{ record.get('first_identified', '—') }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+            No allergy records have been added yet.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+</body>
+</html>

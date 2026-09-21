@@ -364,7 +364,7 @@ a {
     display: grid;
 
     grid-template-columns:
-        repeat(4, 1fr);
+        repeat(6, 1fr);
 
     gap: 15px;
 
@@ -922,6 +922,25 @@ tbody tr:last-child td {
     border: 1px solid #eadbbd;
 }
 
+/* Allergy */
+.allergy {
+    background: #f5edf4;
+
+    color: #8b5e83;
+
+    border: 1px solid #e3d1df;
+}
+
+
+/* Thyroid */
+.thyroid {
+    background: #eef1fa;
+
+    color: #5d6fa8;
+
+    border: 1px solid #d5dcef;
+}
+
 
 /* =========================================================
    EMPTY STATE
@@ -963,7 +982,7 @@ tbody tr:last-child td {
 
     .summary {
         grid-template-columns:
-            repeat(2, 1fr);
+            repeat(3, 1fr);
     }
 
 }
@@ -1303,6 +1322,60 @@ tbody tr:last-child td {
         </div>
 
 
+        <!-- ALLERGY -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                ♡
+            </div>
+
+            <div>
+
+                <div class="summary-label">
+                    Allergy Profile
+                </div>
+
+                <div class="summary-value">
+                    Available
+                </div>
+
+                <div class="summary-description">
+                    Allergy & reaction data
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- THYROID -->
+
+        <div class="summary-card blue">
+
+            <div class="summary-icon">
+                ◉
+            </div>
+
+            <div>
+
+                <div class="summary-label">
+                    Thyroid Profile
+                </div>
+
+                <div class="summary-value">
+                    Available
+                </div>
+
+                <div class="summary-description">
+                    Thyroid laboratory data
+                </div>
+
+            </div>
+
+        </div>
+
+
     </section>
 
 
@@ -1528,6 +1601,22 @@ tbody tr:last-child td {
                                     class="action lipid"
                                 >
                                     LIPID PROFILE
+                                </a>
+
+
+                                <a
+                                    href="/allergy/{{ person.personnel_id }}"
+                                    class="action allergy"
+                                >
+                                    ALLERGY PROFILE
+                                </a>
+
+
+                                <a
+                                    href="/thyroid/{{ person.personnel_id }}"
+                                    class="action thyroid"
+                                >
+                                    THYROID PROFILE
                                 </a>
 
 

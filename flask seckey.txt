@@ -1,0 +1,2 @@
+(venv) PS C:\Users\HP\OneDrive\Desktop\Qr Health  Monitoring System> python -c "import secrets; print(secrets.token_urlsafe(64))"
+vPTA6Z7xQx_WvrKya0EbUPmsq3yyhsFWxHdy0DD8n9scM_XXg6jiX4VRD1C2N4qnSZ7d5FTuhAXvfrnH2a3WtA
