@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50-50-50 | ViQtor Health</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f8f4;color:#182017;min-height:100vh}
+a{text-decoration:none;color:inherit}
+.nav{height:76px;background:#fff;border-bottom:1px solid #e0e6dc;display:flex;align-items:center;justify-content:space-between;padding:0 6%;box-shadow:0 3px 15px rgba(35,55,31,.05)}
+.brand{display:flex;align-items:center;gap:12px}.brand img{height:52px;width:auto;object-fit:contain}.brand strong{font-size:21px}.brand small{display:block;color:#7b8479;font-size:9px;letter-spacing:1.1px;margin-top:4px}
+.back{padding:10px 17px;border:1px solid #ccd7c8;border-radius:7px;color:#30482b;font-size:12px;font-weight:700}
+.wrap{max-width:1050px;margin:50px auto;padding:0 24px}
+.hero{text-align:center;margin-bottom:30px}.eyebrow{font-size:11px;letter-spacing:2px;color:#9a792c;font-weight:800}.hero h1{font-size:48px;margin-top:10px;color:#20341e}.hero h1 span{color:#a88934}.hero p{max-width:680px;margin:12px auto;color:#687269;font-size:15px;line-height:1.65}
+.challenge{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:stretch}
+.card{background:#fff;border:1px solid #dfe6dc;border-radius:16px;box-shadow:0 12px 35px rgba(39,60,35,.07)}
+.form-card{padding:30px}.card-title{font-size:21px;color:#243a22}.card-sub{font-size:12px;color:#7a837a;margin-top:5px;margin-bottom:24px}
+.field{margin-bottom:17px}.field label{display:block;font-size:11px;font-weight:800;color:#526050;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}.field input{width:100%;height:45px;border:1px solid #ccd8c9;border-radius:8px;padding:0 13px;font-size:14px;outline:none;background:#fbfcfa}.field input:focus{border-color:#718c69;box-shadow:0 0 0 3px rgba(92,120,84,.1)}
+.submit{width:100%;height:48px;border:0;border-radius:8px;background:#294522;color:#fff;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 7px 16px rgba(41,69,34,.15)}.submit:hover{background:#20381b}
+.alert{padding:12px 14px;border-radius:8px;font-size:12px;margin-bottom:18px}.error{background:#fff0f0;border:1px solid #edc8c8;color:#9c4d4d}.success{background:#edf8f0;border:1px solid #c5e1cb;color:#37704a}
+.info-card{padding:30px;background:linear-gradient(145deg,#294522,#3e5c35);color:#fff;position:relative;overflow:hidden}.info-card:after{content:"50";position:absolute;right:-25px;top:-50px;font-size:210px;font-weight:900;color:rgba(255,255,255,.055)}.info-card h2{font-size:27px;position:relative;z-index:1}.info-card p{position:relative;z-index:1;color:#e0e9dd;font-size:13px;line-height:1.7;margin-top:10px}.targets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:30px;position:relative;z-index:1}.target{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:17px 10px;text-align:center}.target strong{display:block;font-size:29px}.target span{font-size:10px;color:#d7e2d3;text-transform:uppercase;letter-spacing:.7px}.rules{margin-top:28px;position:relative;z-index:1}.rules h3{font-size:12px;text-transform:uppercase;letter-spacing:1px}.rules ul{margin:10px 0 0 18px;color:#dce7d9;font-size:12px;line-height:1.9}
+.note{text-align:center;margin-top:22px;color:#8a9388;font-size:11px}
+@media(max-width:780px){.challenge{grid-template-columns:1fr}.hero h1{font-size:38px}.nav{padding:0 4%}.brand small{display:none}}
+</style>
+</head>
+<body>
+<header class="nav">
+    <a href="/" class="brand">
+        <img src="{{ url_for('static', filename='images/viqtor-health-logo.png') }}" alt="ViQtor Health">
+        <span><strong>ViQtor Health</strong><small>SMART DIGITAL HEALTH PLATFORM</small></span>
+    </a>
+    <a href="/" class="back">← BACK TO VIQTOR</a>
+</header>
+
+<main class="wrap">
+    <section class="hero">
+        <div class="eyebrow">DAILY WELLNESS CHALLENGE</div>
+        <h1><span>50</span> · <span>50</span> · <span>50</span></h1>
+        <p>Record your daily pushups, squats and steps. Enter your ViQtor Health Unique ID and submit once each day.</p>
+    </section>
+
+    <section class="challenge">
+        <div class="card form-card">
+            <h2 class="card-title">Today's Entry</h2>
+            <p class="card-sub">No login is required. One entry per Unique ID per day.</p>
+
+            {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+            {% if success %}<div class="alert success">{{ success }}</div>{% endif %}
+
+            <form method="POST" action="/505050" autocomplete="off">
+                <div class="field">
+                    <label for="personnel_id">Unique ID</label>
+                    <input id="personnel_id" name="personnel_id" type="text" placeholder="Enter your ViQtor Unique ID" required>
+                </div>
+                <div class="field">
+                    <label for="pushups">Pushups</label>
+                    <input id="pushups" name="pushups" type="number" min="0" max="100000" placeholder="Number of pushups" required>
+                </div>
+                <div class="field">
+                    <label for="squats">Squats</label>
+                    <input id="squats" name="squats" type="number" min="0" max="100000" placeholder="Number of squats" required>
+                </div>
+                <div class="field">
+                    <label for="steps">Steps Taken</label>
+                    <input id="steps" name="steps" type="number" min="0" max="1000000" placeholder="Number of steps" required>
+                </div>
+                <button class="submit" type="submit">SUBMIT TODAY'S 50-50-50</button>
+            </form>
+        </div>
+
+        <div class="card info-card">
+            <h2>The 50-50-50 Challenge</h2>
+            <p>Build a simple daily movement habit by recording three measurable activities in ViQtor Health.</p>
+            <div class="targets">
+                <div class="target"><strong>50</strong><span>Pushups</span></div>
+                <div class="target"><strong>50</strong><span>Squats</span></div>
+                <div class="target"><strong>50</strong><span>Steps</span></div>
+            </div>
+            <div class="rules">
+                <h3>How it works</h3>
+                <ul>
+                    <li>Use your registered ViQtor Health Unique ID.</li>
+                    <li>Enter the activities completed today.</li>
+                    <li>Only one submission is accepted per day.</li>
+                    <li>Your entry is stored against your Unique ID and today's date.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <p class="note">Today's challenge date: {{ today }} · Please enter your own activity accurately.</p>
+</main>
+</body>
+</html>

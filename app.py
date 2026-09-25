@@ -2921,6 +2921,166 @@ def ai_health_plan_pdf(report_id):
     )
 
 
+
+# ============================================================
+# 50-50-50 DAILY WELLNESS CHALLENGE
+# ============================================================
+
+FIFTY_COLLECTION = "fifty_fifty_fifty"
+
+
+def india_today():
+    """Return the current calendar date in India for the daily challenge."""
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d")
+    except Exception:
+        return datetime.now().strftime("%Y-%m-%d")
+
+
+@app.route("/505050", methods=["GET", "POST"])
+def fifty_fifty_fifty():
+    """Public 50-50-50 daily wellness entry page. No login is required."""
+
+    error = None
+    success = None
+    today = india_today()
+
+    if request.method == "POST":
+        personnel_id = request.form.get("personnel_id", "").strip()
+        pushups_raw = request.form.get("pushups", "").strip()
+        squats_raw = request.form.get("squats", "").strip()
+        steps_raw = request.form.get("steps", "").strip()
+
+        if not personnel_id:
+            error = "Please enter your Unique ID."
+        else:
+            person_doc = db.collection("personnel").document(personnel_id).get()
+
+            if not person_doc.exists:
+                error = "Unique ID not found. Please enter a valid ViQtor Health Unique ID."
+            else:
+                try:
+                    pushups = int(pushups_raw)
+                    squats = int(squats_raw)
+                    steps = int(steps_raw)
+
+                    if pushups < 0 or squats < 0 or steps < 0:
+                        raise ValueError
+
+                    if pushups > 100000 or squats > 100000 or steps > 1000000:
+                        raise ValueError
+
+                except (TypeError, ValueError):
+                    error = "Please enter valid non-negative numbers for all three activities."
+                else:
+                    person = person_doc.to_dict() or {}
+                    full_name = person.get("full_name", "").strip()
+
+                    if not full_name:
+                        full_name = (
+                            str(person.get("first_name", "")).strip()
+                            + " "
+                            + str(person.get("last_name", "")).strip()
+                        ).strip()
+
+                    entry_id = f"{personnel_id}_{today}"
+                    entry_ref = db.collection(FIFTY_COLLECTION).document(entry_id)
+                    transaction = db.transaction()
+
+                    @firestore.transactional
+                    def create_daily_entry(transaction):
+                        existing = entry_ref.get(transaction=transaction)
+
+                        if existing.exists:
+                            return False
+
+                        transaction.set(
+                            entry_ref,
+                            {
+                                "personnel_id": personnel_id,
+                                "full_name": full_name,
+                                "pushups": pushups,
+                                "squats": squats,
+                                "steps": steps,
+                                "entry_date": today,
+                                "submitted_at": datetime.now().isoformat(),
+                            }
+                        )
+                        return True
+
+                    try:
+                        created = create_daily_entry(transaction)
+                    except Exception as exc:
+                        print("50-50-50 ENTRY ERROR:", str(exc))
+                        created = None
+
+                    if created is True:
+                        success = (
+                            "Your 50-50-50 entry has been recorded for today."
+                        )
+                    elif created is False:
+                        error = (
+                            "You have already submitted your 50-50-50 entry for today. "
+                            "Only one entry per day is allowed."
+                        )
+                    else:
+                        error = "Unable to save your entry right now. Please try again."
+
+    return render_template(
+        "505050.html",
+        error=error,
+        success=success,
+        today=today,
+    )
+
+
+@app.route("/admin/505050")
+@role_required("admin")
+def fifty_fifty_fifty_admin():
+    """Admin-only 50-50-50 analytics and leaderboard."""
+
+    selected_date = request.args.get("date", "").strip()
+    today = india_today()
+
+    if not selected_date:
+        selected_date = today
+
+    records = []
+    query = db.collection(FIFTY_COLLECTION)
+
+    if selected_date:
+        query = query.where("entry_date", "==", selected_date)
+
+    for doc in query.stream():
+        record = doc.to_dict() or {}
+        record["document_id"] = doc.id
+        records.append(record)
+
+    records.sort(
+        key=lambda item: (
+            int(item.get("pushups", 0) or 0),
+            int(item.get("squats", 0) or 0),
+            int(item.get("steps", 0) or 0),
+        ),
+        reverse=True,
+    )
+
+    total_pushups = sum(int(item.get("pushups", 0) or 0) for item in records)
+    total_squats = sum(int(item.get("squats", 0) or 0) for item in records)
+    total_steps = sum(int(item.get("steps", 0) or 0) for item in records)
+
+    return render_template(
+        "505050_admin.html",
+        records=records,
+        selected_date=selected_date,
+        today=today,
+        total_entries=len(records),
+        total_pushups=total_pushups,
+        total_squats=total_squats,
+        total_steps=total_steps,
+    )
+
 # ============================================================
 # RUN APPLICATION
 # ============================================================
