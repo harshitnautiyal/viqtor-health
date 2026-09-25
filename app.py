@@ -10,13 +10,13 @@ from flask import (
 )
 
 import firebase_admin
-from firebase_admin import credentials, firestore, auth, storage
+from firebase_admin import credentials, firestore, auth
 
 import qrcode
 import os
 import secrets
 
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook
 
 from datetime import datetime
 from functools import wraps
@@ -85,11 +85,7 @@ if not firebase_admin._apps:
     firebase_admin.initialize_app(
         cred,
         {
-            "projectId": "qr-health-monitoring-system",
-            "storageBucket": os.environ.get(
-                "FIREBASE_STORAGE_BUCKET",
-                "qr-health-monitoring-system.firebasestorage.app"
-            )
+            "projectId": "qr-health-monitoring-system"
         }
     )
 
@@ -101,77 +97,47 @@ db = firestore.client()
 # PRIVATE PATIENT NAME REGISTRY
 # ============================================================
 
-# Patient names are NOT stored in Firestore, QR data, or patient
-# profile documents. They are kept only inside this private Excel
-# workbook in Firebase Storage, which is accessed by the server.
-PRIVATE_REGISTRY_BLOB = (
-    "private/ViQtor_Private_ID_Registry.xlsx"
-)
+# Patient names are kept OUT of the normal "personnel" medical
+# profile documents and are not included in QR/public profile data.
+#
+# Because this Firebase project is currently on the Spark plan and
+# Firebase Storage is not available, the name-to-ID mapping is kept
+# in a separate Firestore collection that is accessed only by the
+# server. The Excel file is generated in memory only when an admin
+# downloads it.
+PRIVATE_REGISTRY_COLLECTION = "private_patient_registry"
 
 
 def save_patient_name_to_private_registry(
     patient_name,
     personnel_id
 ):
+    """
+    Save the patient name and Unique ID in a separate private
+    Firestore collection.
 
-    bucket = storage.bucket()
-    blob = bucket.blob(PRIVATE_REGISTRY_BLOB)
+    This collection is not used by public QR/profile routes.
+    """
 
-    workbook = None
-
-    try:
-        if blob.exists():
-            workbook = load_workbook(
-                BytesIO(blob.download_as_bytes())
-            )
-    except Exception as error:
-        print(
-            "PRIVATE REGISTRY READ ERROR:",
-            str(error)
-        )
-        raise
-
-    if workbook is None:
-        workbook = Workbook()
-
-    if "Patient Registry" in workbook.sheetnames:
-        sheet = workbook["Patient Registry"]
-    else:
-        sheet = workbook.active
-        sheet.title = "Patient Registry"
-
-    if sheet.max_row == 1 and sheet["A1"].value is None:
-        sheet.append([
-            "Patient Name",
-            "Unique ID",
-            "Registration Date"
-        ])
-
-    # Never create a second name-to-ID row for the same Unique ID.
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        if len(row) >= 2 and str(row[1] or "").strip() == personnel_id:
-            raise ValueError(
-                "This Unique ID already exists in the private registry."
-            )
-
-    sheet.append([
-        patient_name,
-        personnel_id,
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    ])
-
-    output = BytesIO()
-    workbook.save(output)
-    output.seek(0)
-
-    blob.upload_from_file(
-        output,
-        content_type=(
-            "application/vnd.openxmlformats-officedocument."
-            "spreadsheetml.sheet"
-        ),
-        rewind=True
+    registry_ref = (
+        db.collection(PRIVATE_REGISTRY_COLLECTION)
+        .document(personnel_id)
     )
+
+    existing = registry_ref.get()
+
+    if existing.exists:
+        raise ValueError(
+            "This Unique ID already exists in the private registry."
+        )
+
+    registry_ref.set({
+        "patient_name": patient_name,
+        "personnel_id": personnel_id,
+        "registration_date": datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+    })
 
 
 # ============================================================
@@ -909,20 +875,61 @@ def register():
 def download_private_patient_registry():
 
     try:
-        blob = storage.bucket().blob(
-            PRIVATE_REGISTRY_BLOB
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = "Patient Registry"
+
+        sheet.append([
+            "Patient Name",
+            "Unique ID",
+            "Registration Date"
+        ])
+
+        registry_docs = (
+            db.collection(PRIVATE_REGISTRY_COLLECTION)
+            .stream()
         )
 
-        if not blob.exists():
-            return (
-                "The private patient registry has not been created yet.",
-                404
-            )
+        records = []
 
-        workbook_bytes = blob.download_as_bytes()
+        for doc in registry_docs:
+            record = doc.to_dict() or {}
+
+            records.append({
+                "patient_name": str(
+                    record.get("patient_name", "")
+                ),
+                "personnel_id": str(
+                    record.get("personnel_id", doc.id)
+                ),
+                "registration_date": str(
+                    record.get("registration_date", "")
+                )
+            })
+
+        records.sort(
+            key=lambda item: item["registration_date"]
+        )
+
+        for record in records:
+            sheet.append([
+                record["patient_name"],
+                record["personnel_id"],
+                record["registration_date"]
+            ])
+
+        # Make the Excel file easier to read.
+        sheet.freeze_panes = "A2"
+        sheet.column_dimensions["A"].width = 30
+        sheet.column_dimensions["B"].width = 22
+        sheet.column_dimensions["C"].width = 22
+
+        workbook_bytes = BytesIO()
+        workbook.save(workbook_bytes)
+        workbook_bytes.seek(0)
 
         return send_file(
-            BytesIO(workbook_bytes),
+            workbook_bytes,
             mimetype=(
                 "application/vnd.openxmlformats-officedocument."
                 "spreadsheetml.sheet"
@@ -936,6 +943,7 @@ def download_private_patient_registry():
             "PRIVATE REGISTRY DOWNLOAD ERROR:",
             str(error)
         )
+
         return (
             "Unable to download the private patient registry.",
             500

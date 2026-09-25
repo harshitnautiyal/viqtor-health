@@ -607,18 +607,6 @@ a {
 }
 
 
-/* 50-50-50 */
-.fifty5050 {
-    background: #fff8e8;
-    border: 1px solid #e5c77d;
-    color: #8a671d;
-}
-
-.fifty5050:hover {
-    background: #fff2d1;
-}
-
-
 /* =========================================================
    PATIENT RECORDS CARD
    ========================================================= */
@@ -1408,6 +1396,13 @@ tbody tr:last-child td {
             + REGISTER NEW PATIENT
         </a>
 
+        <a
+            href="/admin/patient-registry.xlsx"
+            class="button secondary"
+        >
+            DOWNLOAD PATIENT REGISTRY
+        </a>
+
         {% endif %}
 
 
@@ -1417,18 +1412,6 @@ tbody tr:last-child td {
         >
             SCAN QR CODE
         </a>
-
-
-        {% if role == "admin" %}
-
-        <a
-            href="/admin/505050"
-            class="button fifty5050"
-        >
-            50-50-50 ANALYTICS
-        </a>
-
-        {% endif %}
 
 
         <a
