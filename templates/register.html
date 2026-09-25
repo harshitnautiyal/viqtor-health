@@ -2128,17 +2128,17 @@
                 <div class="form-grid">
 
 
-                    <!-- FIRST NAME -->
+                    <!-- PATIENT NAME — PRIVATE REGISTRY ONLY -->
 
-                    <div class="field">
+                    <div class="field full">
 
                         <label
-                            for="first_name"
+                            for="patient_name"
                             class="field-label"
                         >
 
                             <span>
-                                FIRST NAME
+                                PATIENT NAME
                             </span>
 
                             <span class="required">
@@ -2156,51 +2156,11 @@
 
                             <input
                                 type="text"
-                                id="first_name"
-                                name="first_name"
-                                placeholder="Enter first name"
-                                autocomplete="given-name"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- LAST NAME -->
-
-                    <div class="field">
-
-                        <label
-                            for="last_name"
-                            class="field-label"
-                        >
-
-                            <span>
-                                LAST NAME
-                            </span>
-
-                            <span class="required">
-                                *
-                            </span>
-
-                        </label>
-
-
-                        <div class="input-wrapper has-icon">
-
-                            <span class="input-icon">
-                                ♙
-                            </span>
-
-                            <input
-                                type="text"
-                                id="last_name"
-                                name="last_name"
-                                placeholder="Enter last name"
-                                autocomplete="family-name"
+                                id="patient_name"
+                                name="patient_name"
+                                placeholder="Enter patient's full name"
+                                maxlength="120"
+                                autocomplete="off"
                                 required
                             >
 
@@ -2373,6 +2333,50 @@
 
 
 
+                    <!-- AADHAAR CARD NUMBER -->
+
+                    <div class="field">
+
+                        <label
+                            for="aadhaar_digits"
+                            class="field-label"
+                        >
+
+                            <span>
+                                AADHAAR CARD NUMBER
+                            </span>
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <div class="input-wrapper has-icon">
+
+                            <span class="input-icon">
+                                ▣
+                            </span>
+
+                            <input
+                                type="text"
+                                id="aadhaar_digits"
+                                name="aadhaar_digits"
+                                placeholder="Enter 12-digit Aadhaar number"
+                                maxlength="12"
+                                minlength="12"
+                                inputmode="numeric"
+                                autocomplete="off"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+
                     <!-- EMAIL -->
 
                     <div class="field">
@@ -2429,7 +2433,8 @@
                     <div>
 
                         A secure patient profile and QR code
-                        will be created after registration.
+                        will be created after registration. The patient name is
+                        kept separately in the private ID registry.
 
                     </div>
 
@@ -2484,6 +2489,31 @@
 <script>
 
 /* =========================================================
+   PATIENT NAME — TRIM EXTRA SPACES
+   ========================================================= */
+
+const patientNameInput =
+    document.getElementById("patient_name");
+
+
+if (patientNameInput) {
+
+    patientNameInput.addEventListener(
+        "blur",
+        function () {
+
+            this.value =
+                this.value
+                .replace(/\\s+/g, " ")
+                .trim();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    MOBILE NUMBER — ONLY DIGITS
    ========================================================= */
 
@@ -2501,6 +2531,31 @@ if (phoneInput) {
                 this.value
                 .replace(/\D/g, "")
                 .slice(0, 10);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   AADHAAR CARD NUMBER — ONLY DIGITS, 12 DIGITS
+   ========================================================= */
+
+const aadhaarInput =
+    document.getElementById("aadhaar_digits");
+
+
+if (aadhaarInput) {
+
+    aadhaarInput.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value
+                .replace(/\D/g, "")
+                .slice(0, 12);
 
         }
     );
@@ -2546,4 +2601,4 @@ if (registrationForm) {
 
 
 </body>
-</html>
+</html>c:\Users\HP\Downloads\lipid_profile.html

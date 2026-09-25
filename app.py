@@ -10,11 +10,13 @@ from flask import (
 )
 
 import firebase_admin
-from firebase_admin import credentials, firestore, auth
+from firebase_admin import credentials, firestore, auth, storage
 
 import qrcode
 import os
 import secrets
+
+from openpyxl import Workbook, load_workbook
 
 from datetime import datetime
 from functools import wraps
@@ -83,12 +85,93 @@ if not firebase_admin._apps:
     firebase_admin.initialize_app(
         cred,
         {
-            "projectId": "qr-health-monitoring-system"
+            "projectId": "qr-health-monitoring-system",
+            "storageBucket": os.environ.get(
+                "FIREBASE_STORAGE_BUCKET",
+                "qr-health-monitoring-system.firebasestorage.app"
+            )
         }
     )
 
 
 db = firestore.client()
+
+
+# ============================================================
+# PRIVATE PATIENT NAME REGISTRY
+# ============================================================
+
+# Patient names are NOT stored in Firestore, QR data, or patient
+# profile documents. They are kept only inside this private Excel
+# workbook in Firebase Storage, which is accessed by the server.
+PRIVATE_REGISTRY_BLOB = (
+    "private/ViQtor_Private_ID_Registry.xlsx"
+)
+
+
+def save_patient_name_to_private_registry(
+    patient_name,
+    personnel_id
+):
+
+    bucket = storage.bucket()
+    blob = bucket.blob(PRIVATE_REGISTRY_BLOB)
+
+    workbook = None
+
+    try:
+        if blob.exists():
+            workbook = load_workbook(
+                BytesIO(blob.download_as_bytes())
+            )
+    except Exception as error:
+        print(
+            "PRIVATE REGISTRY READ ERROR:",
+            str(error)
+        )
+        raise
+
+    if workbook is None:
+        workbook = Workbook()
+
+    if "Patient Registry" in workbook.sheetnames:
+        sheet = workbook["Patient Registry"]
+    else:
+        sheet = workbook.active
+        sheet.title = "Patient Registry"
+
+    if sheet.max_row == 1 and sheet["A1"].value is None:
+        sheet.append([
+            "Patient Name",
+            "Unique ID",
+            "Registration Date"
+        ])
+
+    # Never create a second name-to-ID row for the same Unique ID.
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if len(row) >= 2 and str(row[1] or "").strip() == personnel_id:
+            raise ValueError(
+                "This Unique ID already exists in the private registry."
+            )
+
+    sheet.append([
+        patient_name,
+        personnel_id,
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ])
+
+    output = BytesIO()
+    workbook.save(output)
+    output.seek(0)
+
+    blob.upload_from_file(
+        output,
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        ),
+        rewind=True
+    )
 
 
 # ============================================================
@@ -499,6 +582,11 @@ def register():
         # FORM DATA
         # ====================================================
 
+        patient_name = request.form.get(
+            "patient_name",
+            ""
+        ).strip()
+
         phone = request.form.get(
             "phone",
             ""
@@ -528,6 +616,20 @@ def register():
         # ====================================================
         # VALIDATION
         # ====================================================
+
+        if not patient_name:
+
+            return render_template(
+                "register.html",
+                error="Please enter the patient's full name."
+            )
+
+        if len(patient_name) > 120:
+
+            return render_template(
+                "register.html",
+                error="Patient name is too long."
+            )
 
         if (
             not phone.isdigit()
@@ -735,6 +837,39 @@ def register():
 
 
         # ====================================================
+        # SAVE NAME — PRIVATE EXCEL REGISTRY ONLY
+        # ====================================================
+
+        try:
+            save_patient_name_to_private_registry(
+                patient_name,
+                personnel_id
+            )
+        except Exception as error:
+            print(
+                "PRIVATE REGISTRY SAVE ERROR:",
+                str(error)
+            )
+
+            # Remove the locally generated QR if the private
+            # registry could not be updated.
+            try:
+                if os.path.exists(qr_path):
+                    os.remove(qr_path)
+            except Exception:
+                pass
+
+            return render_template(
+                "register.html",
+                error=(
+                    "Patient registration could not be completed "
+                    "because the private ID registry could not be saved. "
+                    "Please try again."
+                )
+            )
+
+
+        # ====================================================
         # SAVE PERSONNEL
         # ====================================================
 
@@ -760,6 +895,51 @@ def register():
     return render_template(
         "register.html"
     )
+
+
+# ============================================================
+# PRIVATE PATIENT ID REGISTRY DOWNLOAD
+# ADMIN ONLY
+# ============================================================
+
+@app.route(
+    "/admin/patient-registry.xlsx"
+)
+@role_required("admin")
+def download_private_patient_registry():
+
+    try:
+        blob = storage.bucket().blob(
+            PRIVATE_REGISTRY_BLOB
+        )
+
+        if not blob.exists():
+            return (
+                "The private patient registry has not been created yet.",
+                404
+            )
+
+        workbook_bytes = blob.download_as_bytes()
+
+        return send_file(
+            BytesIO(workbook_bytes),
+            mimetype=(
+                "application/vnd.openxmlformats-officedocument."
+                "spreadsheetml.sheet"
+            ),
+            as_attachment=True,
+            download_name="ViQtor_Private_ID_Registry.xlsx"
+        )
+
+    except Exception as error:
+        print(
+            "PRIVATE REGISTRY DOWNLOAD ERROR:",
+            str(error)
+        )
+        return (
+            "Unable to download the private patient registry.",
+            500
+        )
 
 
 # ============================================================
