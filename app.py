@@ -418,27 +418,6 @@ def admin():
             person["personnel_id"] = doc.id
 
 
-        if not person.get(
-            "full_name"
-        ):
-
-            first_name = person.get(
-                "first_name",
-                ""
-            )
-
-            last_name = person.get(
-                "last_name",
-                ""
-            )
-
-            person["full_name"] = (
-                first_name
-                + " "
-                + last_name
-            ).strip()
-
-
         personnel_list.append(
             person
         )
@@ -450,9 +429,9 @@ def admin():
 
     personnel_list.sort(
         key=lambda x: x.get(
-            "full_name",
+            "personnel_id",
             ""
-        ).lower()
+        )
     )
 
 
@@ -520,18 +499,13 @@ def register():
         # FORM DATA
         # ====================================================
 
-        first_name = request.form.get(
-            "first_name",
-            ""
-        ).strip()
-
-        last_name = request.form.get(
-            "last_name",
-            ""
-        ).strip()
-
         phone = request.form.get(
             "phone",
+            ""
+        ).strip()
+
+        aadhaar_digits = request.form.get(
+            "aadhaar_digits",
             ""
         ).strip()
 
@@ -555,17 +529,6 @@ def register():
         # VALIDATION
         # ====================================================
 
-        if not first_name or not last_name:
-
-            return render_template(
-                "register.html",
-                error=(
-                    "First name and last name "
-                    "are required."
-                )
-            )
-
-
         if (
             not phone.isdigit()
             or len(phone) != 10
@@ -578,6 +541,21 @@ def register():
                     "mobile number."
                 )
             )
+
+
+        if (
+            not aadhaar_digits.isdigit()
+            or len(aadhaar_digits) != 12
+        ):
+
+            return render_template(
+                "register.html",
+                error=(
+                    "Enter a valid 12-digit Aadhaar number."
+                )
+            )
+
+        aadhaar_suffix = aadhaar_digits[-8:]
 
 
         if not dob or len(dob) < 4:
@@ -597,18 +575,19 @@ def register():
 
         mobile_last4 = phone[-4:]
 
-        birth_year = dob[:4]
-
-        surname_initial = (
-            last_name[0].upper()
-        )
+        birth_month_initial = datetime.strptime(
+            dob,
+            "%Y-%m-%d"
+        ).strftime("%B")[0].upper()
 
 
         personnel_id = (
-            "47"
+            "47-"
             + mobile_last4
-            + birth_year
-            + surname_initial
+            + "-"
+            + birth_month_initial
+            + "-"
+            + aadhaar_suffix
         )
 
 
@@ -721,21 +700,11 @@ def register():
             "personnel_id":
                 personnel_id,
 
-            "first_name":
-                first_name,
-
-            "last_name":
-                last_name,
-
-            "full_name":
-                (
-                    first_name
-                    + " "
-                    + last_name
-                ).strip(),
-
             "phone":
                 phone,
+
+            "aadhaar_suffix":
+                aadhaar_suffix,
 
             "dob":
                 dob,
@@ -1117,18 +1086,6 @@ def profile(qr_token):
     # ========================================================
 
     public_personnel = {
-        "first_name": personnel.get(
-            "first_name",
-            ""
-        ),
-        "last_name": personnel.get(
-            "last_name",
-            ""
-        ),
-        "full_name": personnel.get(
-            "full_name",
-            ""
-        ),
         "personnel_id": personnel.get(
             "personnel_id",
             ""
@@ -2049,7 +2006,6 @@ def medical_profile_pdf(qr_token):
     ]
 
     patient_rows = [
-        ["Patient", personnel.get("full_name", "")],
         ["Patient ID", personnel.get("personnel_id", "")],
         ["Date of Birth", personnel.get("dob", "")],
         ["Blood Group", personnel.get("blood_group", "")],
@@ -2799,10 +2755,6 @@ def ai_health_plan_pdf(report_id):
             subtitle_style
         ),
         Paragraph(
-            "Patient: " + escape(str(personnel.get("full_name", "Patient"))),
-            body_style
-        ),
-        Paragraph(
             "Patient ID: " + escape(str(personnel_id)),
             body_style
         ),
@@ -2974,16 +2926,6 @@ def fifty_fifty_fifty():
                 except (TypeError, ValueError):
                     error = "Please enter valid non-negative numbers for all three activities."
                 else:
-                    person = person_doc.to_dict() or {}
-                    full_name = person.get("full_name", "").strip()
-
-                    if not full_name:
-                        full_name = (
-                            str(person.get("first_name", "")).strip()
-                            + " "
-                            + str(person.get("last_name", "")).strip()
-                        ).strip()
-
                     entry_id = f"{personnel_id}_{today}"
                     entry_ref = db.collection(FIFTY_COLLECTION).document(entry_id)
                     transaction = db.transaction()
@@ -2999,7 +2941,6 @@ def fifty_fifty_fifty():
                             entry_ref,
                             {
                                 "personnel_id": personnel_id,
-                                "full_name": full_name,
                                 "pushups": pushups,
                                 "squats": squats,
                                 "steps": steps,
@@ -3038,48 +2979,185 @@ def fifty_fifty_fifty():
 @app.route("/admin/505050")
 @role_required("admin")
 def fifty_fifty_fifty_admin():
-    """Admin-only 50-50-50 analytics and leaderboard."""
+    """Admin-only 50-50-50 analytics with month and date-wise leaders."""
 
-    selected_date = request.args.get("date", "").strip()
     today = india_today()
+    selected_month = request.args.get("month", "").strip()
+    selected_date = request.args.get("date", "").strip()
 
-    if not selected_date:
-        selected_date = today
+    # Default to the current month.
+    if not selected_month:
+        selected_month = today[:7]
 
+    # Validate month format; fall back to the current month if invalid.
+    try:
+        month_start = datetime.strptime(selected_month, "%Y-%m")
+    except ValueError:
+        selected_month = today[:7]
+        month_start = datetime.strptime(selected_month, "%Y-%m")
+
+    import calendar
+    last_day = calendar.monthrange(month_start.year, month_start.month)[1]
+    month_end = month_start.replace(day=last_day)
+    month_start_date = month_start.strftime("%Y-%m-%d")
+    month_end_date = month_end.strftime("%Y-%m-%d")
+
+    # Default selected date to today when viewing the current month;
+    # otherwise use the first day of the selected month.
+    if not selected_date or not selected_date.startswith(selected_month):
+        selected_date = (
+            today
+            if selected_month == today[:7]
+            else month_start_date
+        )
+
+    # ------------------------------------------------------------
+    # LOAD ALL ENTRIES FOR THE SELECTED MONTH
+    # ------------------------------------------------------------
     records = []
-    query = db.collection(FIFTY_COLLECTION)
-
-    if selected_date:
-        query = query.where("entry_date", "==", selected_date)
+    query = (
+        db.collection(FIFTY_COLLECTION)
+        .where("entry_date", ">=", month_start_date)
+        .where("entry_date", "<=", month_end_date)
+    )
 
     for doc in query.stream():
         record = doc.to_dict() or {}
         record["document_id"] = doc.id
+        record["pushups"] = int(record.get("pushups", 0) or 0)
+        record["squats"] = int(record.get("squats", 0) or 0)
+        record["steps"] = int(record.get("steps", 0) or 0)
+        record["entry_date"] = str(record.get("entry_date", ""))
+        record["personnel_id"] = str(record.get("personnel_id", ""))
         records.append(record)
 
-    records.sort(
+    records.sort(key=lambda item: (item.get("entry_date", ""), item.get("personnel_id", "")))
+
+    # ------------------------------------------------------------
+    # MONTHLY TOTALS PER UNIQUE ID
+    # ------------------------------------------------------------
+    monthly_by_person = {}
+
+    for item in records:
+        pid = item.get("personnel_id", "")
+        if not pid:
+            continue
+
+        if pid not in monthly_by_person:
+            monthly_by_person[pid] = {
+                "personnel_id": pid,
+                "days": 0,
+                "pushups": 0,
+                "squats": 0,
+                "steps": 0,
+            }
+
+        monthly_by_person[pid]["days"] += 1
+        monthly_by_person[pid]["pushups"] += item["pushups"]
+        monthly_by_person[pid]["squats"] += item["squats"]
+        monthly_by_person[pid]["steps"] += item["steps"]
+
+    monthly_leaderboard = list(monthly_by_person.values())
+
+    # Separate leaders are used for each activity rather than inventing
+    # a combined score. This keeps pushups, squats and steps independent.
+    def top_monthly(metric):
+        if not monthly_leaderboard:
+            return None
+        return sorted(
+            monthly_leaderboard,
+            key=lambda x: (x.get(metric, 0), x.get("days", 0), x.get("personnel_id", "")),
+            reverse=True,
+        )[0]
+
+    monthly_top_pushups = top_monthly("pushups")
+    monthly_top_squats = top_monthly("squats")
+    monthly_top_steps = top_monthly("steps")
+
+    monthly_leaderboard.sort(
+        key=lambda x: (x.get("pushups", 0), x.get("squats", 0), x.get("steps", 0)),
+        reverse=True,
+    )
+
+    # ------------------------------------------------------------
+    # DATE-WISE LEADERS FOR THE SELECTED MONTH
+    # ------------------------------------------------------------
+    def top_daily(date_records, metric):
+        if not date_records:
+            return None
+        max_value = max(item.get(metric, 0) for item in date_records)
+        leaders = [
+            item.get("personnel_id", "")
+            for item in date_records
+            if item.get(metric, 0) == max_value
+        ]
+        leaders = [value for value in leaders if value]
+        return {
+            "value": max_value,
+            "personnel_id": ", ".join(leaders),
+        }
+
+    records_by_date = {}
+    for item in records:
+        records_by_date.setdefault(item["entry_date"], []).append(item)
+
+    daily_summaries = []
+    for day_number in range(1, last_day + 1):
+        date_value = f"{selected_month}-{day_number:02d}"
+        day_records = records_by_date.get(date_value, [])
+
+        daily_summaries.append({
+            "date": date_value,
+            "entries": len(day_records),
+            "pushups": top_daily(day_records, "pushups"),
+            "squats": top_daily(day_records, "squats"),
+            "steps": top_daily(day_records, "steps"),
+        })
+
+    # ------------------------------------------------------------
+    # SELECTED-DATE DETAIL
+    # ------------------------------------------------------------
+    selected_records = list(records_by_date.get(selected_date, []))
+    selected_records.sort(
         key=lambda item: (
-            int(item.get("pushups", 0) or 0),
-            int(item.get("squats", 0) or 0),
-            int(item.get("steps", 0) or 0),
+            item.get("pushups", 0),
+            item.get("squats", 0),
+            item.get("steps", 0),
         ),
         reverse=True,
     )
 
-    total_pushups = sum(int(item.get("pushups", 0) or 0) for item in records)
-    total_squats = sum(int(item.get("squats", 0) or 0) for item in records)
-    total_steps = sum(int(item.get("steps", 0) or 0) for item in records)
+    total_pushups = sum(item["pushups"] for item in records)
+    total_squats = sum(item["squats"] for item in records)
+    total_steps = sum(item["steps"] for item in records)
+
+    selected_total_pushups = sum(item["pushups"] for item in selected_records)
+    selected_total_squats = sum(item["squats"] for item in selected_records)
+    selected_total_steps = sum(item["steps"] for item in selected_records)
 
     return render_template(
         "505050_admin.html",
-        records=records,
+        records=selected_records,
         selected_date=selected_date,
+        selected_month=selected_month,
         today=today,
-        total_entries=len(records),
-        total_pushups=total_pushups,
-        total_squats=total_squats,
-        total_steps=total_steps,
+        month_start_date=month_start_date,
+        month_end_date=month_end_date,
+        monthly_leaderboard=monthly_leaderboard,
+        monthly_top_pushups=monthly_top_pushups,
+        monthly_top_squats=monthly_top_squats,
+        monthly_top_steps=monthly_top_steps,
+        daily_summaries=daily_summaries,
+        total_month_entries=len(records),
+        total_month_pushups=total_pushups,
+        total_month_squats=total_squats,
+        total_month_steps=total_steps,
+        total_entries=len(selected_records),
+        total_pushups=selected_total_pushups,
+        total_squats=selected_total_squats,
+        total_steps=selected_total_steps,
     )
+
 
 # ============================================================
 # RUN APPLICATION
