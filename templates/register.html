@@ -2333,7 +2333,7 @@
 
 
 
-                    <!-- AADHAAR CARD NUMBER -->
+                    <!-- FIRST 4 AADHAAR DIGITS -->
 
                     <div class="field">
 
@@ -2343,7 +2343,7 @@
                         >
 
                             <span>
-                                AADHAAR CARD NUMBER
+                                FIRST 4 AADHAAR DIGITS
                             </span>
 
                             <span class="required">
@@ -2362,7 +2362,7 @@
                                 type="text"
                                 id="aadhaar_digits"
                                 name="aadhaar_digits"
-                                placeholder="Enter 12-digit Aadhaar number"
+                                placeholder="Enter first 4 Aadhaar digits"
                                 maxlength="12"
                                 minlength="12"
                                 inputmode="numeric"
@@ -2539,7 +2539,7 @@ if (phoneInput) {
 
 
 /* =========================================================
-   AADHAAR CARD NUMBER — ONLY DIGITS, 12 DIGITS
+   FIRST 4 AADHAAR DIGITS — ONLY DIGITS
    ========================================================= */
 
 const aadhaarInput =
@@ -2555,7 +2555,7 @@ if (aadhaarInput) {
             this.value =
                 this.value
                 .replace(/\D/g, "")
-                .slice(0, 12);
+                .slice(0, 4);
 
         }
     );

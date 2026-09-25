@@ -613,17 +613,17 @@ def register():
 
         if (
             not aadhaar_digits.isdigit()
-            or len(aadhaar_digits) != 12
+            or len(aadhaar_digits) != 4
         ):
 
             return render_template(
                 "register.html",
                 error=(
-                    "Enter a valid 12-digit Aadhaar number."
+                    "Enter the first 4 digits of the Aadhaar number."
                 )
             )
 
-        aadhaar_suffix = aadhaar_digits[-8:]
+        aadhaar_first4 = aadhaar_digits
 
 
         if not dob or len(dob) < 4:
@@ -643,20 +643,17 @@ def register():
 
         mobile_last4 = phone[-4:]
 
-        birth_month_initial = datetime.strptime(
+        birth_month_code = datetime.strptime(
             dob,
             "%Y-%m-%d"
-        ).strftime("%B")[0].upper()
+        ).strftime("%B")[:2].upper()
 
-
+        # Final Unique ID format: 47 + last 4 mobile + first 2
+        # letters of birth month + first 4 Aadhaar digits.
+        # There are NO hyphens and NO spaces anywhere in the ID.
         personnel_id = (
-            "47-"
-            + mobile_last4
-            + "-"
-            + birth_month_initial
-            + "-"
-            + aadhaar_suffix
-        )
+            f"47{mobile_last4}{birth_month_code}{aadhaar_first4}"
+        ).replace(" ", "")
 
 
         # ====================================================
@@ -771,8 +768,8 @@ def register():
             "phone":
                 phone,
 
-            "aadhaar_suffix":
-                aadhaar_suffix,
+            "aadhaar_first4":
+                aadhaar_first4,
 
             "dob":
                 dob,
@@ -3087,7 +3084,7 @@ def fifty_fifty_fifty():
     today = india_today()
 
     if request.method == "POST":
-        personnel_id = request.form.get("personnel_id", "").strip()
+        personnel_id = request.form.get("personnel_id", "").strip().replace(" ", "")
         pushups_raw = request.form.get("pushups", "").strip()
         squats_raw = request.form.get("squats", "").strip()
         steps_raw = request.form.get("steps", "").strip()
