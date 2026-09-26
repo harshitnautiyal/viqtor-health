@@ -613,17 +613,17 @@ def register():
 
         if (
             not aadhaar_digits.isdigit()
-            or len(aadhaar_digits) != 12
+            or len(aadhaar_digits) != 4
         ):
 
             return render_template(
                 "register.html",
                 error=(
-                    "Enter a valid 12-digit Aadhaar number."
+                    "Enter the first 4 Aadhaar digits."
                 )
             )
 
-        aadhaar_suffix = aadhaar_digits[-8:]
+        aadhaar_suffix = aadhaar_digits
 
 
         if not dob or len(dob) < 4:
