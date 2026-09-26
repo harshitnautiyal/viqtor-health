@@ -650,11 +650,9 @@ def register():
 
 
         personnel_id = (
-            "47-"
+            "47"
             + mobile_last4
-            + "-"
             + birth_month_initial
-            + "-"
             + aadhaar_suffix
         )
 
