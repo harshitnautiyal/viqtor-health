@@ -267,7 +267,7 @@
 <div class="success-page">
 
     <div class="success-banner">
-        <h1>Personnel Registered Successfully</h1>
+        <h1>Patient Registered Successfully</h1>
         <p>
             The secure ViQtor Health profile and QR health card have been created.
         </p>
@@ -293,7 +293,7 @@
                 <div class="qr-box">
                     <img
                         src="{{ url_for('qr_code', filename=personnel.qr_filename) }}"
-                        alt="Personnel QR Code"
+                        alt="Patient QR Code"
                     >
                 </div>
 
@@ -310,23 +310,9 @@
             <div class="details">
 
                 <div class="detail">
-                    <span class="detail-label">Name</span>
+                    <span class="detail-label">Unique ID</span>
                     <span class="detail-value">
-                        {{ personnel.full_name }}
-                    </span>
-                </div>
-
-                <div class="detail">
-                    <span class="detail-label">Rank</span>
-                    <span class="detail-value">
-                        {{ personnel.rank }}
-                    </span>
-                </div>
-
-                <div class="detail">
-                    <span class="detail-label">Unit</span>
-                    <span class="detail-value">
-                        {{ personnel.unit }}
+                        {{ personnel.personnel_id }}
                     </span>
                 </div>
 
@@ -345,9 +331,9 @@
                 </div>
 
                 <div class="detail">
-                    <span class="detail-label">Personnel Type</span>
+                    <span class="detail-label">Mobile</span>
                     <span class="detail-value">
-                        {{ personnel.personnel_type }}
+                        {{ personnel.phone }}
                     </span>
                 </div>
 
