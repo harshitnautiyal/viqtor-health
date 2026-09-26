@@ -1403,6 +1403,13 @@ tbody tr:last-child td {
             DOWNLOAD PATIENT REGISTRY
         </a>
 
+        <a
+            href="/admin/505050"
+            class="button secondary"
+        >
+            50-50-50 ANALYTICS
+        </a>
+
         {% endif %}
 
 
@@ -1462,7 +1469,7 @@ tbody tr:last-child td {
                 type="text"
                 id="searchInput"
                 class="search"
-                placeholder="Search by Unique ID..."
+                placeholder="Search by patient name or ID..."
                 onkeyup="searchPersonnel()"
             >
 
@@ -1490,6 +1497,9 @@ tbody tr:last-child td {
                             Patient ID
                         </th>
 
+                        <th>
+                            Name
+                        </th>
 
                         <th>
                             Date of Birth
@@ -1528,6 +1538,13 @@ tbody tr:last-child td {
 
 
 
+                        <!-- NAME -->
+
+                        <td class="name">
+
+                            {{ person.full_name }}
+
+                        </td>
 
 
 

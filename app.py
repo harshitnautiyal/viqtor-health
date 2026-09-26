@@ -613,17 +613,17 @@ def register():
 
         if (
             not aadhaar_digits.isdigit()
-            or len(aadhaar_digits) != 4
+            or len(aadhaar_digits) != 12
         ):
 
             return render_template(
                 "register.html",
                 error=(
-                    "Enter the first 4 digits of the Aadhaar number."
+                    "Enter a valid 12-digit Aadhaar number."
                 )
             )
 
-        aadhaar_first4 = aadhaar_digits
+        aadhaar_suffix = aadhaar_digits[-8:]
 
 
         if not dob or len(dob) < 4:
@@ -643,17 +643,20 @@ def register():
 
         mobile_last4 = phone[-4:]
 
-        birth_month_code = datetime.strptime(
+        birth_month_initial = datetime.strptime(
             dob,
             "%Y-%m-%d"
-        ).strftime("%B")[:2].upper()
+        ).strftime("%B")[0].upper()
 
-        # Final Unique ID format: 47 + last 4 mobile + first 2
-        # letters of birth month + first 4 Aadhaar digits.
-        # There are NO hyphens and NO spaces anywhere in the ID.
+
         personnel_id = (
-            f"47{mobile_last4}{birth_month_code}{aadhaar_first4}"
-        ).replace(" ", "")
+            "47-"
+            + mobile_last4
+            + "-"
+            + birth_month_initial
+            + "-"
+            + aadhaar_suffix
+        )
 
 
         # ====================================================
@@ -768,8 +771,8 @@ def register():
             "phone":
                 phone,
 
-            "aadhaar_first4":
-                aadhaar_first4,
+            "aadhaar_suffix":
+                aadhaar_suffix,
 
             "dob":
                 dob,
@@ -1290,7 +1293,9 @@ def profile(qr_token):
         personnel=public_personnel,
         latest_health=latest_health,
         latest_cbc=latest_cbc,
-        latest_lipid=latest_lipid
+        latest_lipid=latest_lipid,
+        latest_allergy=latest_allergy,
+        latest_thyroid=latest_thyroid
     )
 
 
@@ -3084,7 +3089,7 @@ def fifty_fifty_fifty():
     today = india_today()
 
     if request.method == "POST":
-        personnel_id = request.form.get("personnel_id", "").strip().replace(" ", "")
+        personnel_id = request.form.get("personnel_id", "").strip()
         pushups_raw = request.form.get("pushups", "").strip()
         squats_raw = request.form.get("squats", "").strip()
         steps_raw = request.form.get("steps", "").strip()
